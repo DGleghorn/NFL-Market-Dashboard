@@ -1,1 +1,18 @@
-{"name":"NFL Market Dashboard","short_name":"NFL Market","start_url":"./","display":"standalone","background_color":"#080d19","theme_color":"#080d19","description":"Mobile-first NFL market dashboard with explainable Best Bets."}
+{
+  "name": "NFL Market Dashboard",
+  "short_name": "NFL Market",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#08111f",
+  "theme_color": "#08111f",
+  "description": "Snapshot-driven NFL market intelligence dashboard.",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
