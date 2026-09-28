@@ -1,40 +1,28 @@
-# NFL Market Dashboard — V0.6.1 Production Foundation
+# NFL Market Dashboard — V0.6.2 DraftKings Hardened
 
-Current production candidate. Upload the root runtime files to GitHub Pages and deploy `backend/openai-analyst-worker.js` as a Cloudflare Worker.
+Production-hardening release for the iPhone-first NFL Market Dashboard.
 
-## P0 fixes included
-- Secure AI endpoint health check (`GET`) and in-app **Test AI Connection** button.
-- AI can choose only game + market type + side. The frontend deterministically selects and verifies the DraftKings line/price from the supplied market snapshot; other books are context only.
-- Best Bets now contains only verified `BET` decisions at/above the configured confidence floor. `LEAN` is never promoted as a Best Bet.
-- Structured wagers; settlement no longer guesses the away team when parsing fails.
-- Market snapshots and AI analyses are no longer saved as duplicate market snapshots.
-- Service-worker cache bumped to V0.6.1 and old caches are removed on activation.
-- Diagnostics no longer make the misleading local-storage secret-name claim.
+## Canonical build
+- App version: **0.6.2**
+- Build fingerprint: **062-DK-20260928**
+- Actionable sportsbook: **DraftKings only**
 
-## P1 foundation included
-- Ledger records app/model/prompt/schema versions, immutable pregame snapshot context, exact book/line/price and structured market side.
-- Training export separates **pre-game features** from **post-game labels** to reduce outcome leakage.
-- CLV field is calculated when a closing market is available at settlement. For rigorous CLV, continue collecting pre-kickoff snapshots; the last valid pre-kickoff snapshot should be treated as the canonical close in a future server-backed release.
-- Confidence-bucket performance remains available.
+## Key fixes
+- DraftKings is the authoritative actionable spread/total shown by the app.
+- Other books may be retained only as consensus/context.
+- Missing opening lines remain unavailable; null/empty values are never coerced to `0.0`.
+- Movement requires two real DraftKings observations. No prior observation = no movement value.
+- Best Bets require a validated AI response and a verified DraftKings market.
+- Stronger cache busting and visible build fingerprint diagnostics.
+- Structured bet settlement and historical ledger remain enabled.
 
-## AI setup
-1. Deploy `backend/openai-analyst-worker.js` to Cloudflare Workers.
-2. Add Worker secret `OPENAI_API_KEY`.
-3. Optional: add `AI_SHARED_SECRET` and enter the same value in dashboard Settings.
-4. Copy the Worker URL into **Settings → AI analyst endpoint**.
-5. Tap **Test AI Connection**. It should show CONNECTED and confirm the OpenAI key is configured.
-6. Tap **Save & Pull** / **Pull & Analyze**.
+## iPhone deployment
+Upload all six files in this package to the repository root, replacing files with matching names. The old `app.js` and `styles.css` are not used by this build and may remain temporarily.
 
-Do not place an OpenAI API key in GitHub Pages or any client-side file.
+After GitHub Pages deploys, the header must show:
+**V0.6.2 · DraftKings Hardened · BUILD 062-DK**
 
-## Canonical repo runtime
-Keep: `index.html`, `manifest.json`, `sw.js`, `icon.png`, `README.md`, `backend/`.
-Remove legacy V0.2 runtime files such as `app.js` and `styles.css` after V0.6 is deployed; V0.6 does not reference them.
+Diagnostics must show **Build fingerprint PASS**.
 
-
-## DraftKings-only execution
-V0.6.1 treats DraftKings as the only actionable sportsbook. AI recommendations are promoted only when a verified DraftKings line/price exists. Other sportsbook data may remain in the snapshot solely for market-consensus context. Ledger and CLV records use DraftKings.
-
-
-## iPhone flat deployment
-All six files in this package belong in the repository root. Expected dashboard marker: V0.6.1. Actionable sportsbook: DraftKings only.
+## AI
+The frontend intentionally contains no OpenAI API key. `openai-analyst-worker.js` must be deployed as a secure server-side Worker and its URL entered in Settings before AI Best Bets can run.

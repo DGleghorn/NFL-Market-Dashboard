@@ -1,17 +1,10 @@
 {
-  "name": "NFL Market Dashboard V0.6",
+  "name": "NFL Market Dashboard V0.6.2 DraftKings",
   "short_name": "NFL Market",
-  "start_url": "./?v=0.6.1",
+  "start_url": "./?v=0.6.2",
   "scope": "./",
   "display": "standalone",
   "background_color": "#08111f",
   "theme_color": "#08111f",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "icons": [{"src":"icon.png?v=0.6.2","sizes":"512x512","type":"image/png","purpose":"any maskable"}]
 }
