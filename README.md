@@ -1,16 +1,15 @@
-# V0.5.0 AI Analyst endpoint
+# NFL Market Dashboard V0.5.1 — AI Analyst Worker
 
-The GitHub Pages app cannot safely hold an OpenAI API key. This worker is a server-side template for the AI layer. Deploy it to a serverless runtime such as Cloudflare Workers, set `OPENAI_API_KEY`, and optionally set `AI_SHARED_SECRET`.
+Deploy `openai-analyst-worker.js` as a server-side worker. Keep `OPENAI_API_KEY` and optional `AI_SHARED_SECRET` as server secrets; never put them in GitHub Pages.
 
-## Contract
-POST JSON from the dashboard to the worker. The dashboard sends the market snapshot, requested model, and AI rules. The worker calls the OpenAI Responses API with structured output and optional hosted web search, then returns `{ "analysis": ... }`.
+The frontend sends a market snapshot and receives structured BET/LEAN/PASS decisions. V0.5.1 additionally records every qualifying AI decision locally, supports postgame settlement, and exports the ledger/training dataset.
 
-## Cloudflare outline
-1. Create a Worker.
-2. Paste `openai-analyst-worker.js`.
-3. Add Worker secret `OPENAI_API_KEY`.
-4. Optionally add `AI_SHARED_SECRET`.
-5. Put the Worker URL into Dashboard → Settings → AI analyst endpoint.
-6. Pull the slate.
+## Required secrets
+- `OPENAI_API_KEY`
+- Optional: `AI_SHARED_SECRET`
 
-Do not put the OpenAI API key into GitHub Pages, localStorage, or frontend JavaScript.
+## Frontend setup
+Set **AI analyst endpoint** to the worker URL. If `AI_SHARED_SECRET` is configured, enter the same value in **AI shared secret**.
+
+## Important
+The worker does not store the user's betting ledger. The ledger is stored locally in the dashboard's browser IndexedDB/localStorage. Use **Export Ledger** and **Export Training Data** to create durable backups.

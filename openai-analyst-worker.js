@@ -9,6 +9,7 @@ const schema = {
   additionalProperties: false,
   properties: {
     model: { type: "string" },
+    promptVersion: { type: "string" },
     reviewedAt: { type: "string" },
     slateSummary: { type: "string" },
     audit: { type: "string" },
@@ -20,7 +21,7 @@ const schema = {
       reasons: { type: "array", items: { type: "string" } }, risks: { type: "array", items: { type: "string" } }, explanation: { type: "string" }
     }, required: ["gameId","decision","market","selection","confidence","fairLine","edge","book","price","reasons","risks","explanation"] } }
   },
-  required: ["model","reviewedAt","slateSummary","audit","challenge","sources","bets"]
+  required: ["model","promptVersion","reviewedAt","slateSummary","audit","challenge","sources","bets"]
 };
 
 function cors(origin){return {'Access-Control-Allow-Origin':origin||'*','Access-Control-Allow-Headers':'Content-Type, Authorization, X-DCC-Secret','Access-Control-Allow-Methods':'POST, OPTIONS','Content-Type':'application/json'}}
@@ -45,7 +46,7 @@ export default {
     let response;try{response=JSON.parse(raw)}catch{return new Response(JSON.stringify({error:'OpenAI returned invalid JSON'}),{status:502,headers:cors(origin)})}
     const text=response.output_text;if(!text)return new Response(JSON.stringify({error:'OpenAI response contained no output_text'}),{status:502,headers:cors(origin)})
     let analysis;try{analysis=JSON.parse(text)}catch{return new Response(JSON.stringify({error:'OpenAI structured output could not be parsed'}),{status:502,headers:cors(origin)})}
-    analysis.model=body.model||analysis.model||'gpt-5.6-sol';analysis.reviewedAt=new Date().toISOString();analysis.validated=true;
+    analysis.model=body.model||analysis.model||'gpt-5.6-sol';analysis.promptVersion='dcc-chief-analyst-v1.1';analysis.reviewedAt=new Date().toISOString();analysis.validated=true;
     return new Response(JSON.stringify({analysis}),{status:200,headers:cors(origin)});
   }
 };
