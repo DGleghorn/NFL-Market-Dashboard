@@ -1,5 +1,5 @@
-// NFL Market Dashboard V0.6.3.7 — partial AI diagnostics
-const VERSION='dcc-ai-worker-v0.6.3.7-partial-diagnostics';
+// NFL Market Dashboard V0.6.3.8 — data integrity diagnostics
+const VERSION='dcc-ai-worker-v0.6.3.8-data-integrity';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v3.6';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -61,6 +61,6 @@ Do not use JSON. Do not use markdown. Do not add headings or commentary.`;
  try{
   const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'system',content:system},{role:'user',content:'Review these games without forcing bets:\n'+JSON.stringify(compact)}],temperature:0,max_tokens:520});
   const inferenceMs=Date.now()-t,raw=modelText(r),a=buildAnalysis(raw,s);
-  return json({analysis:a,meta:{requestId:id,stage:'contract_complete',contract:'line-v1',inferenceMs,provider:'Cloudflare Workers AI',model:MODEL,zeroCost:true,paidFallback:false,batchIndex:Number(b.batchIndex)||0,batchCount:Number(b.batchCount)||1,candidateCount:s.games.length,parsedCount:a.bets.filter(x=>!x._fallback).length,rawSample:clean(raw,240)}});
+  return json({analysis:a,meta:{requestId:id,stage:'contract_complete',contract:'line-v1',inferenceMs,provider:'Cloudflare Workers AI',model:MODEL,zeroCost:true,paidFallback:false,batchIndex:Number(b.batchIndex)||0,batchCount:Number(b.batchCount)||1,candidateCount:s.games.length,parsedCount:a.bets.filter(x=>!x._fallback).length,rawSample:clean(raw,1200)}});
  }catch(e){return json({error:'Workers AI analysis unavailable',stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}
 }};
