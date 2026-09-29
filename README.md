@@ -1,17 +1,14 @@
-# NFL Market Dashboard V0.6.3.1 — Zero-Cost AI Hotfix
+# NFL Market Dashboard V0.6.3.2 — Zero-Cost AI Batch Fix
 
-Drop-in GitHub root deployment. $0 ongoing AI architecture.
+Production hotfix for iPhone/Safari AI transport reliability.
 
-## Fixes
-- Hardened Safari/iOS POST + CORS behavior.
-- Production Worker endpoint is now the default.
-- 45-second client timeout with explicit NETWORK/CORS, AI_TIMEOUT, WORKER, and AI_PARSE diagnostics.
-- Smaller Workers AI request and response budget to reduce latency/free inference usage.
-- Worker request IDs and inference timing.
-- No OpenAI dependency and no paid AI fallback.
-- DraftKings remains the only actionable sportsbook; deterministic verification remains authoritative.
+- $0 architecture: Cloudflare Workers AI only; no OpenAI or paid fallback.
+- DraftKings remains the only actionable sportsbook.
+- Adds a tiny POST-route probe before inference.
+- Sends AI work in batches of at most 4 games.
+- Uses text/plain POST bodies to avoid unnecessary CORS preflight on the normal route.
+- Caps each AI batch output at 650 tokens.
+- Reports transport, timeout, Worker, inference, and parse failures separately.
+- Market data remains usable when AI is unavailable.
 
-## Deploy
-Upload/replace all files in this package at the GitHub repository root and commit to main. Cloudflare Git deployment uses `wrangler.jsonc` and `ai-analyst-worker.js`.
-
-After Cloudflare succeeds, open `https://nfl-market-dashboard.daltongleghorn03.workers.dev/?diagnostic=1`, then open GitHub Pages and confirm `V0.6.3.1 · Zero-Cost AI Hotfix · BUILD 0631-CF`. Run Pull & Analyze once.
+Upload all files to the GitHub repository root and commit to main. Cloudflare should deploy ai-analyst-worker.js using wrangler.jsonc.
