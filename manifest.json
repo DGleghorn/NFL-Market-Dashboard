@@ -1,7 +1,7 @@
 {
-  "name": "NFL Market Dashboard V0.6.4.2 PASS Normalization",
+  "name": "NFL Market Dashboard V0.6.4.3 Production Candidate",
   "short_name": "NFL Market",
-  "start_url": "./?v=0.6.4.2",
+  "start_url": "./?v=0.6.4.3",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
