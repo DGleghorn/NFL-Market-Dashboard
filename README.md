@@ -1,4 +1,4 @@
-# AI Market Terminal — V0.7.4 Performance Integrity
+# AI Market Terminal — V0.7.5 Performance Integrity Hotpatch
 
 Production-hardening release derived from the exact V0.7.3 Decision Integrity package.
 

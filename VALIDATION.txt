@@ -1,101 +1,30 @@
-V0.7.4 PERFORMANCE INTEGRITY — FULL AUDIT / SANDBOX RELEASE GATE
-Generated: 2026-09-29
-Baseline: exact V0.7.3 Decision Integrity production ZIP
+AI Market Terminal V0.7.5 — Performance Integrity Hotpatch
+Validation date: 2026-09-29
 
-AUDIT FINDINGS FIXED
-- ROI now uses net units / actual units risked instead of settled-record count.
-- Unit settlement now honors stakeUnits rather than assuming every historical record is exactly 1u.
-- Arithmetic averaging of American odds was removed; Performance now reports average entry implied probability.
-- Postgame ESPN market data is no longer treated as a DraftKings closing line.
-- CLV is calculated only from a verified DraftKings observation captured <=6h before kickoff.
-- Official TAKE duplicate identity now includes season and remains backward-compatible with older 7.3 records.
-- NFL PLAY TO / TAKE AT spread thresholds are key-number aware around 3 and 7.
-- Performance ledger cards now expose exact entry, evidence, recorded time, pending stake, result/units, and eligible CLV.
-- Evidence-history buckets now use the same HIGH/MODERATE/LOW labels shown in the app.
+PURPOSE
+Hotpatches the V0.7.4 startup regression: performanceSport was referenced by renderPerformance()/performanceLedger() but was never declared.
 
-SANDBOX RELEASE GATE
-PASS — Version label 0.7.4
-PASS — Runtime VERSION 0.7.4
-PASS — Runtime BUILD 074-CF
-PASS — Diagnostics fingerprint 7.4
-PASS — SW 7.4 cache
-PASS — SW network-first navigation
-PASS — Worker 7.4
-PASS — PGA fail closed
-PASS — Overall/NFL/CFB performance filters
-PASS — Immutable TAKE flag
-PASS — Stake units frozen
-PASS — Season-aware official key
-PASS — Backward-compatible duplicate identity
-PASS — Research ledger separate
-PASS — ROI denominator units risked
-PASS — Units risked displayed
-PASS — Implied probability helper
-PASS — No average-American-odds metric
-PASS — Average entry implied probability
-PASS — Closing observation capture
-PASS — Closing observation pre-kickoff only
-PASS — Closing observation DK verified
-PASS — CLV six-hour eligibility
-PASS — No postgame market used for CLV
-PASS — Directional CLV helper
-PASS — CLV source documented
-PASS — CLV null without eligible observation
-PASS — Settlement honors stakeUnits
-PASS — Win unit math positive odds
-PASS — Win unit math negative odds
-PASS — Loss unit math
-PASS — Push unit math
-PASS — Win-rate excludes pushes
-PASS — Evidence buckets use app labels
-PASS — Ledger exact entry price
-PASS — Ledger evidence label
-PASS — Ledger recorded timestamp
-PASS — Ledger pending unit state
-PASS — Ledger CLV shown only if present
-PASS — NFL key-number helper
-PASS — NFL key 3 protected
-PASS — NFL key 7 protected
-PASS — Playable spread uses key-number helper
-PASS — Watch target uses key-number helper
-PASS — DK-only actionable recognition
-PASS — Quant gate preserved
-PASS — AI complete-slate gate preserved
-PASS — Freshness gate preserved
-PASS — Pregame future gate preserved
-PASS — Watch evidence gate preserved
-PASS — Watch stale gate preserved
-PASS — Watch target over preserved
-PASS — Watch target under preserved
-PASS — Slate summary verified only
-PASS — No forced bets copy preserved
-PASS — Exact-week settlement preserved
-PASS — Open settlement grouped by sport/season/week
-PASS — Manual settlement preserved
-PASS — Auto settlement preserved
-PASS — Export ledger preserved
-PASS — Export training preserved
-PASS — Sport snapshot isolation preserved
-PASS — Sport ledger isolation preserved
-PASS — AI timeout 45s preserved
-PASS — AI retry 60s preserved
-PASS — Opening total guard preserved
-PASS — Opening spread guard preserved
-PASS — Worker zero-cost flag
-PASS — Worker no paid fallback
-PASS — Worker DraftKings contract
-PASS — Worker one-row contract
-PASS — Network-first service worker
-PASS — Old cache cleanup
+AUTOMATED SANDBOX GATE — PASS
+1. Dashboard JavaScript syntax (node --check) — PASS
+2. Cloudflare Worker JavaScript syntax (node --check) — PASS
+3. performanceSport declared before performanceLedger/renderPerformance — PASS
+4. Performance filter defaults safely to Overall — PASS
+5. Invalid stored performance filter falls back to Overall — PASS
+6. Performance filter persists to localStorage — PASS
+7. V0.7.5 header/build fingerprint — PASS
+8. Diagnostics fingerprint updated to 0.7.5 / 075-CF — PASS
+9. Service-worker registration points to sw.js?v=0.7.5 — PASS
+10. Manifest/icon cache-busting refs point to 0.7.5 — PASS
+11. Service-worker cache namespace updated to ai-market-v0.7.5-075-CF — PASS
+12. Service-worker core assets all point to 0.7.5 — PASS
+13. Manifest start_url points to 0.7.5 — PASS
+14. Worker build identity updated to 0.7.5 hotpatch — PASS
+15. No stale 0.7.4 / 074-CF release identifiers in runtime files — PASS
+16. No stale sw.js?v=0.7.3 registration — PASS
+17. V0.7.4 Performance Integrity logic retained (ROI/stake settlement/verified-close CLV/key-number logic) — PASS by source-diff preservation; only initialization, persistence and release/cache identities changed.
 
-STATIC/LOGIC CHECKS: 73/73 PASS
+BROWSER-LIFECYCLE ATTEMPT
+Local headless Chromium was launched against a local HTTP server with an 8-second virtual-time budget. The process did not produce a usable DOM before the sandbox timeout. No performanceSport/ReferenceError was emitted in Chromium stderr, but this is NOT counted as a full browser PASS.
 
-EXECUTABLE FIXTURES
-PASS — -110 implied
-PASS — +100 implied
-PASS — SF -3 raw -8 => -6.5
-PASS — -2 raw -5 => -3.0
-PASS — -8 raw -10 unchanged
-PASS — +8 raw +2 => +7.0
-PASS — Dashboard JavaScript syntax
-PASS — Worker JavaScript syntax
+RELEASE LIMITATIONS / PRODUCTION SMOKE TEST
+The sandbox does not prove live ESPN/DraftKings responses, deployed Cloudflare Workers AI, GitHub Pages cache propagation, iOS Safari/Orion rendering, or real postgame settlement. Verify those after deployment. V0.7.3 remains the rollback until the iPhone smoke test passes.
