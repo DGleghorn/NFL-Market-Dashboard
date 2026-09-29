@@ -1,39 +1,38 @@
-AI MARKET TERMINAL V0.7.7 — FOOTBALL PRODUCTION CERTIFICATION
-Sandbox validation date: 2026-09-29
-Baseline: V0.7.6, itself rebuilt from last-known-good V0.7.3 runtime path.
+AI MARKET TERMINAL V0.7.8 — DECISION OBJECT INTEGRITY
+Build: 078-CF-20260929
+Baseline: V0.7.7 Football Production Certification
 
-PURPOSE
-1. Stop invalid Workers AI edge-math diagnostics from leaking into user-facing TAKE cards.
-2. Make the healthy-state banner clearly separate AI context review from deterministic official classifications.
-3. Reduce over-aggressive football recommendations with stronger minimum edges and a classification noise floor.
-4. Treat CFB more conservatively because the current $0 context is not opponent-strength adjusted.
-5. Preserve deterministic repeatability: AI wording/opinion cannot promote or change an official TAKE.
+RELEASE PURPOSE
+V0.7.7 correctly made the deterministic football engine authoritative, but a TAKE card could still display raw AI explanation/risk text that contradicted the deterministic decision. The deployed DET/CAR example showed a verified +2.9 deterministic edge while Full Analysis said the supplied market data did not establish an edge. V0.7.8 removes that presentation contradiction without changing the V0.7.7 NFL/CFB classification formulas.
 
-EXECUTED TESTS
-PASS — dashboard JavaScript syntax (node --check on extracted inline JS)
+SANDBOX RELEASE GATE
+PASS — Dashboard JavaScript syntax (node --check on extracted scripts)
 PASS — Cloudflare Worker JavaScript syntax
-PASS — V0.7.7 dashboard/build fingerprint
-PASS — V0.7.7 service-worker registration/cache namespace
-PASS — deterministic recommendation fixture repeated 50/50 with alternating AI BET/PASS/confidence
-PASS — invalid AI row diagnostic risk removed before deterministic slate rendering
-PASS — NFL spread guardrail fixture: 2.0-point TAKE minimum
-PASS — CFB spread guardrail fixture: 2.5-point TAKE minimum
-PASS — CFB reliability weight lower than NFL for identical 3-game sample
-PASS — deterministic tier boundaries: <30% required edge PASS; >=30% WATCH; >=60% LEAN; >=100% TAKE
-PASS — DraftKings-only market selection preserved
-PASS — decision fingerprint code preserved
+PASS — V0.7.8 dashboard/build fingerprint
+PASS — V0.7.8 Worker fingerprint
+PASS — V0.7.8 manifest/start URL
+PASS — V0.7.8 service-worker registration/cache namespace
+PASS — No stale V0.7.7/077-CF runtime identifiers in deployable runtime files
+PASS — TAKE Full Analysis is generated from deterministicAnalysis(), not raw AI explanation
+PASS — Main risk is deterministic; raw AI risks cannot populate an official TAKE card
+PASS — Deterministic reason remains tied to the authoritative quant decision object
+PASS — DraftKings remains the only actionable sportsbook
+PASS — AI remains context-only and cannot promote an official TAKE
+PASS — CFB limitation remains explicit: current free context is not opponent-strength adjusted
 PASS — PGA remains fail-closed
-PASS — no old V0.7.4/V0.7.5 runtime code was used as the build baseline
+PASS — Conservative half-point playable-boundary fixtures:
+       * O53.4 fair, 2.5 threshold -> MAX PLAY O50.5
+       * U46.0 fair, 2.5 threshold -> MIN PLAY U48.5
+       * favorite fair -9.7, 2.0 threshold -> PLAY TO -7.5
+       * underdog fair +10.2, 2.5 threshold -> PLAY TO +13.0
+PASS — 21/21 source/integrity assertions
+PASS — Final package contains exactly 8 deployment files
 
-LOGIC AUDIT FINDINGS
-- V0.7.6 correctly made the deterministic engine authoritative, but the strongest direction was selected for every game. With any non-zero model disagreement, that could leave zero PASS games. V0.7.7 adds a 30%-of-threshold noise floor so trivial differences remain PASS.
-- V0.7.6 thresholds (NFL spread 1.5 / total 2.0) were permissive relative to the small recent-form sample. V0.7.7 raises NFL to spread 2.0 / total 2.5.
-- CFB currently has only recent scoring/margin context and is NOT explicitly opponent-strength adjusted. Rather than pretending otherwise, V0.7.7 anchors CFB more strongly to the verified DraftKings market and requires larger edges (spread 2.5 / total 3.0).
-- These guardrails are conservative engineering thresholds, not statistically proven optimal betting thresholds. Historical out-of-sample performance is still required before claiming calibration.
+IMPORTANT PLAYABLE-NUMBER NOTE
+For an OVER with fair total 53.4 and a required 2.5-point TAKE edge, the mathematical boundary is 50.9. Because the app only presents conservative half-point football numbers, the last acceptable displayed OVER is 50.5, not 51.0. The same conservative direction is used for UNDER and spread boundaries.
 
-BROWSER TEST LIMITATION
-A local Chromium headless lifecycle attempt timed out before producing a usable DOM, consistent with prior sandbox behavior. Therefore physical iPhone rendering, live ESPN/DraftKings responses, deployed Cloudflare inference, GitHub cache propagation, and live settlement are NOT claimed as sandbox-verified. The production iPhone smoke test remains authoritative for those items.
+BROWSER LIFECYCLE LIMITATION
+A local headless Chromium dump was attempted. Chromium timed out before producing a usable DOM (RC 124), consistent with prior sandbox behavior. Therefore physical iPhone rendering, live ESPN/DraftKings responses, and the deployed Cloudflare Worker path are NOT claimed as locally browser-verified. The user's deployed iPhone smoke test remains the authoritative end-to-end runtime check.
 
-RELEASE DECISION
-Sandbox/static/executable decision-logic gate: PASS.
-Production certification remains conditional on the live iPhone smoke test and ongoing historical performance evidence.
+NO MODEL RECALIBRATION IN THIS RELEASE
+NFL thresholds, CFB thresholds, market-shrinkage weights, noise floor, decision fingerprints, and official classification logic are intentionally unchanged from V0.7.7. This release fixes presentation/decision-object integrity so model performance can begin accumulating against a stable football formula.
