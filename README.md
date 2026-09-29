@@ -1,23 +1,18 @@
-# NFL Market Dashboard V0.6.4.4 — Production
+# NFL Market Dashboard V0.6.5.0 — Intelligence Layer
 
-Built cleanly from the validated V0.6.4.2 baseline.
+Built from the validated V0.6.4.4 production baseline.
 
-Fix:
-- Removes the V0.6.4.3 startup regression. That build referenced an undefined `APP` object in `renderStatus`, which could stop initial snapshot rendering.
+New deterministic intelligence:
+- Pulls up to three prior completed regular-season weeks from ESPN's public scoreboard.
+- Computes each team's games, W-L-T, average points for, average points against, average scoring margin, last game, and rest days.
+- Supplies that context to Workers AI as descriptive evidence, explicitly not as a projection.
+- Supplies genuine local DraftKings snapshot movement when available.
+- Injuries and weather remain explicitly unavailable unless a reliable source is added later; the AI is forbidden to invent them.
+- Game Detail exposes the intelligence packet so recommendations are auditable.
 
 Preserved:
-- Validated 16/16 Workers AI parser path.
-- DraftKings-only actionable markets.
-- Strict BET/LEAN validation and genuine PASS normalization.
-- Fallback rows excluded from AI readiness and Best Bets.
-- Evidence-disciplined Workers AI prompt and zero-cost architecture.
-- Correct opening-line normalization.
-
-Production Best Bet safeguards:
-- BET decision only.
-- Configured confidence threshold.
-- Verified DraftKings market.
-- Game must be pre-kickoff.
-- Snapshot must be no older than 30 minutes.
-
-The freshness/kickoff checks run only in the recommendation-rendering path where the complete snapshot is already in scope; they cannot block initial snapshot loading.
+- DraftKings-only actionable sportsbook.
+- 16/16 validated line-protocol parser and PASS normalization.
+- Strict BET/LEAN validation, fallback exclusion, pre-kickoff and <=30-minute Best Bet safeguards.
+- Persistent local snapshots/ledger/CLV architecture.
+- Zero-cost Workers AI with no paid fallback.

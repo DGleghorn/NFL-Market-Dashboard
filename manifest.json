@@ -1,7 +1,7 @@
 {
-  "name": "NFL Market Dashboard V0.6.4.4 Production",
+  "name": "NFL Market Dashboard V0.6.5.0 Intelligence Layer",
   "short_name": "NFL Market",
-  "start_url": "./?v=0.6.4.4",
+  "start_url": "./?v=0.6.5.0",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
