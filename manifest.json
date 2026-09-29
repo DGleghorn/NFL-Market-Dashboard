@@ -1,7 +1,7 @@
 {
-  "name": "NFL Market Dashboard V0.6.3.9 Workers AI Extraction Fix",
+  "name": "NFL Market Dashboard V0.6.4.0 AI Stabilization",
   "short_name": "NFL Market",
-  "start_url": "./?v=0.6.3.9",
+  "start_url": "./?v=0.6.4.0",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
