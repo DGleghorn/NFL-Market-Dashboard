@@ -1,41 +1,39 @@
-V0.7.6 RUNTIME + DECISION INTEGRITY — SANDBOX RELEASE GATE
-Date: 2026-09-29
-Baseline: exact V0.7.3 Decision Integrity production package
+AI MARKET TERMINAL V0.7.7 — FOOTBALL PRODUCTION CERTIFICATION
+Sandbox validation date: 2026-09-29
+Baseline: V0.7.6, itself rebuilt from last-known-good V0.7.3 runtime path.
 
-PASS — Dashboard JavaScript syntax
+PURPOSE
+1. Stop invalid Workers AI edge-math diagnostics from leaking into user-facing TAKE cards.
+2. Make the healthy-state banner clearly separate AI context review from deterministic official classifications.
+3. Reduce over-aggressive football recommendations with stronger minimum edges and a classification noise floor.
+4. Treat CFB more conservatively because the current $0 context is not opponent-strength adjusted.
+5. Preserve deterministic repeatability: AI wording/opinion cannot promote or change an official TAKE.
+
+EXECUTED TESTS
+PASS — dashboard JavaScript syntax (node --check on extracted inline JS)
 PASS — Cloudflare Worker JavaScript syntax
-PASS — Cold-start runtime harness with empty storage
-PASS — V0.7.3-style stored ledger + CFB active-sport upgrade runtime harness
-PASS — safeNum exists before Performance/settlement execution
-PASS — performanceSport exists before Performance rendering
-PASS — 50 repeated frozen-snapshot decisions produce identical official classifications/selections
-PASS — radically different AI BET/PASS/confidence outputs do not alter official deterministic classifications on identical market/context inputs
-PASS — decision fingerprints are invariant to AI wording/opinion changes
-PASS — a verified market-number change changes the decision fingerprint
-PASS — DraftKings remains the only actionable sportsbook
-PASS — deterministic engine evaluates spread home/away and total over/under and chooses the strongest verified edge
-PASS — sample-size reliability shrinkage reduces raw recent-form model extremes before edge classification
-PASS — TAKE threshold remains spread 1.5 / total 2.0 after shrinkage
-PASS — LEAN/WATCH/PASS tiers are deterministic rather than generative-AI classifications
-PASS — Workers AI remains explanation/risk context and cannot promote an official TAKE
-PASS — immutable official TAKE ledger preserved from V0.7.3
-PASS — research ledger remains separate from official W/L record
-PASS — decision fingerprint stored with official/research records
-PASS — stake-aware settlement math
-PASS — ROI uses actual units risked
-PASS — American odds converted to implied probability before averaging
-PASS — postgame market data is not reported as DraftKings closing CLV
+PASS — V0.7.7 dashboard/build fingerprint
+PASS — V0.7.7 service-worker registration/cache namespace
+PASS — deterministic recommendation fixture repeated 50/50 with alternating AI BET/PASS/confidence
+PASS — invalid AI row diagnostic risk removed before deterministic slate rendering
+PASS — NFL spread guardrail fixture: 2.0-point TAKE minimum
+PASS — CFB spread guardrail fixture: 2.5-point TAKE minimum
+PASS — CFB reliability weight lower than NFL for identical 3-game sample
+PASS — deterministic tier boundaries: <30% required edge PASS; >=30% WATCH; >=60% LEAN; >=100% TAKE
+PASS — DraftKings-only market selection preserved
+PASS — decision fingerprint code preserved
 PASS — PGA remains fail-closed
-PASS — V0.7.6 dashboard/build/Worker identifiers
-PASS — V0.7.6 service-worker cache namespace and asset URLs
-PASS — no V0.7.4/V0.7.5 runtime baseline code carried forward
+PASS — no old V0.7.4/V0.7.5 runtime code was used as the build baseline
 
-Executable deterministic fixture result:
-- 50 alternating AI-opinion runs on the same market/context snapshot returned the same official slate every time.
-- Example fixture #1: O45.5 -> LEAN after sample shrinkage (fair 46.6, edge 1.1).
-- Example fixture #2: U60.5 -> TAKE after sample shrinkage (fair 54.9, edge 5.6).
+LOGIC AUDIT FINDINGS
+- V0.7.6 correctly made the deterministic engine authoritative, but the strongest direction was selected for every game. With any non-zero model disagreement, that could leave zero PASS games. V0.7.7 adds a 30%-of-threshold noise floor so trivial differences remain PASS.
+- V0.7.6 thresholds (NFL spread 1.5 / total 2.0) were permissive relative to the small recent-form sample. V0.7.7 raises NFL to spread 2.0 / total 2.5.
+- CFB currently has only recent scoring/margin context and is NOT explicitly opponent-strength adjusted. Rather than pretending otherwise, V0.7.7 anchors CFB more strongly to the verified DraftKings market and requires larger edges (spread 2.5 / total 3.0).
+- These guardrails are conservative engineering thresholds, not statistically proven optimal betting thresholds. Historical out-of-sample performance is still required before claiming calibration.
 
-IMPORTANT LIMITATIONS
-- Sandbox Chromium is unreliable in this environment and did not provide a usable full rendered-DOM lifecycle; browser rendering is not claimed as passed.
-- Live ESPN/DraftKings responses, deployed Cloudflare Workers AI, GitHub Pages/service-worker propagation, and physical iPhone rendering require the production smoke test.
-- The deterministic model is a conservative recent-scoring/margin heuristic with market shrinkage, not a statistically calibrated win-probability model. Historical out-of-sample results should determine future threshold/model changes.
+BROWSER TEST LIMITATION
+A local Chromium headless lifecycle attempt timed out before producing a usable DOM, consistent with prior sandbox behavior. Therefore physical iPhone rendering, live ESPN/DraftKings responses, deployed Cloudflare inference, GitHub cache propagation, and live settlement are NOT claimed as sandbox-verified. The production iPhone smoke test remains authoritative for those items.
+
+RELEASE DECISION
+Sandbox/static/executable decision-logic gate: PASS.
+Production certification remains conditional on the live iPhone smoke test and ongoing historical performance evidence.
