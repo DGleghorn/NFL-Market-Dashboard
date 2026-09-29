@@ -1,18 +1,12 @@
-# AI Market Terminal V0.7.1 — CFB Production Hardening
+# AI Market Terminal — V0.7.2 Multi-Sport Production Polish
 
-Build: `071-CF-20260929`
+Production-polish release built directly from the V0.7.1 CFB Production Hardening baseline.
 
-This release hardens the working V0.7.0 multi-sport foundation without redesigning the validated mobile UI.
+## Highlights
+- CFB graduated from Beta in the production UI.
+- User-facing NFL/CFB recommendation reasons are sanitized to plain football language; internal quantFair remains available only to the analysis engine.
+- Performance adds Overall / NFL / CFB views while preserving sport-tagged ledger records.
+- Existing NFL and CFB DraftKings-only, quant, freshness, completed-game, AI-completeness, retry, snapshot and ledger safeguards are retained.
+- PGA remains fail-closed / SOON until its free data pipeline passes integrity validation.
 
-## Changes
-- CFB DraftKings coverage now identifies the exact matchup(s) without a verified DK market.
-- Action-card CFB reasons use plain football language; raw analyst detail remains available under analysis/developer views.
-- Playable thresholds are conservatively normalized to sportsbook half-points.
-- College team/market abbreviation parsing accepts 2–6 alphanumeric aliases.
-- Worker/dashboard analyst contract advanced to `dcc-chief-analyst-cf-v6.1`.
-- NFL behavior and PGA fail-closed foundation are preserved.
-
-## Deployment
-Upload the eight release files in this ZIP to the GitHub repository root, replacing the existing versions. Keep V0.7.0 available as the rollback package until the production iPhone smoke test passes.
-
-See `VALIDATION.txt` for the sandbox release gate.
+Deploy all files in this ZIP to the GitHub Pages repository root, replacing the previous release. Keep V0.7.1 available as rollback until the real iPhone/GitHub/Cloudflare smoke test passes.

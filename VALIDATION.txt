@@ -1,37 +1,33 @@
-AI Market Terminal V0.7.1 — CFB Production Hardening
-BUILD 071-CF-20260929
-Validation date: 2026-09-29
+V0.7.2 MULTI-SPORT PRODUCTION POLISH — SANDBOX RELEASE GATE
 
-AUTOMATED SANDBOX RELEASE GATE: 55/55 PASS
+Static/fixture checks: 25/25 PASS
+PASS — Version label 0.7.2
+PASS — CFB beta badge removed
+PASS — PGA remains SOON
+PASS — Performance Overall filter
+PASS — Performance NFL filter
+PASS — Performance CFB filter
+PASS — Overall excludes PGA placeholder
+PASS — Sport ledger isolation retained
+PASS — Public reason helper exists
+PASS — TAKE uses public reason
+PASS — PASS uses public reason
+PASS — CFB DK missing diagnostic retained
+PASS — Half point floor retained
+PASS — Half point ceil retained
+PASS — DK actionable retained
+PASS — AI full slate validation retained
+PASS — PGA fail closed retained
+PASS — SW 0.7.2 cache
+PASS — Manifest 0.7.2 start
+PASS — Worker CFB plain-language instruction
+PASS — OVER 48.8 fair -> max 46.5
+PASS — UNDER 46 fair -> min 48.0
+PASS — Overall performance fixture combines NFL+CFB only
+PASS — NFL performance fixture isolated
+PASS — CFB performance fixture isolated
 
-Coverage includes:
-- Dashboard and Worker JavaScript syntax
-- 0.7.1 dashboard/Worker/service-worker/cache fingerprints
-- NFL / CFB / PGA sport-switch architecture
-- sport persistence, ledger isolation, and snapshot isolation
-- PGA fail-closed behavior
-- DraftKings-only actionable verification
-- explicit missing-DraftKings matchup diagnostics
-- CFB plain-language reason layer with raw model detail retained
-- expanded college-team abbreviation parsing (2–6 alphanumeric characters)
-- conservative sportsbook half-point normalization
-- OVER fixture: model 48.8, 2.0 required edge => MAX PLAY O46.5
-- UNDER fixture: model 47.2, 2.0 required edge => MIN PLAY U49.5
-- favorite spread threshold fixture => conservative half-point
-- underdog spread threshold fixture => conservative half-point
-- opening total/spread integrity guards
-- full-slate AI readiness / fallback blocking
-- quant minimum-edge gates
-- stale-market and pre-kickoff gates
-- completed-slate blocking
-- 45-second initial AI batch timeout / 60-second retry
-- failed-batch retry while preserving successful batches
-- malformed AI row fail-closed behavior
-- deterministic fair-line/edge verification
-- four-game Worker batch ceiling
-- no paid AI fallback
-- CURRENT / MAX PLAY presentation regression
-- no stale 0.7.0 runtime/cache identity
-
-LIMITS OF SANDBOX VALIDATION
-The sandbox cannot certify the user's deployed GitHub Pages cache lifecycle, live ESPN/DraftKings responses, deployed Cloudflare Workers AI inference, or actual iPhone Safari rendering. Those require a production smoke test after deployment. V0.7.0 remains the rollback release until that smoke test passes.
+Additional syntax gates are executed separately with node --check for dashboard and Worker JavaScript.
+External smoke-test boundary: sandbox validation does not prove live ESPN/DraftKings responses, deployed Cloudflare Workers AI, GitHub Pages cache propagation, or physical iPhone rendering. V0.7.1 remains rollback until those pass.
+PASS — Dashboard JavaScript syntax (node --check)
+PASS — Worker JavaScript syntax (node --check)
