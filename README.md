@@ -1,12 +1,13 @@
-# NFL Market Dashboard V0.6.5.3.2 — Matchup Clarity
+# NFL Market Dashboard V0.6.6 — Production Action Card
 
-Production patch built from the validated V0.6.5.3.1 baseline.
+Production milestone consolidating the Action Card UX, Matchup Clarity, automatic upcoming-slate selection, deterministic DraftKings/quant verification, and resilient zero-cost Workers AI transport.
 
-## Changes
-- Adds WEEK · AWAY @ HOME · LOCATION context to TAKE, LEAN, WATCH, and PASS recommendations.
-- Adds a collapsed Passed Games section so every game can be identified from the Bets screen.
-- Adds ESPN venue city to new snapshots, with graceful fallback when venue data is unavailable.
-- Makes total playable-number guidance directionally explicit: OVER X OR LOWER; UNDER X OR HIGHER.
-- Preserves the 6.5.3.1 startup/slate lifecycle hotfix, DraftKings-only market verification, quant edge gate, and zero-cost Workers AI architecture.
+## AI reliability changes
+- First attempt allows up to 45 seconds per 4-game batch.
+- A failed/timed-out batch is retried once with up to 60 seconds.
+- Successful batches are preserved while only failed batches retry.
+- If a batch still fails, market data remains usable and partial AI output is explicitly non-actionable.
+- `Retry AI only` reruns AI against the current DraftKings snapshot without repulling market data.
+- Failure state exits ANALYZING and displays MARKET READY / AI RETRY NEEDED.
 
-Expected header: `V0.6.5.3.2 · Matchup Clarity · BUILD 06532-CF`
+Expected header: `V0.6.6 · Production Action Card · BUILD 066-CF`

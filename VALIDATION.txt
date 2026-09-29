@@ -1,28 +1,28 @@
-V0.6.5.3.2 SANDBOX VALIDATION
+V0.6.6 PRODUCTION ACTION CARD — SANDBOX VALIDATION
+2026-09-29
 
 PASS - Dashboard JavaScript syntax
-PASS - Worker JavaScript syntax
-PASS - TAKE card matchup context
-PASS - LEAN card matchup context
-PASS - WATCH card matchup context
-PASS - PASS card matchup context / collapsed Passed Games
-PASS - ESPN venue city normalization with safe missing-location fallback
-PASS - OVER playable boundary = fair total - minimum edge
-PASS - OVER wording = OR LOWER
-PASS - UNDER playable boundary = fair total + minimum edge
-PASS - UNDER wording = OR HIGHER
-PASS - Spread playable boundary retained
+PASS - Cloudflare Worker JavaScript syntax
+PASS - DOM reference integrity (no missing referenced IDs)
+PASS - V0.6.6 / BUILD 066-CF identity
+PASS - Service-worker/cache V0.6.6 identity
+PASS - Workers AI first-attempt timeout raised to 45 seconds
+PASS - Failed AI batch retry allowance 60 seconds
+PASS - Simulated single-batch timeout recovered to 16/16 parsed
+PASS - Simulated permanent batch failure preserved 12/16 successful decisions
+PASS - Failed batch retried without rerunning successful batches
+PASS - Retry AI-only control present; does not require market repull
+PASS - AI failure exits ANALYZING to MARKET READY / AI RETRY NEEDED
+PASS - Partial AI remains non-actionable (aiReady requires full validated slate)
 PASS - DraftKings-only verification retained
-PASS - Quant minimum-edge gate retained
+PASS - Independent quant edge gate retained
+PASS - TAKE / LEAN / WATCH / PASS hierarchy retained
+PASS - Matchup/week/location context retained
+PASS - OVER playable wording = OR LOWER
+PASS - UNDER playable wording = OR HIGHER
+PASS - Automatic next-slate selection retained
 PASS - Completed-game blocking retained
-PASS - Automatic next-slate scan retained
-PASS - Snapshot fallback / no indefinite CHECKING regression retained
-PASS - Build fingerprint 0.6.5.3.2 / 06532-CF
-PASS - Service-worker cache/version identity
-PASS - Flat GitHub package
+PASS - Snapshot restore/fallback retained
+PASS - Zero-cost Workers AI only; no paid fallback added
 
-Scenario math:
-- Fair total 60, minimum edge 2 => OVER playable through 58.0 OR LOWER.
-- Fair total 46, minimum edge 2 => UNDER playable at 48.0 OR HIGHER.
-
-LIMITATION - Local static/sandbox validation does not prove live iPhone/WebKit rendering, live ESPN venue availability, deployed Cloudflare inference, or GitHub Pages cache propagation. Those require the production smoke test after deployment.
+LIMITATION - Live iPhone/WebKit, ESPN network responses, and deployed Cloudflare inference cannot be fully reproduced in this container. Final production smoke test occurs after GitHub/Cloudflare deployment.
