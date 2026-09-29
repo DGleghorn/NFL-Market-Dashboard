@@ -1,18 +1,11 @@
-# NFL Market Dashboard V0.6.5.0 — Intelligence Layer
+# NFL Market Dashboard V0.6.5.1 — Intelligence Integrity
 
-Built from the validated V0.6.4.4 production baseline.
+Built from V0.6.5.0 after the real 14/16 Intelligence Layer run.
 
-New deterministic intelligence:
-- Pulls up to three prior completed regular-season weeks from ESPN's public scoreboard.
-- Computes each team's games, W-L-T, average points for, average points against, average scoring margin, last game, and rest days.
-- Supplies that context to Workers AI as descriptive evidence, explicitly not as a projection.
-- Supplies genuine local DraftKings snapshot movement when available.
-- Injuries and weather remain explicitly unavailable unless a reliable source is added later; the AI is forbidden to invent them.
-- Game Detail exposes the intelligence packet so recommendations are auditable.
-
-Preserved:
-- DraftKings-only actionable sportsbook.
-- 16/16 validated line-protocol parser and PASS normalization.
-- Strict BET/LEAN validation, fallback exclusion, pre-kickoff and <=30-minute Best Bet safeguards.
-- Persistent local snapshots/ledger/CLV architecture.
-- Zero-cost Workers AI with no paid fallback.
+Fixes:
+- Raises first-pass response headroom and forces concise one-row-per-game output.
+- Deterministically maps a returned team abbreviation (for example BUF/KC) to HOME/AWAY when it exactly matches the supplied game.
+- If a batch still omits rows, the Worker retries only the missing GAME_IDs once.
+- Defines FAIR_LINE for the selected wager side and verifies EDGE math deterministically.
+- Actionable rows with missing/inconsistent fair-line math are safely normalized to PASS; they can never become Best Bets.
+- Preserves DraftKings-only verification, 30-minute freshness, pre-kickoff gating, PASS handling, prior-game intelligence, and zero-cost Workers AI architecture.

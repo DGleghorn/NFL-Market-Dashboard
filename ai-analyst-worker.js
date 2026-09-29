@@ -1,6 +1,6 @@
-// NFL Market Dashboard V0.6.5.0 — intelligence layer
-const VERSION='dcc-ai-worker-v0.6.5.0-intelligence';
-const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v5.0';
+// NFL Market Dashboard V0.6.5.1 — intelligence integrity
+const VERSION='dcc-ai-worker-v0.6.5.1-intelligence-integrity';
+const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v5.1';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
 const clean=(s,n=500)=>String(s??'').replace(/[\r\n\t]+/g,' ').replace(/\s+/g,' ').trim().slice(0,n);
@@ -26,6 +26,23 @@ function responseShape(x){
  }catch{return 'uninspectable'}
 }
 const pass=(id,why='No valid AI row returned.')=>({gameId:String(id),decision:'PASS',marketType:'spread',side:'home',confidence:0,fairLine:'',edge:'',reasons:[],risks:[why],explanation:'PASS — '+why,_fallback:true});
+function finiteField(v){const n=Number(String(v??'').trim());return Number.isFinite(n)?n:null}
+function marketLineFor(g,marketType,side){
+ if(marketType==='spread'){const home=finiteField(g?.market?.spread);if(home==null)return null;return side==='home'?home:-home}
+ if(marketType==='total')return finiteField(g?.market?.total);
+ return null
+}
+function normalizeAnalyticalRow(row,g){
+ if(row.decision==='PASS')return row;
+ const fair=finiteField(row.fairLine),reportedEdge=finiteField(row.edge),marketLine=marketLineFor(g,row.marketType,row.side);
+ if(fair==null||reportedEdge==null||marketLine==null)return {...row,decision:'PASS',confidence:0,fairLine:'',edge:'',reasons:[],risks:['Actionable row lacked a numeric fair line, edge, or market line.'],explanation:'PASS — actionable AI row failed deterministic fair-line validation.',_normalizedInvalid:true};
+ let calculated;
+ if(row.marketType==='spread')calculated=marketLine-fair;
+ else if(row.side==='over')calculated=fair-marketLine;
+ else calculated=marketLine-fair;
+ if(!(calculated>0)||Math.abs(calculated-reportedEdge)>0.35)return {...row,decision:'PASS',confidence:0,fairLine:'',edge:'',reasons:[],risks:[`Actionable row failed edge math: market ${marketLine}, fair ${fair}, reported edge ${reportedEdge}.`],explanation:'PASS — deterministic verification rejected inconsistent fair-line/edge math.',_normalizedInvalid:true};
+ return {...row,fairLine:String(fair),edge:String(Number(calculated.toFixed(2))),_edgeVerified:true}
+}
 function parseLineProtocol(raw,s){
  const games=new Map(s.games.map(g=>[String(g.id),g])),candidates=new Map();
  let text=String(raw??'').replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/```[\s\S]*?```/g,m=>m.replace(/```(?:text|txt)?/gi,'').replace(/```/g,''));
@@ -49,11 +66,17 @@ function parseLineProtocol(raw,s){
    if(!['SPREAD','TOTAL'].includes(market))continue;
    marketType=market.toLowerCase();
    const allowed=marketType==='spread'?['HOME','AWAY']:['OVER','UNDER'];
-   if(!allowed.includes(side))continue;
-   normalizedSide=side.toLowerCase();
+   let resolvedSide=side;
+   if(marketType==='spread'&&!allowed.includes(resolvedSide)){
+    const g=games.get(id),home=String(g?.home?.abbr||g?.home||'').toUpperCase(),away=String(g?.away?.abbr||g?.away||'').toUpperCase();
+    if(resolvedSide===home)resolvedSide='HOME';else if(resolvedSide===away)resolvedSide='AWAY';
+   }
+   if(!allowed.includes(resolvedSide))continue;
+   normalizedSide=resolvedSide.toLowerCase();
   }
   const normField=v=>na(v)?'':clean(v,80);
-  const row={gameId:id,decision,marketType,side:normalizedSide,_fallback:false,confidence:decision==='PASS'?0:Math.max(0,Math.min(100,confidence)),fairLine:normField(p[5]),edge:normField(p[6]),reasons:normField(p[7])?[clean(p[7],150)]:[],risks:normField(p[8])?[normField(p[8])]:[],explanation:normField(p[9])||normField(p[7])||'The supplied market data does not establish an edge.'};
+  let row={gameId:id,decision,marketType,side:normalizedSide,_fallback:false,confidence:decision==='PASS'?0:Math.max(0,Math.min(100,confidence)),fairLine:normField(p[5]),edge:normField(p[6]),reasons:normField(p[7])?[clean(p[7],150)]:[],risks:normField(p[8])?[normField(p[8])]:[],explanation:normField(p[9])||normField(p[7])||'The supplied market data does not establish an edge.'};
+  row=normalizeAnalyticalRow(row,games.get(id));
   const rank={BET:3,LEAN:2,PASS:1},prev=candidates.get(id); if(!prev||rank[row.decision]>rank[prev.decision]||(rank[row.decision]===rank[prev.decision]&&row.confidence>prev.confidence))candidates.set(id,row);
  }
  return s.games.map(g=>candidates.get(String(g.id))||pass(g.id,'AI output row was missing or malformed.'));
@@ -70,7 +93,7 @@ export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=
  if(env.AI_SHARED_SECRET&&(req.headers.get('X-DCC-Secret')||'')!==env.AI_SHARED_SECRET)return json({error:'Unauthorized',stage:'auth',requestId:id},401);
  if(req.method==='GET'){
   if(url.searchParams.get('diagnostic')==='1'){if(!env.AI)return json({ok:false,version:VERSION,stage:'binding',requestId:id,message:'Workers AI binding AI is missing.'},500);try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'user',content:'Reply with exactly OK.'}],max_tokens:8,temperature:0});return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,stage:'inference',inferenceMs:Date.now()-t,requestId:id,message:'Zero-cost Workers AI connectivity test passed.',sample:clean(modelText(r),80),responseShape:responseShape(r)})}catch(e){return json({ok:false,version:VERSION,stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}}
-  return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,aiBindingConfigured:!!env.AI,contract:'one-row-per-game-v2',zeroCost:true,paidFallback:false});
+  return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,aiBindingConfigured:!!env.AI,contract:'one-row-per-game-v3',zeroCost:true,paidFallback:false});
  }
  if(req.method!=='POST')return json({error:'POST only',stage:'routing',requestId:id},405);
  let b;try{b=JSON.parse(await req.text())}catch{return json({error:'Invalid JSON',stage:'request',requestId:id},400)}
@@ -87,11 +110,23 @@ A null opening value means opening data is unavailable. Current market equal to 
 PASS freely. If supplied fields do not establish a defensible edge, PASS and state that the supplied market data does not establish an edge.
 OUTPUT CONTRACT: Return exactly ONE line for EACH supplied GAME_ID and nothing else. Never return both SPREAD and TOTAL for the same game. Choose the single strongest SPREAD or TOTAL angle, or PASS.
 GAME_ID | DECISION | MARKET | SIDE | CONFIDENCE | FAIR_LINE | EDGE | REASON | RISK | EXPLANATION
-DECISION: BET, LEAN, PASS. MARKET: SPREAD or TOTAL. SIDE: HOME/AWAY for spread; OVER/UNDER for total. CONFIDENCE: integer 0-100; PASS must be 0. For PASS, MARKET, SIDE, FAIR_LINE, EDGE, REASON, RISK, and EXPLANATION may be N/A; GAME_ID, PASS, and confidence 0 are sufficient.
+DECISION: BET, LEAN, PASS. MARKET: SPREAD or TOTAL. SIDE: HOME/AWAY for spread; OVER/UNDER for total. CONFIDENCE: integer 0-100; PASS must be 0.
+For an actionable SPREAD, FAIR_LINE is YOUR fair spread for the SELECTED SIDE, using the wager's sign. Example: if DraftKings offers AWAY -10 and you estimate AWAY -12.5, FAIR_LINE=-12.5 and EDGE=2.5. If DraftKings offers HOME +7 and you estimate HOME +4, FAIR_LINE=4 and EDGE=3.
+For OVER, EDGE=FAIR_LINE-current total. For UNDER, EDGE=current total-FAIR_LINE. EDGE must be positive and mathematically match FAIR_LINE versus the supplied market. If you cannot support a numeric fair line and positive edge, PASS.
+For PASS, MARKET, SIDE, FAIR_LINE, EDGE, REASON, RISK, and EXPLANATION may be N/A; GAME_ID, PASS, and confidence 0 are sufficient.
+Keep REASON to at most 12 words, RISK to at most 6 words, and EXPLANATION to at most 12 words. Complete every GAME_ID before adding detail. Do not use the pipe character inside a field.
 Do not use JSON, markdown, headings, or commentary.`;
  try{
-  const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'system',content:system},{role:'user',content:'Review these games without forcing bets:\n'+JSON.stringify(compact)}],temperature:0,max_completion_tokens:520,chat_template_kwargs:{enable_thinking:false}});
-  const inferenceMs=Date.now()-t,raw=modelText(r),a=buildAnalysis(raw,s);
-  return json({analysis:a,meta:{requestId:id,stage:'contract_complete',contract:'one-row-per-game-v2',inferenceMs,provider:'Cloudflare Workers AI',model:MODEL,zeroCost:true,paidFallback:false,batchIndex:Number(b.batchIndex)||0,batchCount:Number(b.batchCount)||1,candidateCount:s.games.length,parsedCount:a.bets.filter(x=>!x._fallback).length,responseShape:responseShape(r),rawSample:clean(raw,1200)}});
+  const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'system',content:system},{role:'user',content:'Review these games without forcing bets. Complete every GAME_ID.\n'+JSON.stringify(compact)}],temperature:0,max_completion_tokens:720,chat_template_kwargs:{enable_thinking:false}});
+  let raw=modelText(r),a=buildAnalysis(raw,s),retryUsed=false,retryShape='';
+  const missing=a.bets.filter(x=>x._fallback).map(x=>String(x.gameId));
+  if(missing.length){
+   retryUsed=true;const retryGames=compact.games.filter(g=>missing.includes(String(g.id))),retrySnapshot={...s,games:s.games.filter(g=>missing.includes(String(g.id)))};
+   const retrySystem=system+'\nRECOVERY: Return only the missing GAME_ID rows listed by the user. Be extremely concise. PASS is preferable to unsupported math.';
+   const rr=await env.AI.run(MODEL,{messages:[{role:'system',content:retrySystem},{role:'user',content:'Missing rows only:\n'+JSON.stringify({season:compact.season,week:compact.week,games:retryGames})}],temperature:0,max_completion_tokens:360,chat_template_kwargs:{enable_thinking:false}});
+   const retryRaw=modelText(rr);retryShape=responseShape(rr);raw=raw+'\n'+retryRaw;a=buildAnalysis(raw,s);
+  }
+  const inferenceMs=Date.now()-t;
+  return json({analysis:a,meta:{requestId:id,stage:'contract_complete',contract:'one-row-per-game-v3',inferenceMs,provider:'Cloudflare Workers AI',model:MODEL,zeroCost:true,paidFallback:false,batchIndex:Number(b.batchIndex)||0,batchCount:Number(b.batchCount)||1,candidateCount:s.games.length,parsedCount:a.bets.filter(x=>!x._fallback).length,retryUsed,retryShape,responseShape:responseShape(r),rawSample:clean(raw,1600)}});
  }catch(e){return json({error:'Workers AI analysis unavailable',stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}
 }};
