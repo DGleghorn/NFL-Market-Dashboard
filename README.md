@@ -1,30 +1,17 @@
-# NFL Market Dashboard V0.6.3 — Zero-Cost AI
+# NFL Market Dashboard V0.6.3.1 — Zero-Cost AI Hotfix
 
-Production target: $0 ongoing operating cost for a single-user dashboard.
+Drop-in GitHub root deployment. $0 ongoing AI architecture.
 
-## Deploy to GitHub
-Upload/replace these files in the repository root:
-- index.html
-- manifest.json
-- sw.js
-- icon.png
-- ai-analyst-worker.js
-- wrangler.jsonc
-- README.md
+## Fixes
+- Hardened Safari/iOS POST + CORS behavior.
+- Production Worker endpoint is now the default.
+- 45-second client timeout with explicit NETWORK/CORS, AI_TIMEOUT, WORKER, and AI_PARSE diagnostics.
+- Smaller Workers AI request and response budget to reduce latency/free inference usage.
+- Worker request IDs and inference timing.
+- No OpenAI dependency and no paid AI fallback.
+- DraftKings remains the only actionable sportsbook; deterministic verification remains authoritative.
 
-Delete the old `openai-analyst-worker.js` after the new deployment is confirmed. The new Wrangler config points to `ai-analyst-worker.js`.
+## Deploy
+Upload/replace all files in this package at the GitHub repository root and commit to main. Cloudflare Git deployment uses `wrangler.jsonc` and `ai-analyst-worker.js`.
 
-## Cloudflare
-Git integration should deploy automatically from `main`. `wrangler.jsonc` creates the Workers AI binding named `AI`; no OpenAI API key is required.
-
-Worker model: `@cf/google/gemma-4-26b-a4b-it`.
-There is no paid-provider fallback. If Workers AI's free allowance/capacity is unavailable, the Worker returns an error and the dashboard continues with market data without manufacturing AI bets.
-
-## Test
-1. Wait for Cloudflare deployment success.
-2. Open `https://nfl-market-dashboard.daltongleghorn03.workers.dev/?diagnostic=1`.
-3. Expect `ok:true`, `provider:"Cloudflare Workers AI"`, and `zeroCost`/no-paid-fallback metadata.
-4. Open the GitHub Pages dashboard, confirm V0.6.3 / BUILD 063-CF.
-5. Settings: keep the same Worker endpoint. Test AI Connection, then Pull & Analyze.
-
-DraftKings remains the only actionable sportsbook. AI never selects or fabricates the final executable line/price; client-side deterministic verification remains authoritative.
+After Cloudflare succeeds, open `https://nfl-market-dashboard.daltongleghorn03.workers.dev/?diagnostic=1`, then open GitHub Pages and confirm `V0.6.3.1 · Zero-Cost AI Hotfix · BUILD 0631-CF`. Run Pull & Analyze once.
