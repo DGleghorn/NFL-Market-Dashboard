@@ -1,28 +1,33 @@
-NFL Market Dashboard V0.6.5.3 — Sandbox Validation
-Build: 0653-CF-20260929
+NFL Market Dashboard V0.6.5.3.1 — Action Card Hotfix
+Build: 06531-CF-20260929
 
-PASS  Dashboard JavaScript syntax (Node --check)
-PASS  Worker JavaScript syntax (Node --check)
-PASS  HTML duplicate-ID audit
-PASS  Four-tab navigation retained
-PASS  Compact status / single visible refresh workflow
-PASS  Take / Lean / Watch / Pass UI hierarchy
-PASS  Playable-line guidance present for actionable BETs
-PASS  Completed-game recommendations blocked
-PASS  Automatic next regular-season slate selection logic
-PASS  DraftKings-only actionable verification retained
-PASS  Deterministic spread edge threshold retained (1.5)
-PASS  Deterministic total edge threshold retained (2.0)
-PASS  PASS/N-A parser normalization retained
-PASS  Missing-game AI recovery retained
-PASS  Opening total plausibility guard retained
-PASS  Snapshot freshness gate retained
-PASS  Developer Mode isolation retained
-PASS  Market movement consolidated into game cards
-PASS  Performance-first layout / ledger tools collapsed
-PASS  Build fingerprint updated to V0.6.5.3 / 0653-CF
-PASS  Worker identity updated to v0.6.5.3-action-card
-PASS  Service-worker cache identity updated to 0.6.5.3
-PASS  Flat GitHub package: 8 files including this report
+RELEASE GATE
+PASS — Dashboard JavaScript syntax (node --check)
+PASS — Worker JavaScript syntax (node --check)
+PASS — Root cause reproduced from 6.5.3: slateLifecycle/evidenceLabel/playableLine were referenced but undefined
+PASS — slateLifecycle helper restored
+PASS — evidence labels restored
+PASS — playable-number helper restored
+PASS — Startup no longer depends on an undefined Action Card helper
+PASS — Startup restores last valid IndexedDB snapshot before network refresh
+PASS — Startup automatically refreshes after cache restoration
+PASS — Refresh failure falls back to last saved snapshot
+PASS — Explicit recovery/error state replaces indefinite CHECKING on startup exceptions
+PASS — Completed current slate scans forward to the next available regular-season week
+PASS — TAKE / LEAN / WATCH / PASS hierarchy retained
+PASS — DraftKings-only actionable market retained
+PASS — Deterministic spread minimum edge retained (1.5 points)
+PASS — Deterministic total minimum edge retained (2.0 points)
+PASS — Pregame gate retained
+PASS — Snapshot freshness gate retained
+PASS — Missing-game AI retry retained
+PASS — PASS/N/A parser behavior retained
+PASS — Opening-line plausibility guard retained
+PASS — Developer Mode isolation retained
+PASS — Build fingerprint updated to V0.6.5.3.1 / 06531-CF
+PASS — Service worker cache and asset URLs updated to V0.6.5.3.1
+PASS — Manifest start URL updated to V0.6.5.3.1
+PASS — Flat GitHub package structure
 
-LIMITATION  Headless Chromium in the sandbox timed out before completing a full browser lifecycle. Actual iPhone rendering, ESPN live responses, Cloudflare Worker inference, and GitHub Pages caching require the post-deploy smoke test. No claim of live validation is made here.
+ENVIRONMENT LIMITATION
+The container's installed headless Chromium process does not complete reliably, so an end-to-end rendered-browser run could not be certified locally. iPhone/WebKit rendering, live ESPN responses, GitHub Pages cache activation, and deployed Cloudflare inference remain production smoke tests. Static/runtime syntax and deterministic regression gates above passed.
