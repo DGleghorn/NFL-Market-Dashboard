@@ -1,28 +1,30 @@
-# NFL Market Dashboard — V0.6.2 DraftKings Hardened
+# NFL Market Dashboard V0.6.3 — Zero-Cost AI
 
-Production-hardening release for the iPhone-first NFL Market Dashboard.
+Production target: $0 ongoing operating cost for a single-user dashboard.
 
-## Canonical build
-- App version: **0.6.2**
-- Build fingerprint: **062-DK-20260928**
-- Actionable sportsbook: **DraftKings only**
+## Deploy to GitHub
+Upload/replace these files in the repository root:
+- index.html
+- manifest.json
+- sw.js
+- icon.png
+- ai-analyst-worker.js
+- wrangler.jsonc
+- README.md
 
-## Key fixes
-- DraftKings is the authoritative actionable spread/total shown by the app.
-- Other books may be retained only as consensus/context.
-- Missing opening lines remain unavailable; null/empty values are never coerced to `0.0`.
-- Movement requires two real DraftKings observations. No prior observation = no movement value.
-- Best Bets require a validated AI response and a verified DraftKings market.
-- Stronger cache busting and visible build fingerprint diagnostics.
-- Structured bet settlement and historical ledger remain enabled.
+Delete the old `openai-analyst-worker.js` after the new deployment is confirmed. The new Wrangler config points to `ai-analyst-worker.js`.
 
-## iPhone deployment
-Upload all six files in this package to the repository root, replacing files with matching names. The old `app.js` and `styles.css` are not used by this build and may remain temporarily.
+## Cloudflare
+Git integration should deploy automatically from `main`. `wrangler.jsonc` creates the Workers AI binding named `AI`; no OpenAI API key is required.
 
-After GitHub Pages deploys, the header must show:
-**V0.6.2 · DraftKings Hardened · BUILD 062-DK**
+Worker model: `@cf/google/gemma-4-26b-a4b-it`.
+There is no paid-provider fallback. If Workers AI's free allowance/capacity is unavailable, the Worker returns an error and the dashboard continues with market data without manufacturing AI bets.
 
-Diagnostics must show **Build fingerprint PASS**.
+## Test
+1. Wait for Cloudflare deployment success.
+2. Open `https://nfl-market-dashboard.daltongleghorn03.workers.dev/?diagnostic=1`.
+3. Expect `ok:true`, `provider:"Cloudflare Workers AI"`, and `zeroCost`/no-paid-fallback metadata.
+4. Open the GitHub Pages dashboard, confirm V0.6.3 / BUILD 063-CF.
+5. Settings: keep the same Worker endpoint. Test AI Connection, then Pull & Analyze.
 
-## AI
-The frontend intentionally contains no OpenAI API key. `openai-analyst-worker.js` must be deployed as a secure server-side Worker and its URL entered in Settings before AI Best Bets can run.
+DraftKings remains the only actionable sportsbook. AI never selects or fabricates the final executable line/price; client-side deterministic verification remains authoritative.
