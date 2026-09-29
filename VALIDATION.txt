@@ -1,0 +1,28 @@
+NFL Market Dashboard V0.6.5.3 — Sandbox Validation
+Build: 0653-CF-20260929
+
+PASS  Dashboard JavaScript syntax (Node --check)
+PASS  Worker JavaScript syntax (Node --check)
+PASS  HTML duplicate-ID audit
+PASS  Four-tab navigation retained
+PASS  Compact status / single visible refresh workflow
+PASS  Take / Lean / Watch / Pass UI hierarchy
+PASS  Playable-line guidance present for actionable BETs
+PASS  Completed-game recommendations blocked
+PASS  Automatic next regular-season slate selection logic
+PASS  DraftKings-only actionable verification retained
+PASS  Deterministic spread edge threshold retained (1.5)
+PASS  Deterministic total edge threshold retained (2.0)
+PASS  PASS/N-A parser normalization retained
+PASS  Missing-game AI recovery retained
+PASS  Opening total plausibility guard retained
+PASS  Snapshot freshness gate retained
+PASS  Developer Mode isolation retained
+PASS  Market movement consolidated into game cards
+PASS  Performance-first layout / ledger tools collapsed
+PASS  Build fingerprint updated to V0.6.5.3 / 0653-CF
+PASS  Worker identity updated to v0.6.5.3-action-card
+PASS  Service-worker cache identity updated to 0.6.5.3
+PASS  Flat GitHub package: 8 files including this report
+
+LIMITATION  Headless Chromium in the sandbox timed out before completing a full browser lifecycle. Actual iPhone rendering, ESPN live responses, Cloudflare Worker inference, and GitHub Pages caching require the post-deploy smoke test. No claim of live validation is made here.

@@ -1,3 +1,3 @@
-# NFL Market Dashboard V0.6.5.2 — App Intelligence
+# NFL Market Dashboard V0.6.5.3 — Action Card
 
-Four-tab mobile app shell, deterministic quant edge gate, DraftKings-only actionable markets, Workers AI second opinion, ledger/performance tracking, and opt-in Developer Mode.
+Mobile-first UX release built on the V0.6.5.2 intelligence baseline. Adds Take / Lean / Watch / Pass hierarchy, clearer playable-number guidance, automatic next actionable regular-season slate selection, compact health status, progressive game detail, consolidated market movement, performance-first history, and simplified preferences with Developer Mode preserving diagnostics. DraftKings remains the only actionable sportsbook.
