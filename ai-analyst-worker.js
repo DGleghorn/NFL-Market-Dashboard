@@ -1,55 +1,66 @@
-// NFL Market Dashboard V0.6.3.3 — Zero-Cost Workers AI parser hardening
-const VERSION='dcc-ai-worker-v0.6.3.3-parser-hardened';
-const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v3.3';
+// NFL Market Dashboard V0.6.3.4 — deterministic AI line contract
+const VERSION='dcc-ai-worker-v0.6.3.4-line-contract';
+const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v3.4';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
-const clean=(s,n=900)=>String(s??'').replace(/```(?:json)?|```/gi,'').trim().slice(0,n);
-function text(x){
+const clean=(s,n=500)=>String(s??'').replace(/[\r\n\t]+/g,' ').replace(/\s+/g,' ').trim().slice(0,n);
+function modelText(x){
  if(typeof x==='string')return x;
  const v=x?.response??x?.result?.response??x?.result??x?.choices?.[0]?.message?.content??x?.choices?.[0]?.text??x?.output_text??'';
  if(typeof v==='string')return v;
- if(Array.isArray(v))return v.map(y=>typeof y==='string'?y:(y?.text||y?.content||'')).join('');
+ if(Array.isArray(v))return v.map(y=>typeof y==='string'?y:(y?.text||y?.content||'')).join('\n');
  return v&&typeof v==='object'?JSON.stringify(v):'';
 }
-function balancedObject(s){
- let start=-1,depth=0,inStr=false,esc=false;
- for(let i=0;i<s.length;i++){const c=s[i];
-  if(inStr){if(esc)esc=false;else if(c==='\\')esc=true;else if(c==='"')inStr=false;continue}
-  if(c==='"'){inStr=true;continue}
-  if(c==='{'){if(depth===0)start=i;depth++}
-  else if(c==='}'&&depth){depth--;if(depth===0&&start>=0)return s.slice(start,i+1)}
- }return '';
+const pass=(id,why='No valid AI row returned.')=>({gameId:String(id),decision:'PASS',marketType:'spread',side:'home',confidence:0,fairLine:'',edge:'',reasons:[],risks:[why],explanation:'PASS — '+why});
+function parseLineProtocol(raw,s){
+ const games=new Map(s.games.map(g=>[String(g.id),g])),found=new Map();
+ let text=String(raw??'').replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/```[\s\S]*?```/g,m=>m.replace(/```(?:text|txt)?/gi,'').replace(/```/g,''));
+ for(const original of text.split(/\r?\n/)){
+  let line=original.trim().replace(/^[-*]\s*/,''); if(!line||!line.includes('|'))continue;
+  const p=line.split('|').map(x=>x.trim()); if(p.length<5)continue;
+  const id=String(p[0]).replace(/^GAME[_\s-]*/i,'').trim(); if(!games.has(id))continue;
+  const decision=String(p[1]).toUpperCase(); const market=String(p[2]).toUpperCase(); const side=String(p[3]).toUpperCase();
+  const confidence=Number(String(p[4]).replace(/[^0-9.]/g,'')); 
+  if(!['BET','LEAN','PASS'].includes(decision)||!['SPREAD','TOTAL'].includes(market)||!Number.isFinite(confidence))continue;
+  const marketType=market.toLowerCase(),allowed=marketType==='spread'?['HOME','AWAY']:['OVER','UNDER'];
+  if(!allowed.includes(side))continue;
+  found.set(id,{gameId:id,decision,marketType,side:side.toLowerCase(),confidence:Math.max(0,Math.min(100,confidence)),fairLine:clean(p[5]||'',40),edge:clean(p[6]||'',80),reasons:p[7]?[clean(p[7],150)]:[],risks:p[8]?[clean(p[8],150)]:[],explanation:clean(p[9]||p[7]||`${decision} from Workers AI line review.`,300)});
+ }
+ return s.games.map(g=>found.get(String(g.id))||pass(g.id,'AI output row was missing or malformed.'));
 }
-function repairJSON(s){
- return s.replace(/^\uFEFF/,'').replace(/[“”]/g,'"').replace(/[‘’]/g,"'")
-  .replace(/,\s*([}\]])/g,'$1').trim();
+function buildAnalysis(raw,s){
+ const bets=parseLineProtocol(raw,s),usable=bets.filter(b=>b.confidence>0).length;
+ return{model:MODEL,provider:'Cloudflare Workers AI',promptVersion:PROMPT_VERSION,reviewedAt:new Date().toISOString(),
+ slateSummary:`Workers AI line review completed; ${usable}/${s.games.length} rows parsed with a scored decision.`,
+ audit:'DraftKings market verification remains deterministic in the dashboard.',
+ challenge:'Malformed or missing AI rows are forced to PASS.',sources:[],bets,validated:true};
 }
-function parse(t){
- let s=String(t??'').trim();
- s=s.replace(/<think>[\s\S]*?<\/think>/gi,'').replace(/```(?:json|javascript|js)?/gi,'').replace(/```/g,'').trim();
- const tries=[s,balancedObject(s)].filter(Boolean);
- for(const raw of tries){for(const candidate of [raw,repairJSON(raw)]){try{const x=JSON.parse(candidate);if(x&&typeof x==='object')return x}catch{}}}
- // Last-resort recovery: if the model returned a JSON-looking "bets" array surrounded by prose.
- const m=s.match(/"bets"\s*:\s*(\[[\s\S]*\])/i);
- if(m){for(const candidate of ['{"bets":'+m[1]+'}',repairJSON('{"bets":'+m[1]+'}')]){try{return JSON.parse(candidate)}catch{}}}
- const e=new Error('AI_PARSE: model output was not valid JSON');e.sample=clean(s.replace(/\s+/g,' '),280);throw e;
-}
-function norm(a,s){const ids=new Set(s.games.map(g=>String(g.id))),bets=[];for(const r of Array.isArray(a?.bets)?a.bets:[]){const id=String(r?.gameId??'');if(!ids.has(id))continue;const mt=['spread','total'].includes(r.marketType)?r.marketType:'spread',allowed=mt==='spread'?['home','away']:['over','under'];bets.push({gameId:id,decision:['BET','LEAN','PASS'].includes(String(r.decision).toUpperCase())?String(r.decision).toUpperCase():'PASS',marketType:mt,side:allowed.includes(r.side)?r.side:allowed[0],confidence:Math.max(0,Math.min(100,Number(r.confidence)||0)),fairLine:clean(r.fairLine,50),edge:clean(r.edge,80),reasons:(Array.isArray(r.reasons)?r.reasons:[]).slice(0,2).map(x=>clean(x,130)),risks:(Array.isArray(r.risks)?r.risks:[]).slice(0,2).map(x=>clean(x,130)),explanation:clean(r.explanation,320)})}for(const g of s.games)if(!bets.some(b=>b.gameId===String(g.id)))bets.push({gameId:String(g.id),decision:'PASS',marketType:'spread',side:'home',confidence:0,fairLine:'',edge:'',reasons:[],risks:['No complete AI decision returned.'],explanation:'PASS — incomplete AI output.'});return{model:MODEL,provider:'Cloudflare Workers AI',promptVersion:PROMPT_VERSION,reviewedAt:new Date().toISOString(),slateSummary:clean(a?.slateSummary,350)||'Batch reviewed.',audit:clean(a?.audit,350)||'DraftKings verification remains deterministic.',challenge:clean(a?.challenge,350)||'PASS when evidence is weak.',sources:[],bets,validated:true}}
 export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=new URL(req.url);
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
  if(env.AI_SHARED_SECRET&&(req.headers.get('X-DCC-Secret')||'')!==env.AI_SHARED_SECRET)return json({error:'Unauthorized',stage:'auth',requestId:id},401);
  if(req.method==='GET'){
-  if(url.searchParams.get('diagnostic')==='1'){if(!env.AI)return json({ok:false,version:VERSION,stage:'binding',requestId:id,message:'Workers AI binding AI is missing.'},500);try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'user',content:'Reply with exactly OK.'}],max_tokens:8,temperature:0});return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,stage:'inference',inferenceMs:Date.now()-t,requestId:id,message:'Zero-cost Workers AI connectivity test passed.',sample:clean(text(r),40)})}catch(e){return json({ok:false,version:VERSION,stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}}
-  return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,aiBindingConfigured:!!env.AI,zeroCost:true,paidFallback:false});
+  if(url.searchParams.get('diagnostic')==='1'){if(!env.AI)return json({ok:false,version:VERSION,stage:'binding',requestId:id,message:'Workers AI binding AI is missing.'},500);try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'user',content:'Reply with exactly OK.'}],max_tokens:8,temperature:0});return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,stage:'inference',inferenceMs:Date.now()-t,requestId:id,message:'Zero-cost Workers AI connectivity test passed.',sample:clean(modelText(r),40)})}catch(e){return json({ok:false,version:VERSION,stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}}
+  return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,aiBindingConfigured:!!env.AI,contract:'line-v1',zeroCost:true,paidFallback:false});
  }
  if(req.method!=='POST')return json({error:'POST only',stage:'routing',requestId:id},405);
  let b;try{b=JSON.parse(await req.text())}catch{return json({error:'Invalid JSON',stage:'request',requestId:id},400)}
  if(b?.action==='post_probe')return json({ok:true,stage:'post_reached',requestId:id,version:VERSION,message:'Browser POST route reached Worker.'});
  if(!env.AI)return json({error:'Workers AI binding missing',stage:'binding',requestId:id},500);
  const s=b?.snapshot;if(!s?.games?.length)return json({error:'Snapshot is missing games',stage:'request',requestId:id},400);
- if(s.games.length>4)return json({error:'Batch too large',stage:'request',requestId:id,message:'V0.6.3.2 accepts at most 4 games per AI batch.'},413);
+ if(s.games.length>4)return json({error:'Batch too large',stage:'request',requestId:id,message:'V0.6.3.4 accepts at most 4 games per AI batch.'},413);
  const compact={season:s.season,week:s.week,games:s.games.map(g=>({id:String(g.id),away:g.away,home:g.home,market:g.market,opening:g.opening,consensus:g.consensus}))};
- const system='You are a conservative NFL market second-opinion analyst. Supplied numbers are authoritative. DraftKings is the only actionable sportsbook. Spreads/totals only. Never invent facts, lines, prices, injuries, weather, stats or sources. PASS freely. Return ONE raw JSON object only. No markdown, code fences, commentary, preamble, or reasoning outside JSON. Schema: {slateSummary,audit,challenge,bets}. bets: one per supplied game with gameId,decision BET|LEAN|PASS,marketType spread|total,side home|away|over|under,confidence 0-100,fairLine,edge,reasons(max2),risks(max2),explanation. Be concise.';
- try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'system',content:system},{role:'user',content:'Review these games without forcing bets: '+JSON.stringify(compact)}],temperature:0.1,max_tokens:650});const inferenceMs=Date.now()-t,a=norm(parse(text(r)),s);return json({analysis:a,meta:{requestId:id,stage:'parse_complete',inferenceMs,provider:'Cloudflare Workers AI',model:MODEL,zeroCost:true,paidFallback:false,batchIndex:Number(b.batchIndex)||0,batchCount:Number(b.batchCount)||1,candidateCount:s.games.length}})}
- catch(e){const isParse=String(e?.message||'').startsWith('AI_PARSE');return json({error:'Workers AI analysis unavailable',stage:isParse?'ai_parse':'inference',requestId:id,message:clean(e?.message||e,500),sample:isParse?clean(e?.sample||'',280):undefined,zeroCost:true,paidFallback:false},503)}
+ const system=`You are a conservative NFL market second-opinion analyst. Supplied market numbers are authoritative. DraftKings is the only actionable sportsbook. Spreads and totals only. Never invent injuries, weather, stats, sources, lines, or prices. PASS freely.
+OUTPUT CONTRACT: Return exactly ONE line for EACH supplied game and nothing else.
+Each line must be:
+GAME_ID | DECISION | MARKET | SIDE | CONFIDENCE | FAIR_LINE | EDGE | REASON | RISK | EXPLANATION
+DECISION is BET, LEAN, or PASS.
+MARKET is SPREAD or TOTAL.
+SIDE for SPREAD is HOME or AWAY. SIDE for TOTAL is OVER or UNDER.
+CONFIDENCE is integer 0-100.
+Do not use JSON. Do not use markdown. Do not add headings or commentary.`;
+ try{
+  const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'system',content:system},{role:'user',content:'Review these games without forcing bets:\n'+JSON.stringify(compact)}],temperature:0,max_tokens:520});
+  const inferenceMs=Date.now()-t,raw=modelText(r),a=buildAnalysis(raw,s);
+  return json({analysis:a,meta:{requestId:id,stage:'contract_complete',contract:'line-v1',inferenceMs,provider:'Cloudflare Workers AI',model:MODEL,zeroCost:true,paidFallback:false,batchIndex:Number(b.batchIndex)||0,batchCount:Number(b.batchCount)||1,candidateCount:s.games.length,parsedCount:a.bets.filter(x=>x.confidence>0).length,rawSample:clean(raw,240)}});
+ }catch(e){return json({error:'Workers AI analysis unavailable',stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}
 }};

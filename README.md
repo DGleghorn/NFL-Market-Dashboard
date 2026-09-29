@@ -1,16 +1,13 @@
-# NFL Market Dashboard V0.6.3.3 — AI Parser Hardened
+# NFL Market Dashboard V0.6.3.4 — Deterministic AI Contract
 
-Targeted parser hotfix based on V0.6.3.2.
+This release removes strict JSON generation from the AI model.
 
-- Preserves the proven iPhone POST probe and 4-game Workers AI batching.
-- Accepts multiple Workers AI text-response shapes.
-- Removes code fences and hidden `<think>` blocks before parsing.
-- Extracts the first balanced JSON object instead of relying on first/last braces.
-- Repairs common smart-quote and trailing-comma JSON defects.
-- Attempts a final `bets` array recovery when surrounding prose is malformed.
-- Incomplete per-game model output still normalizes safely to PASS.
-- Parse failures return a short sanitized sample plus request ID for diagnosis.
-- DraftKings remains the only actionable sportsbook.
+- Preserves V0.6.3.2/3 iPhone POST probe and 4-game batching.
+- Workers AI returns a simple pipe-delimited line per game.
+- The Worker deterministically constructs the JSON consumed by the dashboard.
+- Missing or malformed AI rows become PASS instead of failing the slate.
+- DraftKings remains the only actionable sportsbook and final market verification stays deterministic.
 - Cloudflare Workers AI only; no OpenAI or paid fallback.
+- Worker metadata includes parsed row count and a short sanitized raw sample for diagnostics.
 
 Upload all seven files to the GitHub repository root and commit to main.
