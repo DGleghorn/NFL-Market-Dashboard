@@ -1,7 +1,7 @@
 {
-  "name": "NFL Market Dashboard V0.6.4.0 AI Stabilization",
+  "name": "NFL Market Dashboard V0.6.4.1 PASS Parser Hotfix",
   "short_name": "NFL Market",
-  "start_url": "./?v=0.6.4.0",
+  "start_url": "./?v=0.6.4.1",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
