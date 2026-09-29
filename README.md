@@ -1,18 +1,25 @@
-# NFL Market Dashboard V0.6.7 — Action Card Polish
+# AI Market Terminal V0.7.0 — Multi-Sport Foundation
 
-Production-safe incremental release built directly from the validated V0.6.6 Production Action Card baseline.
+Build: **070-CF**
 
-## Changes
-- Replaces verbose playable-number text with compact action-card language.
-- Totals now show `CURRENT` plus `MAX PLAY` (Over) or `MIN PLAY` (Under).
-- Spreads show `CURRENT` plus `PLAY TO`.
-- Preserves DraftKings-only actionable verification, deterministic quant gates, AI completion gates, retry behavior, snapshot fallback, ledger, settlement, and four-tab mobile UI.
-- Updates dashboard, Worker, manifest, service-worker and cache fingerprints to V0.6.7 / 067-CF.
+## What changed
+- Added sport selector: **NFL / CFB / PGA**.
+- NFL V0.6.7 behavior is preserved as the production baseline inside the multi-sport shell.
+- CFB BETA adds ESPN college-football slate retrieval, DraftKings market verification, prior-game context, quant verification, Workers AI analysis, and TAKE / LEAN / WATCH / PASS Action Cards.
+- PGA foundation is visible but intentionally non-actionable until a verified zero-cost data pipeline is ready.
+- Sport selection persists across launches.
+- Snapshots and ledger/performance views are isolated by sport; legacy records remain NFL.
+- Retains the cleaner CURRENT / MAX PLAY / MIN PLAY / PLAY TO presentation.
 
-## Deployment
-Upload the files in this ZIP to the GitHub Pages repository root, replacing the prior release files. Deploy the included Worker source/config through the existing Cloudflare-connected repository workflow.
+## Deploy
+Upload all files in this ZIP to the GitHub repository root, replacing the prior deployment files. GitHub/Cloudflare should deploy from the same existing configuration.
 
-## Release strategy
-V0.6.6 remains the rollback baseline. V0.6.7 intentionally avoids the upcoming multi-sport refactor. CFB/PGA will be introduced behind isolated sport modules in later milestones so the stable NFL engine is not destabilized.
+## First smoke test
+1. Confirm header reads `V0.7.0 · Multi-Sport Foundation · BUILD 070-CF`.
+2. Confirm NFL still loads and behaves like V0.6.7.
+3. Tap CFB and allow the first college-football pull/AI run to finish.
+4. Confirm the CFB slate is labeled BETA and only DraftKings-verified numbers can become TAKE.
+5. Tap PGA and confirm it shows the guarded foundation state with no fabricated picks.
+6. Switch back to NFL and confirm the NFL snapshot/performance view is restored separately.
 
-See `VALIDATION.txt` for the sandbox release-gate results and limitations.
+See `VALIDATION.txt` for the sandbox release gate and external-test caveats.

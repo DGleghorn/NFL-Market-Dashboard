@@ -1,50 +1,58 @@
-NFL MARKET DASHBOARD V0.6.7 — ACTION CARD POLISH
-BUILD 067-CF
-Sandbox validation date: 2026-09-29
+AI Market Terminal V0.7.0 — Multi-Sport Foundation
+BUILD 070-CF
+Validation date: 2026-09-29
 
-RESULT: PASS — DEPLOYMENT PACKAGE CLEARED BY AUTOMATED SANDBOX RELEASE GATE
-
-Automated checks: 26/26 PASS
-
-PASS — Dashboard version identity
-PASS — Visible build identity
-PASS — Diagnostics fingerprint updated
-PASS — Service-worker registration updated
-PASS — Manifest/icon cache-busting updated
-PASS — Service-worker cache identity updated
-PASS — Manifest start URL updated
-PASS — Cloudflare Worker identity updated
-PASS — No paid AI fallback retained
-PASS — DraftKings-only actionable gate retained
-PASS — Deterministic quant-edge gate retained
-PASS — Complete-slate AI gate retained
-PASS — Completed-slate lifecycle retained
-PASS — Retry-AI-only workflow retained
-PASS — AI timeout / individual retry workflow retained
-PASS — Opening-total plausibility guard retained (20–80)
-PASS — Over fixture: CURRENT O50.5 (-112) · MAX PLAY O58.0
-PASS — Under fixture: CURRENT U50.5 (-112) · MIN PLAY U48.0
-PASS — Favorite spread fixture: CURRENT DET -3.5 (-110) · PLAY TO DET -4.0
-PASS — Underdog spread fixture: CURRENT CAR +4.0 (-105) · PLAY TO CAR +3.5
-PASS — Old verbose PLAYABLE wording removed
-PASS — Four-tab mobile navigation retained
-PASS — Ledger and training export retained
-PASS — Last-good-snapshot fallback retained
+AUTOMATED SANDBOX RELEASE GATE
 PASS — Dashboard JavaScript syntax
 PASS — Worker JavaScript syntax
+PASS — Version fingerprint 0.7.0 / 070-CF
+PASS — Service-worker cache identity upgraded
+PASS — Manifest upgraded
+PASS — NFL selector present
+PASS — CFB selector present
+PASS — PGA selector present
+PASS — Last sport persisted
+PASS — NFL ESPN route retained
+PASS — CFB ESPN route implemented
+PASS — CFB odds route sport-aware
+PASS — CFB prior-game context sport-aware
+PASS — Payload tagged by sport
+PASS — Snapshot restore isolated by sport
+PASS — Snapshot movement uses active sport
+PASS — Ledger filtered by sport
+PASS — Legacy ledger defaults to NFL
+PASS — Ledger save preserves other sports
+PASS — CFB Worker prompt supported
+PASS — Sport passed to Worker snapshot
+PASS — DraftKings-only gate retained
+PASS — Quant gate retained
+PASS — Complete-AI-slate gate retained
+PASS — 45s batch / 60s retry retained
+PASS — Retry AI-only retained
+PASS — Completed-game action blocking retained
+PASS — Freshness action blocking retained
+PASS — CURRENT/MAX PLAY retained
+PASS — PGA cannot fabricate picks
+PASS — PGA refresh guard
+PASS — Four-tab navigation retained
+PASS — No paid AI fallback retained
+PASS — Worker batch cap retained
+PASS — Worker fair-line verification retained
+PASS — Opening total decimal-odds guard retained
+PASS — Opening spread plausibility guard retained
+PASS — PWA network-first navigation retained
+PASS — Single VERSION declaration
 
-Regression coverage intentionally preserved from the V0.6.6 production baseline includes:
-- malformed/missing AI rows cannot create an actionable TAKE
-- DraftKings verification remains mandatory
-- deterministic edge threshold remains mandatory
-- completed slates remain blocked from new actionable recommendations
-- AI can be retried without repulling a valid market snapshot
-- failed refresh can restore the last saved snapshot
-- opening-line null/plausibility behavior remains unchanged
-- zero-cost Workers AI architecture remains unchanged
+RESULT: 39/39 automated release checks PASS.
 
-Browser smoke-test note:
-A local headless Chromium lifecycle attempt did not produce a usable rendered DOM before the sandbox process timed out. This environment has shown the same headless-browser lifecycle limitation on prior releases. Therefore this report does NOT claim local verification of iPhone rendering, live ESPN responses, GitHub Pages caching behavior, or the deployed Cloudflare Worker. Those remain production smoke-test items after deployment. V0.6.6 remains the immediate rollback package.
+SCOPE / EXTERNAL SMOKE TESTS
+- The sandbox container had no outbound DNS access to ESPN during validation, so live ESPN CFB payload retrieval was not claimed as locally verified.
+- The web retrieval environment also could not directly open ESPN's API endpoint.
+- Cloudflare Workers AI deployment, GitHub Pages service-worker behavior, and iPhone rendering require the post-deployment smoke test.
+- NFL V0.6.7 remains the rollback baseline.
 
-Scope note:
-V0.6.7 is deliberately an NFL production-polish release. It does not yet introduce CFB/PGA runtime code. This keeps the proven NFL engine isolated before the multi-sport architecture milestone.
+RELEASE BEHAVIOR
+- NFL remains production behavior and uses the existing verified pipeline.
+- CFB is BETA: real ESPN college-football schedule/odds route, sport-aware prior-game context, DraftKings verification, quant gate, Workers AI prompt, and Action Cards are implemented.
+- PGA is FOUNDATION/SOON only. It intentionally produces no picks until a verified $0 tournament/statistics/DraftKings pipeline is approved.
+- Snapshots and ledger views are isolated by sport. Legacy ledger rows default to NFL.
