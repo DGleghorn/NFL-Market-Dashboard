@@ -1,5 +1,5 @@
-// NFL Market Dashboard V0.6.5.2 — app intelligence
-const VERSION='dcc-ai-worker-v0.6.6-production-action-card';
+// NFL Market Dashboard V0.6.7 — Action Card Polish
+const VERSION='dcc-ai-worker-v0.6.7-action-card-polish';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v5.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});

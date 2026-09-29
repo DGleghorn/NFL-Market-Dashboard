@@ -1,28 +1,50 @@
-V0.6.6 PRODUCTION ACTION CARD — SANDBOX VALIDATION
-2026-09-29
+NFL MARKET DASHBOARD V0.6.7 — ACTION CARD POLISH
+BUILD 067-CF
+Sandbox validation date: 2026-09-29
 
-PASS - Dashboard JavaScript syntax
-PASS - Cloudflare Worker JavaScript syntax
-PASS - DOM reference integrity (no missing referenced IDs)
-PASS - V0.6.6 / BUILD 066-CF identity
-PASS - Service-worker/cache V0.6.6 identity
-PASS - Workers AI first-attempt timeout raised to 45 seconds
-PASS - Failed AI batch retry allowance 60 seconds
-PASS - Simulated single-batch timeout recovered to 16/16 parsed
-PASS - Simulated permanent batch failure preserved 12/16 successful decisions
-PASS - Failed batch retried without rerunning successful batches
-PASS - Retry AI-only control present; does not require market repull
-PASS - AI failure exits ANALYZING to MARKET READY / AI RETRY NEEDED
-PASS - Partial AI remains non-actionable (aiReady requires full validated slate)
-PASS - DraftKings-only verification retained
-PASS - Independent quant edge gate retained
-PASS - TAKE / LEAN / WATCH / PASS hierarchy retained
-PASS - Matchup/week/location context retained
-PASS - OVER playable wording = OR LOWER
-PASS - UNDER playable wording = OR HIGHER
-PASS - Automatic next-slate selection retained
-PASS - Completed-game blocking retained
-PASS - Snapshot restore/fallback retained
-PASS - Zero-cost Workers AI only; no paid fallback added
+RESULT: PASS — DEPLOYMENT PACKAGE CLEARED BY AUTOMATED SANDBOX RELEASE GATE
 
-LIMITATION - Live iPhone/WebKit, ESPN network responses, and deployed Cloudflare inference cannot be fully reproduced in this container. Final production smoke test occurs after GitHub/Cloudflare deployment.
+Automated checks: 26/26 PASS
+
+PASS — Dashboard version identity
+PASS — Visible build identity
+PASS — Diagnostics fingerprint updated
+PASS — Service-worker registration updated
+PASS — Manifest/icon cache-busting updated
+PASS — Service-worker cache identity updated
+PASS — Manifest start URL updated
+PASS — Cloudflare Worker identity updated
+PASS — No paid AI fallback retained
+PASS — DraftKings-only actionable gate retained
+PASS — Deterministic quant-edge gate retained
+PASS — Complete-slate AI gate retained
+PASS — Completed-slate lifecycle retained
+PASS — Retry-AI-only workflow retained
+PASS — AI timeout / individual retry workflow retained
+PASS — Opening-total plausibility guard retained (20–80)
+PASS — Over fixture: CURRENT O50.5 (-112) · MAX PLAY O58.0
+PASS — Under fixture: CURRENT U50.5 (-112) · MIN PLAY U48.0
+PASS — Favorite spread fixture: CURRENT DET -3.5 (-110) · PLAY TO DET -4.0
+PASS — Underdog spread fixture: CURRENT CAR +4.0 (-105) · PLAY TO CAR +3.5
+PASS — Old verbose PLAYABLE wording removed
+PASS — Four-tab mobile navigation retained
+PASS — Ledger and training export retained
+PASS — Last-good-snapshot fallback retained
+PASS — Dashboard JavaScript syntax
+PASS — Worker JavaScript syntax
+
+Regression coverage intentionally preserved from the V0.6.6 production baseline includes:
+- malformed/missing AI rows cannot create an actionable TAKE
+- DraftKings verification remains mandatory
+- deterministic edge threshold remains mandatory
+- completed slates remain blocked from new actionable recommendations
+- AI can be retried without repulling a valid market snapshot
+- failed refresh can restore the last saved snapshot
+- opening-line null/plausibility behavior remains unchanged
+- zero-cost Workers AI architecture remains unchanged
+
+Browser smoke-test note:
+A local headless Chromium lifecycle attempt did not produce a usable rendered DOM before the sandbox process timed out. This environment has shown the same headless-browser lifecycle limitation on prior releases. Therefore this report does NOT claim local verification of iPhone rendering, live ESPN responses, GitHub Pages caching behavior, or the deployed Cloudflare Worker. Those remain production smoke-test items after deployment. V0.6.6 remains the immediate rollback package.
+
+Scope note:
+V0.6.7 is deliberately an NFL production-polish release. It does not yet introduce CFB/PGA runtime code. This keeps the proven NFL engine isolated before the multi-sport architecture milestone.

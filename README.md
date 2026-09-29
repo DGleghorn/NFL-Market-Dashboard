@@ -1,13 +1,18 @@
-# NFL Market Dashboard V0.6.6 — Production Action Card
+# NFL Market Dashboard V0.6.7 — Action Card Polish
 
-Production milestone consolidating the Action Card UX, Matchup Clarity, automatic upcoming-slate selection, deterministic DraftKings/quant verification, and resilient zero-cost Workers AI transport.
+Production-safe incremental release built directly from the validated V0.6.6 Production Action Card baseline.
 
-## AI reliability changes
-- First attempt allows up to 45 seconds per 4-game batch.
-- A failed/timed-out batch is retried once with up to 60 seconds.
-- Successful batches are preserved while only failed batches retry.
-- If a batch still fails, market data remains usable and partial AI output is explicitly non-actionable.
-- `Retry AI only` reruns AI against the current DraftKings snapshot without repulling market data.
-- Failure state exits ANALYZING and displays MARKET READY / AI RETRY NEEDED.
+## Changes
+- Replaces verbose playable-number text with compact action-card language.
+- Totals now show `CURRENT` plus `MAX PLAY` (Over) or `MIN PLAY` (Under).
+- Spreads show `CURRENT` plus `PLAY TO`.
+- Preserves DraftKings-only actionable verification, deterministic quant gates, AI completion gates, retry behavior, snapshot fallback, ledger, settlement, and four-tab mobile UI.
+- Updates dashboard, Worker, manifest, service-worker and cache fingerprints to V0.6.7 / 067-CF.
 
-Expected header: `V0.6.6 · Production Action Card · BUILD 066-CF`
+## Deployment
+Upload the files in this ZIP to the GitHub Pages repository root, replacing the prior release files. Deploy the included Worker source/config through the existing Cloudflare-connected repository workflow.
+
+## Release strategy
+V0.6.6 remains the rollback baseline. V0.6.7 intentionally avoids the upcoming multi-sport refactor. CFB/PGA will be introduced behind isolated sport modules in later milestones so the stable NFL engine is not destabilized.
+
+See `VALIDATION.txt` for the sandbox release-gate results and limitations.
