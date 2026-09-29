@@ -1,15 +1,29 @@
-// NFL Market Dashboard V0.6.3.8 — data integrity diagnostics
-const VERSION='dcc-ai-worker-v0.6.3.8-data-integrity';
+// NFL Market Dashboard V0.6.3.9 — Workers AI extraction fix
+const VERSION='dcc-ai-worker-v0.6.3.9-extraction-fix';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v3.6';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
 const clean=(s,n=500)=>String(s??'').replace(/[\r\n\t]+/g,' ').replace(/\s+/g,' ').trim().slice(0,n);
 function modelText(x){
  if(typeof x==='string')return x;
- const v=x?.response??x?.result?.response??x?.result??x?.choices?.[0]?.message?.content??x?.choices?.[0]?.text??x?.output_text??'';
- if(typeof v==='string')return v;
- if(Array.isArray(v))return v.map(y=>typeof y==='string'?y:(y?.text||y?.content||'')).join('\n');
- return v&&typeof v==='object'?JSON.stringify(v):'';
+ // Cloudflare Workers AI synchronous text generation returns {response:string, usage:{...}}.
+ if(typeof x?.response==='string')return x.response;
+ // Defensive compatibility for wrapped REST/OpenAI-compatible response shapes.
+ if(typeof x?.result?.response==='string')return x.result.response;
+ if(typeof x?.choices?.[0]?.message?.content==='string')return x.choices[0].message.content;
+ if(typeof x?.choices?.[0]?.text==='string')return x.choices[0].text;
+ if(typeof x?.output_text==='string')return x.output_text;
+ if(Array.isArray(x?.response))return x.response.map(y=>typeof y==='string'?y:(y?.text||y?.content||'')).join('\n');
+ return '';
+}
+function responseShape(x){
+ try{
+  if(x==null)return 'null';
+  if(typeof x!=='object')return typeof x;
+  const keys=Object.keys(x).slice(0,12);
+  const types=keys.map(k=>`${k}:${Array.isArray(x[k])?'array':typeof x[k]}`);
+  return types.join(', ')||'object:no-enumerable-keys';
+ }catch{return 'uninspectable'}
 }
 const pass=(id,why='No valid AI row returned.')=>({gameId:String(id),decision:'PASS',marketType:'spread',side:'home',confidence:0,fairLine:'',edge:'',reasons:[],risks:[why],explanation:'PASS — '+why,_fallback:true});
 function parseLineProtocol(raw,s){
@@ -39,7 +53,7 @@ export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
  if(env.AI_SHARED_SECRET&&(req.headers.get('X-DCC-Secret')||'')!==env.AI_SHARED_SECRET)return json({error:'Unauthorized',stage:'auth',requestId:id},401);
  if(req.method==='GET'){
-  if(url.searchParams.get('diagnostic')==='1'){if(!env.AI)return json({ok:false,version:VERSION,stage:'binding',requestId:id,message:'Workers AI binding AI is missing.'},500);try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'user',content:'Reply with exactly OK.'}],max_tokens:8,temperature:0});return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,stage:'inference',inferenceMs:Date.now()-t,requestId:id,message:'Zero-cost Workers AI connectivity test passed.',sample:clean(modelText(r),40)})}catch(e){return json({ok:false,version:VERSION,stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}}
+  if(url.searchParams.get('diagnostic')==='1'){if(!env.AI)return json({ok:false,version:VERSION,stage:'binding',requestId:id,message:'Workers AI binding AI is missing.'},500);try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'user',content:'Reply with exactly OK.'}],max_tokens:8,temperature:0});return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,stage:'inference',inferenceMs:Date.now()-t,requestId:id,message:'Zero-cost Workers AI connectivity test passed.',sample:clean(modelText(r),80),responseShape:responseShape(r)})}catch(e){return json({ok:false,version:VERSION,stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}}
   return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,aiBindingConfigured:!!env.AI,contract:'line-v1',zeroCost:true,paidFallback:false});
  }
  if(req.method!=='POST')return json({error:'POST only',stage:'routing',requestId:id},405);
@@ -59,8 +73,8 @@ SIDE for SPREAD is HOME or AWAY. SIDE for TOTAL is OVER or UNDER.
 CONFIDENCE is integer 0-100.
 Do not use JSON. Do not use markdown. Do not add headings or commentary.`;
  try{
-  const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'system',content:system},{role:'user',content:'Review these games without forcing bets:\n'+JSON.stringify(compact)}],temperature:0,max_tokens:520});
+  const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'system',content:system},{role:'user',content:'Review these games without forcing bets:\n'+JSON.stringify(compact)}],temperature:0,max_completion_tokens:520,chat_template_kwargs:{enable_thinking:false}});
   const inferenceMs=Date.now()-t,raw=modelText(r),a=buildAnalysis(raw,s);
-  return json({analysis:a,meta:{requestId:id,stage:'contract_complete',contract:'line-v1',inferenceMs,provider:'Cloudflare Workers AI',model:MODEL,zeroCost:true,paidFallback:false,batchIndex:Number(b.batchIndex)||0,batchCount:Number(b.batchCount)||1,candidateCount:s.games.length,parsedCount:a.bets.filter(x=>!x._fallback).length,rawSample:clean(raw,1200)}});
+  return json({analysis:a,meta:{requestId:id,stage:'contract_complete',contract:'line-v1',inferenceMs,provider:'Cloudflare Workers AI',model:MODEL,zeroCost:true,paidFallback:false,batchIndex:Number(b.batchIndex)||0,batchCount:Number(b.batchCount)||1,candidateCount:s.games.length,parsedCount:a.bets.filter(x=>!x._fallback).length,responseShape:responseShape(r),rawSample:clean(raw,1200)}});
  }catch(e){return json({error:'Workers AI analysis unavailable',stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}
 }};
