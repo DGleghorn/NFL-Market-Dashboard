@@ -1,33 +1,92 @@
-V0.7.2 MULTI-SPORT PRODUCTION POLISH — SANDBOX RELEASE GATE
+V0.7.3 DECISION INTEGRITY — SANDBOX RELEASE GATE
+Generated: 2026-09-29
 
-Static/fixture checks: 25/25 PASS
-PASS — Version label 0.7.2
-PASS — CFB beta badge removed
-PASS — PGA remains SOON
-PASS — Performance Overall filter
-PASS — Performance NFL filter
-PASS — Performance CFB filter
-PASS — Overall excludes PGA placeholder
-PASS — Sport ledger isolation retained
-PASS — Public reason helper exists
-PASS — TAKE uses public reason
-PASS — PASS uses public reason
-PASS — CFB DK missing diagnostic retained
-PASS — Half point floor retained
-PASS — Half point ceil retained
-PASS — DK actionable retained
-PASS — AI full slate validation retained
-PASS — PGA fail closed retained
-PASS — SW 0.7.2 cache
-PASS — Manifest 0.7.2 start
-PASS — Worker CFB plain-language instruction
-PASS — OVER 48.8 fair -> max 46.5
-PASS — UNDER 46 fair -> min 48.0
-PASS — Overall performance fixture combines NFL+CFB only
-PASS — NFL performance fixture isolated
-PASS — CFB performance fixture isolated
+81/81 PASS
+PASS — Version label 0.7.3
+PASS — Runtime VERSION 0.7.3
+PASS — Runtime BUILD 073-CF
+PASS — Diagnostics fingerprint 7.3
+PASS — Manifest 7.3
+PASS — SW 7.3 cache
+PASS — SW network-first navigation
+PASS — SW old cache cleanup
+PASS — Worker 7.3
+PASS — No stale 7.2 refs in runtime
+PASS — Watch section renamed
+PASS — Watch gate function
+PASS — Watch target function
+PASS — Evidence gate explicit
+PASS — Stale watch explicit
+PASS — Independent edge missing explicit
+PASS — Total over TAKE AT
+PASS — Total under TAKE AT
+PASS — Spread TAKE AT
+PASS — Old contradictory watch copy removed
+PASS — Verified slate summary function
+PASS — Slate summary no model telemetry
+PASS — Slate summary ignores AI supplied summary
+PASS — No-bet slate summary valid
+PASS — AI raw diagnostics remains devOnly
+PASS — Research ledger key
+PASS — Official key function
+PASS — Official key sport/game/market only
+PASS — Immutable official TAKE
+PASS — Stake fixed one unit
+PASS — Top Play frozen
+PASS — Snapshot id frozen
+PASS — Analysis id frozen
+PASS — Model version frozen
+PASS — Pregame market frozen
+PASS — Pregame team context frozen
+PASS — TAKE-only official recording
+PASS — Research LEAN WATCH PASS
+PASS — Research excluded from W/L
+PASS — Dedup immutable official key
+PASS — Ledger cap
+PASS — Research cap
+PASS — Exact-week settlement fetch
+PASS — Open record settlement groups
+PASS — Auto settlement after analysis
+PASS — Manual settlement retained
+PASS — WIN LOSS PUSH settlement
+PASS — American odds unit math
+PASS — CLV tracking
+PASS — Settlement error protection
+PASS — Overall NFL CFB filters
+PASS — Record metric
+PASS — Win rate metric
+PASS — Units metric
+PASS — ROI metric
+PASS — Push excluded from win-rate denominator
+PASS — Top Play record metric
+PASS — Average odds metric
+PASS — Average CLV metric
+PASS — Official/open counts
+PASS — DK only recognition
+PASS — Quant gate
+PASS — Complete AI gate
+PASS — Freshness gate
+PASS — Pregame future gate
+PASS — PGA fail closed
+PASS — Sport snapshot isolation
+PASS — Sport ledger isolation
+PASS — AI timeout initial 45s
+PASS — AI retry 60s
+PASS — Opening total guard
+PASS — Opening spread guard
+PASS — Fixture over 48.8 fair => max 46.5
+PASS — Fixture under 46 fair => min 48
+PASS — Fixture spread -9.7 fair => play to -8
+PASS — Fixture +100 win = +1u
+PASS — Fixture -110 win = +0.9091u
+PASS — Fixture loss = -1u
+PASS — Fixture push = 0u
+PASS — Dashboard JS syntax
+PASS — Worker JS syntax
 
-Additional syntax gates are executed separately with node --check for dashboard and Worker JavaScript.
-External smoke-test boundary: sandbox validation does not prove live ESPN/DraftKings responses, deployed Cloudflare Workers AI, GitHub Pages cache propagation, or physical iPhone rendering. V0.7.1 remains rollback until those pass.
-PASS — Dashboard JavaScript syntax (node --check)
-PASS — Worker JavaScript syntax (node --check)
+ADDITIONAL PACKAGE / ENVIRONMENT CHECKS
+PASS — Release is derived from the exact V0.7.2 production ZIP.
+PASS — V0.7.2 remains compatible as rollback; no persistent schema destructive migration is performed.
+PASS — PGA remains fail-closed.
+LIMITATION — Local headless Chromium lifecycle timed out before producing a rendered DOM in this sandbox. This is the same sandbox-browser limitation seen on earlier releases; it is not counted as a pass.
+REQUIRES PRODUCTION SMOKE TEST — live ESPN/DraftKings responses, deployed Cloudflare Workers AI, GitHub Pages cache propagation, iPhone rendering, and real postgame settlement.
