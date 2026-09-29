@@ -1,14 +1,16 @@
-# NFL Market Dashboard V0.6.3.2 — Zero-Cost AI Batch Fix
+# NFL Market Dashboard V0.6.3.3 — AI Parser Hardened
 
-Production hotfix for iPhone/Safari AI transport reliability.
+Targeted parser hotfix based on V0.6.3.2.
 
-- $0 architecture: Cloudflare Workers AI only; no OpenAI or paid fallback.
+- Preserves the proven iPhone POST probe and 4-game Workers AI batching.
+- Accepts multiple Workers AI text-response shapes.
+- Removes code fences and hidden `<think>` blocks before parsing.
+- Extracts the first balanced JSON object instead of relying on first/last braces.
+- Repairs common smart-quote and trailing-comma JSON defects.
+- Attempts a final `bets` array recovery when surrounding prose is malformed.
+- Incomplete per-game model output still normalizes safely to PASS.
+- Parse failures return a short sanitized sample plus request ID for diagnosis.
 - DraftKings remains the only actionable sportsbook.
-- Adds a tiny POST-route probe before inference.
-- Sends AI work in batches of at most 4 games.
-- Uses text/plain POST bodies to avoid unnecessary CORS preflight on the normal route.
-- Caps each AI batch output at 650 tokens.
-- Reports transport, timeout, Worker, inference, and parse failures separately.
-- Market data remains usable when AI is unavailable.
+- Cloudflare Workers AI only; no OpenAI or paid fallback.
 
-Upload all files to the GitHub repository root and commit to main. Cloudflare should deploy ai-analyst-worker.js using wrangler.jsonc.
+Upload all seven files to the GitHub repository root and commit to main.
