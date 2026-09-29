@@ -1,6 +1,6 @@
-// NFL Market Dashboard V0.6.5.1 — intelligence integrity
-const VERSION='dcc-ai-worker-v0.6.5.1-intelligence-integrity';
-const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v5.1';
+// NFL Market Dashboard V0.6.5.2 — app intelligence
+const VERSION='dcc-ai-worker-v0.6.5.2-app-intelligence';
+const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v5.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
 const clean=(s,n=500)=>String(s??'').replace(/[\r\n\t]+/g,' ').replace(/\s+/g,' ').trim().slice(0,n);
@@ -101,10 +101,10 @@ export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=
  if(!env.AI)return json({error:'Workers AI binding missing',stage:'binding',requestId:id},500);
  const s=b?.snapshot;if(!s?.games?.length)return json({error:'Snapshot is missing games',stage:'request',requestId:id},400);
  if(s.games.length>4)return json({error:'Batch too large',stage:'request',requestId:id,message:'AI stabilization contract accepts at most 4 games per batch.'},413);
- const compact={season:s.season,week:s.week,games:s.games.map(g=>({id:String(g.id),away:g.away,home:g.home,market:g.market,opening:g.opening,consensus:g.consensus,movement:g.movement||null,teamContext:g.teamContext||null,contextMeta:g.contextMeta||null}))};
+ const compact={season:s.season,week:s.week,games:s.games.map(g=>({id:String(g.id),away:g.away,home:g.home,market:g.market,opening:g.opening,consensus:g.consensus,movement:g.movement||null,teamContext:g.teamContext||null,contextMeta:g.contextMeta||null,quantFair:g.quantFair||null}))};
  const system=`You are a conservative NFL market second-opinion analyst. Use ONLY the supplied snapshot. DraftKings is the only actionable sportsbook. Spreads and totals only.
 Never claim or infer injuries, weather, projections, matchup facts, opening-line movement, sources, or prices not explicitly supplied.
-You MAY use teamContext when supplied. It contains descriptive results from up to three PRIOR completed regular-season weeks: games, record, average points for/against, average scoring margin, and rest days. Treat it as a small-sample descriptive signal, not a projection or proof of team quality.
+You MAY use teamContext when supplied. It contains descriptive results from up to three PRIOR completed regular-season weeks: games, record, average points for/against, average scoring margin, and rest days. Treat it as a small-sample descriptive signal, not a projection or proof of team quality. A supplied quantFair is deterministic context only; challenge it rather than copying it, and never label BET when your own fair line shows zero or negative edge.
 You MAY use movement only when it is non-null and derived from prior local DraftKings snapshots. Null movement or null opening means unavailable, not zero.
 A null opening value means opening data is unavailable. Current market equal to consensus is not evidence of an edge by itself. A BET should require multiple supplied signals that coherently support the same side; otherwise prefer LEAN or PASS.
 PASS freely. If supplied fields do not establish a defensible edge, PASS and state that the supplied market data does not establish an edge.
