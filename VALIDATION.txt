@@ -1,33 +1,28 @@
-NFL Market Dashboard V0.6.5.3.1 — Action Card Hotfix
-Build: 06531-CF-20260929
+V0.6.5.3.2 SANDBOX VALIDATION
 
-RELEASE GATE
-PASS — Dashboard JavaScript syntax (node --check)
-PASS — Worker JavaScript syntax (node --check)
-PASS — Root cause reproduced from 6.5.3: slateLifecycle/evidenceLabel/playableLine were referenced but undefined
-PASS — slateLifecycle helper restored
-PASS — evidence labels restored
-PASS — playable-number helper restored
-PASS — Startup no longer depends on an undefined Action Card helper
-PASS — Startup restores last valid IndexedDB snapshot before network refresh
-PASS — Startup automatically refreshes after cache restoration
-PASS — Refresh failure falls back to last saved snapshot
-PASS — Explicit recovery/error state replaces indefinite CHECKING on startup exceptions
-PASS — Completed current slate scans forward to the next available regular-season week
-PASS — TAKE / LEAN / WATCH / PASS hierarchy retained
-PASS — DraftKings-only actionable market retained
-PASS — Deterministic spread minimum edge retained (1.5 points)
-PASS — Deterministic total minimum edge retained (2.0 points)
-PASS — Pregame gate retained
-PASS — Snapshot freshness gate retained
-PASS — Missing-game AI retry retained
-PASS — PASS/N/A parser behavior retained
-PASS — Opening-line plausibility guard retained
-PASS — Developer Mode isolation retained
-PASS — Build fingerprint updated to V0.6.5.3.1 / 06531-CF
-PASS — Service worker cache and asset URLs updated to V0.6.5.3.1
-PASS — Manifest start URL updated to V0.6.5.3.1
-PASS — Flat GitHub package structure
+PASS - Dashboard JavaScript syntax
+PASS - Worker JavaScript syntax
+PASS - TAKE card matchup context
+PASS - LEAN card matchup context
+PASS - WATCH card matchup context
+PASS - PASS card matchup context / collapsed Passed Games
+PASS - ESPN venue city normalization with safe missing-location fallback
+PASS - OVER playable boundary = fair total - minimum edge
+PASS - OVER wording = OR LOWER
+PASS - UNDER playable boundary = fair total + minimum edge
+PASS - UNDER wording = OR HIGHER
+PASS - Spread playable boundary retained
+PASS - DraftKings-only verification retained
+PASS - Quant minimum-edge gate retained
+PASS - Completed-game blocking retained
+PASS - Automatic next-slate scan retained
+PASS - Snapshot fallback / no indefinite CHECKING regression retained
+PASS - Build fingerprint 0.6.5.3.2 / 06532-CF
+PASS - Service-worker cache/version identity
+PASS - Flat GitHub package
 
-ENVIRONMENT LIMITATION
-The container's installed headless Chromium process does not complete reliably, so an end-to-end rendered-browser run could not be certified locally. iPhone/WebKit rendering, live ESPN responses, GitHub Pages cache activation, and deployed Cloudflare inference remain production smoke tests. Static/runtime syntax and deterministic regression gates above passed.
+Scenario math:
+- Fair total 60, minimum edge 2 => OVER playable through 58.0 OR LOWER.
+- Fair total 46, minimum edge 2 => UNDER playable at 48.0 OR HIGHER.
+
+LIMITATION - Local static/sandbox validation does not prove live iPhone/WebKit rendering, live ESPN venue availability, deployed Cloudflare inference, or GitHub Pages cache propagation. Those require the production smoke test after deployment.

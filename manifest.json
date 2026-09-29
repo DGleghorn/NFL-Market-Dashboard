@@ -1,7 +1,7 @@
 {
-  "name": "NFL Market Dashboard V0.6.5.3.1 Action Card Hotfix",
+  "name": "NFL Market Dashboard V0.6.5.3.2 Matchup Clarity",
   "short_name": "NFL Market",
-  "start_url": "./?v=0.6.5.3.1",
+  "start_url": "./?v=0.6.5.3.2",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",
