@@ -1,4 +1,4 @@
-const CACHE='nfl-market-v0.6.4.3-0643-CF';
+const CACHE='nfl-market-v0.6.4.4-0644-CF';
 const CORE=['./index.html?v=0.6.3.1','./manifest.json?v=0.6.3.1','./icon.png?v=0.6.3.1'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
