@@ -1,30 +1,41 @@
-AI Market Terminal V0.7.5 — Performance Integrity Hotpatch
-Validation date: 2026-09-29
+V0.7.6 RUNTIME + DECISION INTEGRITY — SANDBOX RELEASE GATE
+Date: 2026-09-29
+Baseline: exact V0.7.3 Decision Integrity production package
 
-PURPOSE
-Hotpatches the V0.7.4 startup regression: performanceSport was referenced by renderPerformance()/performanceLedger() but was never declared.
+PASS — Dashboard JavaScript syntax
+PASS — Cloudflare Worker JavaScript syntax
+PASS — Cold-start runtime harness with empty storage
+PASS — V0.7.3-style stored ledger + CFB active-sport upgrade runtime harness
+PASS — safeNum exists before Performance/settlement execution
+PASS — performanceSport exists before Performance rendering
+PASS — 50 repeated frozen-snapshot decisions produce identical official classifications/selections
+PASS — radically different AI BET/PASS/confidence outputs do not alter official deterministic classifications on identical market/context inputs
+PASS — decision fingerprints are invariant to AI wording/opinion changes
+PASS — a verified market-number change changes the decision fingerprint
+PASS — DraftKings remains the only actionable sportsbook
+PASS — deterministic engine evaluates spread home/away and total over/under and chooses the strongest verified edge
+PASS — sample-size reliability shrinkage reduces raw recent-form model extremes before edge classification
+PASS — TAKE threshold remains spread 1.5 / total 2.0 after shrinkage
+PASS — LEAN/WATCH/PASS tiers are deterministic rather than generative-AI classifications
+PASS — Workers AI remains explanation/risk context and cannot promote an official TAKE
+PASS — immutable official TAKE ledger preserved from V0.7.3
+PASS — research ledger remains separate from official W/L record
+PASS — decision fingerprint stored with official/research records
+PASS — stake-aware settlement math
+PASS — ROI uses actual units risked
+PASS — American odds converted to implied probability before averaging
+PASS — postgame market data is not reported as DraftKings closing CLV
+PASS — PGA remains fail-closed
+PASS — V0.7.6 dashboard/build/Worker identifiers
+PASS — V0.7.6 service-worker cache namespace and asset URLs
+PASS — no V0.7.4/V0.7.5 runtime baseline code carried forward
 
-AUTOMATED SANDBOX GATE — PASS
-1. Dashboard JavaScript syntax (node --check) — PASS
-2. Cloudflare Worker JavaScript syntax (node --check) — PASS
-3. performanceSport declared before performanceLedger/renderPerformance — PASS
-4. Performance filter defaults safely to Overall — PASS
-5. Invalid stored performance filter falls back to Overall — PASS
-6. Performance filter persists to localStorage — PASS
-7. V0.7.5 header/build fingerprint — PASS
-8. Diagnostics fingerprint updated to 0.7.5 / 075-CF — PASS
-9. Service-worker registration points to sw.js?v=0.7.5 — PASS
-10. Manifest/icon cache-busting refs point to 0.7.5 — PASS
-11. Service-worker cache namespace updated to ai-market-v0.7.5-075-CF — PASS
-12. Service-worker core assets all point to 0.7.5 — PASS
-13. Manifest start_url points to 0.7.5 — PASS
-14. Worker build identity updated to 0.7.5 hotpatch — PASS
-15. No stale 0.7.4 / 074-CF release identifiers in runtime files — PASS
-16. No stale sw.js?v=0.7.3 registration — PASS
-17. V0.7.4 Performance Integrity logic retained (ROI/stake settlement/verified-close CLV/key-number logic) — PASS by source-diff preservation; only initialization, persistence and release/cache identities changed.
+Executable deterministic fixture result:
+- 50 alternating AI-opinion runs on the same market/context snapshot returned the same official slate every time.
+- Example fixture #1: O45.5 -> LEAN after sample shrinkage (fair 46.6, edge 1.1).
+- Example fixture #2: U60.5 -> TAKE after sample shrinkage (fair 54.9, edge 5.6).
 
-BROWSER-LIFECYCLE ATTEMPT
-Local headless Chromium was launched against a local HTTP server with an 8-second virtual-time budget. The process did not produce a usable DOM before the sandbox timeout. No performanceSport/ReferenceError was emitted in Chromium stderr, but this is NOT counted as a full browser PASS.
-
-RELEASE LIMITATIONS / PRODUCTION SMOKE TEST
-The sandbox does not prove live ESPN/DraftKings responses, deployed Cloudflare Workers AI, GitHub Pages cache propagation, iOS Safari/Orion rendering, or real postgame settlement. Verify those after deployment. V0.7.3 remains the rollback until the iPhone smoke test passes.
+IMPORTANT LIMITATIONS
+- Sandbox Chromium is unreliable in this environment and did not provide a usable full rendered-DOM lifecycle; browser rendering is not claimed as passed.
+- Live ESPN/DraftKings responses, deployed Cloudflare Workers AI, GitHub Pages/service-worker propagation, and physical iPhone rendering require the production smoke test.
+- The deterministic model is a conservative recent-scoring/margin heuristic with market shrinkage, not a statistically calibrated win-probability model. Historical out-of-sample results should determine future threshold/model changes.
