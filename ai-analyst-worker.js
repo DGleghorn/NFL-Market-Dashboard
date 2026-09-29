@@ -1,6 +1,6 @@
-// NFL Market Dashboard V0.6.4.1 — PASS parser hotfix
-const VERSION='dcc-ai-worker-v0.6.4.1-pass-parser';
-const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v4.1';
+// NFL Market Dashboard V0.6.4.2 — PASS normalization
+const VERSION='dcc-ai-worker-v0.6.4.2-pass-normalization';
+const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v4.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
 const clean=(s,n=500)=>String(s??'').replace(/[\r\n\t]+/g,' ').replace(/\s+/g,' ').trim().slice(0,n);
@@ -34,13 +34,26 @@ function parseLineProtocol(raw,s){
   const p=line.split('|').map(x=>x.trim()); if(p.length<5)continue;
   const id=String(p[0]).replace(/^GAME[_\s-]*/i,'').trim(); if(!games.has(id))continue;
   const decision=String(p[1]).toUpperCase(),market=String(p[2]).toUpperCase(),side=String(p[3]).toUpperCase();
-  const confidence=Number(String(p[4]).replace(/[^0-9.]/g,'')); if(!['BET','LEAN','PASS'].includes(decision)||!['SPREAD','TOTAL'].includes(market)||!Number.isFinite(confidence))continue;
-  const marketType=market.toLowerCase(),allowed=marketType==='spread'?['HOME','AWAY']:['OVER','UNDER'];
-  if(decision!=='PASS'&&!allowed.includes(side))continue;
-  if(decision==='PASS'&&![...allowed,'N/A','NA','NONE',''].includes(side))continue;
-  const normalizedSide=decision==='PASS'?(allowed.includes(side)?side.toLowerCase():(marketType==='spread'?'home':'over')):side.toLowerCase();
-  const normField=v=>['N/A','NA','NONE','-',''].includes(String(v??'').trim().toUpperCase())?'':clean(v,80);
-  const row={gameId:id,decision,marketType,side:normalizedSide,_fallback:false,confidence:decision==='PASS'?0:Math.max(0,Math.min(100,confidence)),fairLine:normField(p[5]),edge:normField(p[6]),reasons:p[7]?[clean(p[7],150)]:[],risks:normField(p[8])?[normField(p[8])]:[],explanation:normField(p[9])||clean(p[7]||`${decision} from supplied market snapshot.`,300)};
+  const confidence=Number(String(p[4]).replace(/[^0-9.]/g,''));
+  if(!['BET','LEAN','PASS'].includes(decision)||!Number.isFinite(confidence))continue;
+  const na=v=>['N/A','NA','NONE','-',''].includes(String(v??'').trim().toUpperCase());
+  let marketType,normalizedSide;
+  if(decision==='PASS'){
+   if(confidence!==0)continue;
+   if(!(na(market)||['SPREAD','TOTAL'].includes(market)))continue;
+   marketType=market==='TOTAL'?'total':'spread';
+   const allowed=marketType==='spread'?['HOME','AWAY']:['OVER','UNDER'];
+   if(!(na(side)||allowed.includes(side)))continue;
+   normalizedSide=allowed.includes(side)?side.toLowerCase():(marketType==='spread'?'home':'over');
+  }else{
+   if(!['SPREAD','TOTAL'].includes(market))continue;
+   marketType=market.toLowerCase();
+   const allowed=marketType==='spread'?['HOME','AWAY']:['OVER','UNDER'];
+   if(!allowed.includes(side))continue;
+   normalizedSide=side.toLowerCase();
+  }
+  const normField=v=>na(v)?'':clean(v,80);
+  const row={gameId:id,decision,marketType,side:normalizedSide,_fallback:false,confidence:decision==='PASS'?0:Math.max(0,Math.min(100,confidence)),fairLine:normField(p[5]),edge:normField(p[6]),reasons:normField(p[7])?[clean(p[7],150)]:[],risks:normField(p[8])?[normField(p[8])]:[],explanation:normField(p[9])||normField(p[7])||'The supplied market data does not establish an edge.'};
   const rank={BET:3,LEAN:2,PASS:1},prev=candidates.get(id); if(!prev||rank[row.decision]>rank[prev.decision]||(rank[row.decision]===rank[prev.decision]&&row.confidence>prev.confidence))candidates.set(id,row);
  }
  return s.games.map(g=>candidates.get(String(g.id))||pass(g.id,'AI output row was missing or malformed.'));
@@ -72,7 +85,7 @@ A null opening value means opening data is unavailable. Current market equal to 
 PASS freely. If supplied fields do not establish a defensible edge, PASS and state that the supplied market data does not establish an edge.
 OUTPUT CONTRACT: Return exactly ONE line for EACH supplied GAME_ID and nothing else. Never return both SPREAD and TOTAL for the same game. Choose the single strongest SPREAD or TOTAL angle, or PASS.
 GAME_ID | DECISION | MARKET | SIDE | CONFIDENCE | FAIR_LINE | EDGE | REASON | RISK | EXPLANATION
-DECISION: BET, LEAN, PASS. MARKET: SPREAD or TOTAL. SIDE: HOME/AWAY for spread; OVER/UNDER for total. CONFIDENCE: integer 0-100; PASS must be 0. For PASS, SIDE, FAIR_LINE, EDGE, and RISK may be N/A.
+DECISION: BET, LEAN, PASS. MARKET: SPREAD or TOTAL. SIDE: HOME/AWAY for spread; OVER/UNDER for total. CONFIDENCE: integer 0-100; PASS must be 0. For PASS, MARKET, SIDE, FAIR_LINE, EDGE, REASON, RISK, and EXPLANATION may be N/A; GAME_ID, PASS, and confidence 0 are sufficient.
 Do not use JSON, markdown, headings, or commentary.`;
  try{
   const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'system',content:system},{role:'user',content:'Review these games without forcing bets:\n'+JSON.stringify(compact)}],temperature:0,max_completion_tokens:520,chat_template_kwargs:{enable_thinking:false}});
