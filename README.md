@@ -1,14 +1,13 @@
-# NFL Market Dashboard V0.6.3.6 — AI Decision Integrity
+# NFL Market Dashboard V0.6.3.7 — Partial AI Diagnostics
 
-This release preserves the working V0.6.3.5 market/transport/Workers-AI architecture and fixes decision accounting.
+Evidence-gathering production hotfix based directly on V0.6.3.6.
 
-- Fallback PASS rows are explicitly marked and are never counted as genuine model decisions.
-- AI status is READY only when every game has a genuinely parsed model row.
-- Partial model output displays PARTIAL rather than READY.
-- Best Bets remain disabled unless the full AI response is genuinely usable.
-- AI tab shows parsed/total, fallback count, and per-batch diagnostics including sanitized raw samples.
-- Batch summaries no longer repeat boilerplate four times.
-- DraftKings remains the only actionable sportsbook.
-- Cloudflare Workers AI only; no OpenAI or paid fallback.
+- Does not change the market pull, DraftKings verification, POST transport, Workers AI model, batching, or line parser.
+- PARTIAL AI responses are now visible in the AI Analyst tab instead of being hidden behind the validated-response gate.
+- Shows genuine parsed count and fallback count.
+- Opens per-batch diagnostics automatically.
+- Shows each batch's inference time, stage, candidate count, parsed count, and sanitized raw model sample.
+- Fallback PASS rows remain excluded from AI readiness and Best Bets.
+- Zero-cost Cloudflare Workers AI only; no paid fallback.
 
-Upload all seven files to the GitHub repository root and commit to main.
+Upload all seven files to the GitHub repository root and commit to main. Run Pull & Analyze once after deployment; use the visible raw samples to make the next parser change evidence-based.
