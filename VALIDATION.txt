@@ -1,58 +1,37 @@
-AI Market Terminal V0.7.0 — Multi-Sport Foundation
-BUILD 070-CF
+AI Market Terminal V0.7.1 — CFB Production Hardening
+BUILD 071-CF-20260929
 Validation date: 2026-09-29
 
-AUTOMATED SANDBOX RELEASE GATE
-PASS — Dashboard JavaScript syntax
-PASS — Worker JavaScript syntax
-PASS — Version fingerprint 0.7.0 / 070-CF
-PASS — Service-worker cache identity upgraded
-PASS — Manifest upgraded
-PASS — NFL selector present
-PASS — CFB selector present
-PASS — PGA selector present
-PASS — Last sport persisted
-PASS — NFL ESPN route retained
-PASS — CFB ESPN route implemented
-PASS — CFB odds route sport-aware
-PASS — CFB prior-game context sport-aware
-PASS — Payload tagged by sport
-PASS — Snapshot restore isolated by sport
-PASS — Snapshot movement uses active sport
-PASS — Ledger filtered by sport
-PASS — Legacy ledger defaults to NFL
-PASS — Ledger save preserves other sports
-PASS — CFB Worker prompt supported
-PASS — Sport passed to Worker snapshot
-PASS — DraftKings-only gate retained
-PASS — Quant gate retained
-PASS — Complete-AI-slate gate retained
-PASS — 45s batch / 60s retry retained
-PASS — Retry AI-only retained
-PASS — Completed-game action blocking retained
-PASS — Freshness action blocking retained
-PASS — CURRENT/MAX PLAY retained
-PASS — PGA cannot fabricate picks
-PASS — PGA refresh guard
-PASS — Four-tab navigation retained
-PASS — No paid AI fallback retained
-PASS — Worker batch cap retained
-PASS — Worker fair-line verification retained
-PASS — Opening total decimal-odds guard retained
-PASS — Opening spread plausibility guard retained
-PASS — PWA network-first navigation retained
-PASS — Single VERSION declaration
+AUTOMATED SANDBOX RELEASE GATE: 55/55 PASS
 
-RESULT: 39/39 automated release checks PASS.
+Coverage includes:
+- Dashboard and Worker JavaScript syntax
+- 0.7.1 dashboard/Worker/service-worker/cache fingerprints
+- NFL / CFB / PGA sport-switch architecture
+- sport persistence, ledger isolation, and snapshot isolation
+- PGA fail-closed behavior
+- DraftKings-only actionable verification
+- explicit missing-DraftKings matchup diagnostics
+- CFB plain-language reason layer with raw model detail retained
+- expanded college-team abbreviation parsing (2–6 alphanumeric characters)
+- conservative sportsbook half-point normalization
+- OVER fixture: model 48.8, 2.0 required edge => MAX PLAY O46.5
+- UNDER fixture: model 47.2, 2.0 required edge => MIN PLAY U49.5
+- favorite spread threshold fixture => conservative half-point
+- underdog spread threshold fixture => conservative half-point
+- opening total/spread integrity guards
+- full-slate AI readiness / fallback blocking
+- quant minimum-edge gates
+- stale-market and pre-kickoff gates
+- completed-slate blocking
+- 45-second initial AI batch timeout / 60-second retry
+- failed-batch retry while preserving successful batches
+- malformed AI row fail-closed behavior
+- deterministic fair-line/edge verification
+- four-game Worker batch ceiling
+- no paid AI fallback
+- CURRENT / MAX PLAY presentation regression
+- no stale 0.7.0 runtime/cache identity
 
-SCOPE / EXTERNAL SMOKE TESTS
-- The sandbox container had no outbound DNS access to ESPN during validation, so live ESPN CFB payload retrieval was not claimed as locally verified.
-- The web retrieval environment also could not directly open ESPN's API endpoint.
-- Cloudflare Workers AI deployment, GitHub Pages service-worker behavior, and iPhone rendering require the post-deployment smoke test.
-- NFL V0.6.7 remains the rollback baseline.
-
-RELEASE BEHAVIOR
-- NFL remains production behavior and uses the existing verified pipeline.
-- CFB is BETA: real ESPN college-football schedule/odds route, sport-aware prior-game context, DraftKings verification, quant gate, Workers AI prompt, and Action Cards are implemented.
-- PGA is FOUNDATION/SOON only. It intentionally produces no picks until a verified $0 tournament/statistics/DraftKings pipeline is approved.
-- Snapshots and ledger views are isolated by sport. Legacy ledger rows default to NFL.
+LIMITS OF SANDBOX VALIDATION
+The sandbox cannot certify the user's deployed GitHub Pages cache lifecycle, live ESPN/DraftKings responses, deployed Cloudflare Workers AI inference, or actual iPhone Safari rendering. Those require a production smoke test after deployment. V0.7.0 remains the rollback release until that smoke test passes.
