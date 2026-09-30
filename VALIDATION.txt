@@ -1,22 +1,16 @@
-V0.8.3 PGA FORM INTELLIGENCE — RELEASE GATE
+V0.8.4 PGA HISTORICAL STRENGTH — RELEASE GATE
 
-PASS — dashboard JavaScript syntax (node --check)
-PASS — Worker JavaScript syntax (node --check)
-PASS — NFL quant/model functions identical to V0.8.2
-PASS — CFB opponent-adjusted/model functions identical to V0.8.2
-PASS — NFL model identity remains football-077-frozen
-PASS — CFB model identity remains cfb-080-opponent-adjusted-v1 and is formally labeled FROZEN
-PASS — PGA model identity pga-083-shadow-form-intelligence-v1
-PASS — PGA player-summary normalizer fixture: 18 holes / 1 completed round / +1 to par
-PASS — PGA player-summary enrichment limited to 12 observed players per refresh
-PASS — PGA local shadow-history persistence enabled (event/player/day observations)
-PASS — PGA marketVerified=false and actionable=false
+PASS — dashboard JavaScript syntax
+PASS — Cloudflare Worker JavaScript syntax
+PASS — historical-strength synthetic fixtures
+PASS — recency weighting / sample cap
+PASS — no-history fail-closed behavior
+PASS — PGA marketVerified=false / actionable=false preserved
 PASS — DK NOT VERIFIED guard preserved
-PASS — PGA cannot create TAKE/LEAN/WATCH/PASS or betting-ledger records
-PASS — version / manifest / service-worker cache identities updated to 0.8.3
+PASS — NFL frozen model identity preserved
+PASS — CFB frozen model identity preserved
+PASS — football quant/classification/playable functions byte-identical to v0.8.3
+PASS — service-worker / manifest / build identities updated to 0.8.4
+PASS — deployment ZIP integrity
 
-NETWORK QUALIFICATION
-The sandbox cannot certify the physical iPhone request path to ESPN's public player-summary endpoint. V0.8.3 uses the documented public PGA player-summary structure and fails safely when individual enrichments fail. The user's deployed iPhone remains the production connectivity smoke test.
-
-MODEL POLICY
-NFL and CFB decision math was intentionally not changed. PGA form data is observational only; it is not a certified predictive model and cannot influence wagers.
+Production limitation: sandbox validation cannot certify the physical iPhone request path to ESPN. Historical requests fail safely; no missing historical data can create a PGA wager.
