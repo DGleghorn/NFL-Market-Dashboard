@@ -1,40 +1,42 @@
-AI MARKET TERMINAL V0.7.9 — MODEL FREEZE + HISTORY INTEGRITY
-Build: 079-CF-20260929
-Baseline: V0.7.8 Decision Object Integrity
+AI MARKET TERMINAL V0.8.0 — CFB OPPONENT INTELLIGENCE
+Build: 080-CF-20260929
 
-RELEASE PURPOSE
-V0.7.9 freezes the football decision formulas proven in V0.7.8 and separates app-release versioning from model versioning. Official football history now records modelVersion=football-077-frozen, and decision fingerprints use that frozen model version rather than the changing UI/app version. This prevents a UI-only release from making identical football decisions look like a new model.
+SCOPE
+V0.8.0 is the first substantive CFB model upgrade after the NFL freeze. NFL remains on football-077-frozen. CFB now builds a season-to-date opponent graph from completed ESPN games and uses it for spread fair values before conservative DraftKings market shrinkage. PGA remains shadow/fail-closed.
 
-PRODUCT STATE
-PASS — NFL explicitly marked FROZEN.
-PASS — CFB explicitly marked BETA; conservative market anchoring preserved.
-PASS — PGA explicitly marked SHADOW and remains fail-closed with zero actionable picks.
-PASS — No V0.7.8 football threshold/model formula was intentionally changed.
+CFB OPPONENT MODEL
+- Completed regular-season games from Week 1 through the week before the target slate.
+- Margin normalized for 2.5 points of home field.
+- Game margin capped at +/-35 to reduce blowout distortion.
+- 24-iteration opponent graph estimates schedule-adjusted team strength.
+- Small-sample shrinkage is applied inside the rating graph.
+- CFB spread fair value uses opponent-adjusted rating differential + HFA when both teams have valid ratings.
+- CFB totals remain scoring-profile based and market-shrunk; they are NOT represented as opponent-adjusted.
+- Verified DraftKings remains the only actionable sportsbook.
 
-STATIC / EXECUTABLE RELEASE GATE
-PASS — Dashboard JavaScript parses with Node --check.
-PASS — Worker JavaScript parses with Node --check.
-PASS — V0.7.9 dashboard/build fingerprint.
-PASS — V0.7.9 Worker fingerprint.
-PASS — V0.7.9 manifest/start URL.
-PASS — V0.7.9 service-worker registration/cache namespace.
-PASS — MODEL_VERSION is fixed to football-077-frozen.
-PASS — Official TAKE ledger rows store modelVersion.
-PASS — Research rows store modelVersion.
-PASS — Decision fingerprint is keyed to MODEL_VERSION, not UI VERSION.
-PASS — quantFair unchanged from V0.7.8.
-PASS — verifiedQuantEdge unchanged from V0.7.8.
-PASS — deterministicClass unchanged from V0.7.8.
-PASS — deterministicEvidence unchanged from V0.7.8.
-PASS — playableLine unchanged from V0.7.8.
-PASS — watchGate/watchTarget unchanged from V0.7.8.
-PASS — PGA refresh path remains blocked by renderPGAComingSoon().
-PASS — DraftKings remains the only actionable sportsbook path.
-PASS — Final deployment package contains exactly 8 files.
-PASS — ZIP CRC/integrity test.
+AUTOMATED SANDBOX RELEASE GATE
+PASS — V0.8.0 build identity.
+PASS — NFL model remains football-077-frozen.
+PASS — CFB has independent cfb-080-opponent-adjusted-v1 model identity.
+PASS — PGA remains fail-closed.
+PASS — DraftKings-only actionability retained.
+PASS — dashboard JavaScript syntax.
+PASS — Cloudflare Worker JavaScript syntax.
+PASS — opponent-adjusted functions execute.
+PASS — rating differential + 2.5 HFA fixture.
+PASS — controlled CFB reliability lift only when opponent adjustment exists.
+PASS — NFL ignores CFB ratings.
+PASS — synthetic opponent graph correctly orders A > B > C.
+PASS — blowout margin cap fixture.
+PASS — NFL decision math matches V0.7.9 fixture exactly.
+PASS — CFB uses season-to-date completed games; NFL retains its prior rolling context window.
+PASS — opponent-adjustment methodology stored in snapshot metadata.
+PASS — CFB UI exposes OPP-ADJ model status.
+PASS — manifest/service-worker/build identities updated to V0.8.0.
+PASS — ZIP contains exactly 8 deployment files.
 
 IMPORTANT LIMITATIONS
-- This release intentionally does NOT activate PGA betting recommendations.
-- CFB remains beta because current free team context is not explicitly opponent-strength adjusted.
-- NFL formula is frozen for out-of-sample tracking; future UI/history releases should not change its thresholds without evidence from accumulated performance.
-- Sandbox tests validate source/runtime syntax and deterministic integrity. They do not prove live iPhone rendering, ESPN/DraftKings availability, or deployed Cloudflare behavior. Production iPhone smoke testing remains the final deployment check.
+- This sandbox cannot prove the live ESPN/DraftKings response shape at deployment time, Cloudflare network behavior, or physical iPhone rendering. The deployed iPhone refresh is the final production smoke test.
+- CFB opponent adjustment reduces schedule-strength bias; it does not make the model fully mature. Injuries and weather remain unavailable unless explicitly supplied.
+- CFB totals are still based on scoring profiles rather than an opponent-adjusted offensive/defensive efficiency model.
+- No FBS/FCS classification is fabricated when the source does not explicitly supply a trustworthy classification.

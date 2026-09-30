@@ -1,16 +1,13 @@
-# AI Market Terminal — V0.7.9 Model Freeze + History Integrity
+# AI Market Terminal — V0.8.0 CFB Opponent Intelligence
 
-Built from the production-smoke-tested V0.7.8 baseline.
+Production deployment package for GitHub Pages + the existing zero-cost Cloudflare Workers AI path.
 
-## What changed
-- NFL decision engine is explicitly **FROZEN** for clean out-of-sample tracking.
-- Football model identity is now independent from app/UI version: `football-077-frozen`.
-- Official TAKE and research history store the frozen model version.
-- Decision fingerprints use the frozen model version, so UI-only releases do not masquerade as model changes.
-- CFB remains **BETA** with its conservative market anchoring unchanged.
-- PGA is now labeled **SHADOW** but remains fail-closed; no golf picks are fabricated.
+## Major change
+CFB now uses a season-to-date opponent graph built from completed ESPN games. Spread ratings use capped scoring margins, home-field normalization, iterative opponent adjustment, and small-sample shrinkage before being blended back toward the verified DraftKings market.
 
-## Deployment
-Upload all 8 files in this ZIP to the GitHub Pages repository root, replacing the existing files.
+## Model identities
+- NFL: `football-077-frozen` — unchanged from V0.7.9.
+- CFB: `cfb-080-opponent-adjusted-v1` — new in V0.8.0.
+- PGA: shadow/fail-closed; no fabricated recommendations.
 
-See `VALIDATION.txt` for the release gate and limitations.
+Upload all eight files to the repository root. Keep the existing Cloudflare AI binding/deployment configuration.
