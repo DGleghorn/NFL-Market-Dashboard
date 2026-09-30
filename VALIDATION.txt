@@ -1,16 +1,19 @@
-V0.8.4 PGA HISTORICAL STRENGTH — RELEASE GATE
+AI Market Terminal V0.8.5 release validation
 
 PASS — dashboard JavaScript syntax
-PASS — Cloudflare Worker JavaScript syntax
-PASS — historical-strength synthetic fixtures
-PASS — recency weighting / sample cap
-PASS — no-history fail-closed behavior
-PASS — PGA marketVerified=false / actionable=false preserved
-PASS — DK NOT VERIFIED guard preserved
-PASS — NFL frozen model identity preserved
-PASS — CFB frozen model identity preserved
-PASS — football quant/classification/playable functions byte-identical to v0.8.3
-PASS — service-worker / manifest / build identities updated to 0.8.4
-PASS — deployment ZIP integrity
+PASS — Workers AI JavaScript syntax
+PASS — NFL quantFair unchanged vs V0.8.4
+PASS — NFL/CFB verifiedQuantEdge unchanged vs V0.8.4
+PASS — deterministicClass unchanged vs V0.8.4
+PASS — playableLine unchanged vs V0.8.4
+PASS — CFB opponent ratings unchanged vs V0.8.4
+PASS — football prior-context engine unchanged vs V0.8.4
+PASS — PGA historical-strength engine unchanged vs V0.8.4
+PASS — NFL model identity frozen
+PASS — CFB model identity frozen
+PASS — PGA model identity unchanged
+PASS — Quick analysis presentation enabled
+PASS — raw model-detail/recent-context/status removed from normal expanded game analysis
+PASS — PGA marketVerified=false / actionable=false safety gate retained
 
-Production limitation: sandbox validation cannot certify the physical iPhone request path to ESPN. Historical requests fail safely; no missing historical data can create a PGA wager.
+Scope: sandbox/static + deterministic regression validation. Physical iPhone, live ESPN feeds, deployed GitHub Pages, and deployed Cloudflare Worker require production smoke testing.

@@ -1,7 +1,7 @@
 {
-  "name": "AI Market Terminal V0.8.4 PGA Historical Strength",
+  "name": "AI Market Terminal V0.8.5 PGA Historical Strength",
   "short_name": "AI Market",
-  "start_url": "./?v=0.8.4",
+  "start_url": "./?v=0.8.5",
   "display": "standalone",
   "background_color": "#07111f",
   "theme_color": "#07111f",

@@ -1,15 +1,11 @@
-# AI Market Terminal V0.8.4 — PGA Historical Strength
+# AI Market Terminal V0.8.5 — Plain-Language Analysis
 
-Production deployment package for GitHub Pages / Cloudflare Worker.
+Production UI cleanup built from V0.8.4.
 
-## Release focus
-- NFL model remains frozen: `football-077-frozen`.
-- CFB model remains frozen: `cfb-080-opponent-adjusted-v1`.
-- PGA remains SHADOW ONLY and non-actionable.
-- Adds an 8-week prior-event discovery pass using the free ESPN PGA scoreboard.
-- Matches current-field player IDs against prior leaderboards.
-- Builds a deterministic recency-weighted finish-percentile strength score (0–100).
-- Displays strength label + historical event sample on PGA Events.
-- DraftKings PGA verification is still required before any wager can be actionable.
-
-No paid API or paid fallback was added.
+- NFL model remains frozen (`football-077-frozen`).
+- CFB model remains frozen (`cfb-080-opponent-adjusted-v1`).
+- PGA historical-strength shadow engine remains unchanged (`pga-084-historical-strength-shadow-v1`).
+- Expanded football analysis now uses short, casual `Quick analysis` copy.
+- Normal UI removes raw status, margins, rest-day counters, model-method jargon, and threshold mechanics from expanded cards.
+- Developer diagnostics remain available under More.
+- PGA remains fail-closed: no verified DraftKings golf market means no actionable golf wager.
