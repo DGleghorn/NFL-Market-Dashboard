@@ -1,14 +1,12 @@
-# AI Market Terminal V0.8.2 — PGA Event Intelligence
+# AI Market Terminal V0.8.3 — PGA Form Intelligence
 
 Production package for GitHub Pages + Cloudflare Worker.
 
-## V0.8.2
-- NFL decision model remains frozen (`football-077-frozen`).
-- CFB opponent-adjusted model remains unchanged (`cfb-080-opponent-adjusted-v1`).
-- PGA shadow pipeline now enriches tournament discovery with the free ESPN leaderboard feed when available.
-- PGA Events view shows tournament status, venue/location, observed field count and up to 20 leaderboard/player rows.
-- PGA bottom navigation now reliably changes Games → Events with a golf icon.
-- PGA remains fail-closed: no TAKE/LEAN/WATCH, no AI wagering, no ledger writes, and no DraftKings substitution.
-- $0 operating-cost architecture preserved.
+## Release focus
+- NFL model remains frozen (`football-077-frozen`).
+- CFB opponent-adjusted model is now formally frozen for observation (`cfb-080-opponent-adjusted-v1`).
+- PGA shadow mode enriches the live event/leaderboard feed with ESPN player round summaries for up to 12 observed leaders.
+- PGA observations persist locally across refreshes/events to begin a zero-cost shadow history.
+- PGA remains non-actionable: DraftKings golf markets are not verified, no TAKE/LEAN/WATCH/PASS is generated, and nothing enters the betting ledger.
 
-See VALIDATION.txt for release-gate results and limitations.
+Deploy all 8 files to the repository root.
