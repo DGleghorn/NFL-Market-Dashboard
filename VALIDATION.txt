@@ -1,48 +1,40 @@
-AI MARKET TERMINAL V0.8.1 — PGA SHADOW DATA FOUNDATION
-Release gate: PASS
+AI MARKET TERMINAL V0.8.2 — RELEASE GATE
+Build: 082-CF-20260929
+Scope: PGA Event Intelligence; football decision engines intentionally unchanged.
 
-BASELINE
-- Built directly from V0.8.0 CFB Opponent Intelligence.
-- NFL model remains football-077-frozen.
-- CFB model remains cfb-080-opponent-adjusted-v1.
-- PGA shadow identity: pga-081-shadow-data-v1.
+PASSED
+- Dashboard inline JavaScript parses with Node --check.
+- Cloudflare Worker JavaScript parses with Node --check.
+- NFL quantFair is byte-identical to V0.8.1.
+- NFL/CFB verifiedQuantEdge is byte-identical to V0.8.1.
+- Playable-line engine is byte-identical to V0.8.1.
+- CFB buildOpponentRatings is byte-identical to V0.8.1.
+- CFB prior-team-context engine is byte-identical to V0.8.1.
+- NFL model identity remains football-077-frozen.
+- CFB model identity remains cfb-080-opponent-adjusted-v1.
+- PGA model identity advanced to pga-082-shadow-event-intelligence-v1.
+- PGA scoreboard discovery preserved.
+- PGA leaderboard enrichment added with tournamentId and failure-tolerant Promise.allSettled behavior.
+- PGA normalization fixture: player order/name/score/position PASS.
+- PGA Events navigation uses explicit icon/label elements; PGA => golf icon + Events.
+- PGA event cards expose event/status/date/venue/location, observed field count and up to 20 player rows when supplied by the free feed.
+- PGA marketVerified=false and actionable=false remain hard fail-closed gates.
+- PGA UI explicitly marks DraftKings as NOT VERIFIED.
+- PGA cannot create TAKE/LEAN/WATCH or ledger wagers in this release.
+- No paid API or paid fallback added.
+- Version/build/cache/manifest identities updated to V0.8.2.
+- Final deployment ZIP contains exactly the expected 8 files.
 
-IMPLEMENTED
-- Added zero-cost PGA tournament discovery through ESPN public PGA scoreboard endpoint.
-- Added shadow Events rendering: event name, date/status, venue, observed field/leaderboard row count and leaders when present.
-- PGA remains fail-closed: marketVerified=false, actionable=false, no AI betting analysis, no official recommendations, no ledger writes.
-- Updated CFB card wording to identify opponent-adjusted results.
-- Version/cache/service-worker identities advanced to 0.8.1.
+LIMITATIONS / NOT CLAIMED
+- Sandbox cannot certify ESPN's live browser CORS/response shape on the user's physical iPhone. V0.8.1's user smoke test established scoreboard connectivity; V0.8.2 adds a leaderboard request that is failure-tolerant and falls back to scoreboard rows.
+- DraftKings PGA markets are NOT verified and are not used.
+- No PGA betting model is certified; no golf wagers are actionable.
+- No physical-iPhone rendering test was performed in the sandbox.
 
-AUTOMATED SANDBOX TESTS
-PASS — dashboard JavaScript syntax (node --check extracted inline JS)
-PASS — Cloudflare Worker JavaScript syntax
-PASS — PGA shadow normalization fixture
-PASS — PGA marketVerified=false
-PASS — PGA actionable=false
-PASS — PGA zero-bet/fail-closed UI assertion
-PASS — ESPN PGA scoreboard endpoint wired into shadow fetch
-PASS — NFL quantFair identical to V0.8.0
-PASS — NFL/CFB verifiedQuantEdge identical to V0.8.0
-PASS — TAKE/LEAN/WATCH/PASS deterministicClass identical to V0.8.0
-PASS — playableLine identical to V0.8.0
-PASS — CFB buildOpponentRatings identical to V0.8.0
-PASS — CFB fetchPriorTeamContext identical to V0.8.0
-PASS — NFL frozen model identity preserved
-PASS — CFB opponent-adjusted model identity preserved
-PASS — PGA shadow model identity added
-PASS — Worker build identity 0.8.1
-PASS — service-worker cache identity 0.8.1
-PASS — service-worker registration 0.8.1
-PASS — CFB public reason now says opponent-adjusted results
-
-RESEARCH / LIMITATIONS
-- Public ESPN golf endpoint documentation supports PGA scoreboard/leaderboard discovery, but the sandbox network could not directly execute ESPN's restricted endpoint. Live GitHub/iPhone is therefore the authoritative connectivity smoke test.
-- DraftKings does not provide a documented public sportsbook developer API. V0.8.1 intentionally does NOT infer, scrape, substitute, or fabricate PGA DraftKings prices.
-- No PGA betting model is certified in this release. Tournament data is observation-only.
-- No physical iPhone/Safari rendering was available in the sandbox.
-
-CERTIFICATION
-Football decision math: unchanged.
-PGA data layer: SHADOW ONLY.
-PGA betting recommendations: DISABLED.
+EXPECTED IPHONE SMOKE TEST
+1. PGA header shows V0.8.2 and SHADOW.
+2. Bottom nav changes to golf icon + Events while PGA is selected.
+3. PGA Bets remains 0/0/0/0 and says shadow only.
+4. Open Events: detected tournament card should show status/date/venue and, when ESPN leaderboard data is returned, observed players in a POS / PLAYER / SCORE / THRU table.
+5. If leaderboard enrichment fails, the event remains visible from scoreboard discovery and no wager is generated.
+6. NFL and CFB recommendation behavior should remain unchanged for identical inputs.
