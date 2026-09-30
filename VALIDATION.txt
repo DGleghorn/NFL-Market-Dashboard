@@ -1,42 +1,48 @@
-AI MARKET TERMINAL V0.8.0 — CFB OPPONENT INTELLIGENCE
-Build: 080-CF-20260929
+AI MARKET TERMINAL V0.8.1 — PGA SHADOW DATA FOUNDATION
+Release gate: PASS
 
-SCOPE
-V0.8.0 is the first substantive CFB model upgrade after the NFL freeze. NFL remains on football-077-frozen. CFB now builds a season-to-date opponent graph from completed ESPN games and uses it for spread fair values before conservative DraftKings market shrinkage. PGA remains shadow/fail-closed.
+BASELINE
+- Built directly from V0.8.0 CFB Opponent Intelligence.
+- NFL model remains football-077-frozen.
+- CFB model remains cfb-080-opponent-adjusted-v1.
+- PGA shadow identity: pga-081-shadow-data-v1.
 
-CFB OPPONENT MODEL
-- Completed regular-season games from Week 1 through the week before the target slate.
-- Margin normalized for 2.5 points of home field.
-- Game margin capped at +/-35 to reduce blowout distortion.
-- 24-iteration opponent graph estimates schedule-adjusted team strength.
-- Small-sample shrinkage is applied inside the rating graph.
-- CFB spread fair value uses opponent-adjusted rating differential + HFA when both teams have valid ratings.
-- CFB totals remain scoring-profile based and market-shrunk; they are NOT represented as opponent-adjusted.
-- Verified DraftKings remains the only actionable sportsbook.
+IMPLEMENTED
+- Added zero-cost PGA tournament discovery through ESPN public PGA scoreboard endpoint.
+- Added shadow Events rendering: event name, date/status, venue, observed field/leaderboard row count and leaders when present.
+- PGA remains fail-closed: marketVerified=false, actionable=false, no AI betting analysis, no official recommendations, no ledger writes.
+- Updated CFB card wording to identify opponent-adjusted results.
+- Version/cache/service-worker identities advanced to 0.8.1.
 
-AUTOMATED SANDBOX RELEASE GATE
-PASS — V0.8.0 build identity.
-PASS — NFL model remains football-077-frozen.
-PASS — CFB has independent cfb-080-opponent-adjusted-v1 model identity.
-PASS — PGA remains fail-closed.
-PASS — DraftKings-only actionability retained.
-PASS — dashboard JavaScript syntax.
-PASS — Cloudflare Worker JavaScript syntax.
-PASS — opponent-adjusted functions execute.
-PASS — rating differential + 2.5 HFA fixture.
-PASS — controlled CFB reliability lift only when opponent adjustment exists.
-PASS — NFL ignores CFB ratings.
-PASS — synthetic opponent graph correctly orders A > B > C.
-PASS — blowout margin cap fixture.
-PASS — NFL decision math matches V0.7.9 fixture exactly.
-PASS — CFB uses season-to-date completed games; NFL retains its prior rolling context window.
-PASS — opponent-adjustment methodology stored in snapshot metadata.
-PASS — CFB UI exposes OPP-ADJ model status.
-PASS — manifest/service-worker/build identities updated to V0.8.0.
-PASS — ZIP contains exactly 8 deployment files.
+AUTOMATED SANDBOX TESTS
+PASS — dashboard JavaScript syntax (node --check extracted inline JS)
+PASS — Cloudflare Worker JavaScript syntax
+PASS — PGA shadow normalization fixture
+PASS — PGA marketVerified=false
+PASS — PGA actionable=false
+PASS — PGA zero-bet/fail-closed UI assertion
+PASS — ESPN PGA scoreboard endpoint wired into shadow fetch
+PASS — NFL quantFair identical to V0.8.0
+PASS — NFL/CFB verifiedQuantEdge identical to V0.8.0
+PASS — TAKE/LEAN/WATCH/PASS deterministicClass identical to V0.8.0
+PASS — playableLine identical to V0.8.0
+PASS — CFB buildOpponentRatings identical to V0.8.0
+PASS — CFB fetchPriorTeamContext identical to V0.8.0
+PASS — NFL frozen model identity preserved
+PASS — CFB opponent-adjusted model identity preserved
+PASS — PGA shadow model identity added
+PASS — Worker build identity 0.8.1
+PASS — service-worker cache identity 0.8.1
+PASS — service-worker registration 0.8.1
+PASS — CFB public reason now says opponent-adjusted results
 
-IMPORTANT LIMITATIONS
-- This sandbox cannot prove the live ESPN/DraftKings response shape at deployment time, Cloudflare network behavior, or physical iPhone rendering. The deployed iPhone refresh is the final production smoke test.
-- CFB opponent adjustment reduces schedule-strength bias; it does not make the model fully mature. Injuries and weather remain unavailable unless explicitly supplied.
-- CFB totals are still based on scoring profiles rather than an opponent-adjusted offensive/defensive efficiency model.
-- No FBS/FCS classification is fabricated when the source does not explicitly supply a trustworthy classification.
+RESEARCH / LIMITATIONS
+- Public ESPN golf endpoint documentation supports PGA scoreboard/leaderboard discovery, but the sandbox network could not directly execute ESPN's restricted endpoint. Live GitHub/iPhone is therefore the authoritative connectivity smoke test.
+- DraftKings does not provide a documented public sportsbook developer API. V0.8.1 intentionally does NOT infer, scrape, substitute, or fabricate PGA DraftKings prices.
+- No PGA betting model is certified in this release. Tournament data is observation-only.
+- No physical iPhone/Safari rendering was available in the sandbox.
+
+CERTIFICATION
+Football decision math: unchanged.
+PGA data layer: SHADOW ONLY.
+PGA betting recommendations: DISABLED.
