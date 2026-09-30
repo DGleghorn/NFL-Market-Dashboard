@@ -1,38 +1,40 @@
-AI MARKET TERMINAL V0.7.8 — DECISION OBJECT INTEGRITY
-Build: 078-CF-20260929
-Baseline: V0.7.7 Football Production Certification
+AI MARKET TERMINAL V0.7.9 — MODEL FREEZE + HISTORY INTEGRITY
+Build: 079-CF-20260929
+Baseline: V0.7.8 Decision Object Integrity
 
 RELEASE PURPOSE
-V0.7.7 correctly made the deterministic football engine authoritative, but a TAKE card could still display raw AI explanation/risk text that contradicted the deterministic decision. The deployed DET/CAR example showed a verified +2.9 deterministic edge while Full Analysis said the supplied market data did not establish an edge. V0.7.8 removes that presentation contradiction without changing the V0.7.7 NFL/CFB classification formulas.
+V0.7.9 freezes the football decision formulas proven in V0.7.8 and separates app-release versioning from model versioning. Official football history now records modelVersion=football-077-frozen, and decision fingerprints use that frozen model version rather than the changing UI/app version. This prevents a UI-only release from making identical football decisions look like a new model.
 
-SANDBOX RELEASE GATE
-PASS — Dashboard JavaScript syntax (node --check on extracted scripts)
-PASS — Cloudflare Worker JavaScript syntax
-PASS — V0.7.8 dashboard/build fingerprint
-PASS — V0.7.8 Worker fingerprint
-PASS — V0.7.8 manifest/start URL
-PASS — V0.7.8 service-worker registration/cache namespace
-PASS — No stale V0.7.7/077-CF runtime identifiers in deployable runtime files
-PASS — TAKE Full Analysis is generated from deterministicAnalysis(), not raw AI explanation
-PASS — Main risk is deterministic; raw AI risks cannot populate an official TAKE card
-PASS — Deterministic reason remains tied to the authoritative quant decision object
-PASS — DraftKings remains the only actionable sportsbook
-PASS — AI remains context-only and cannot promote an official TAKE
-PASS — CFB limitation remains explicit: current free context is not opponent-strength adjusted
-PASS — PGA remains fail-closed
-PASS — Conservative half-point playable-boundary fixtures:
-       * O53.4 fair, 2.5 threshold -> MAX PLAY O50.5
-       * U46.0 fair, 2.5 threshold -> MIN PLAY U48.5
-       * favorite fair -9.7, 2.0 threshold -> PLAY TO -7.5
-       * underdog fair +10.2, 2.5 threshold -> PLAY TO +13.0
-PASS — 21/21 source/integrity assertions
-PASS — Final package contains exactly 8 deployment files
+PRODUCT STATE
+PASS — NFL explicitly marked FROZEN.
+PASS — CFB explicitly marked BETA; conservative market anchoring preserved.
+PASS — PGA explicitly marked SHADOW and remains fail-closed with zero actionable picks.
+PASS — No V0.7.8 football threshold/model formula was intentionally changed.
 
-IMPORTANT PLAYABLE-NUMBER NOTE
-For an OVER with fair total 53.4 and a required 2.5-point TAKE edge, the mathematical boundary is 50.9. Because the app only presents conservative half-point football numbers, the last acceptable displayed OVER is 50.5, not 51.0. The same conservative direction is used for UNDER and spread boundaries.
+STATIC / EXECUTABLE RELEASE GATE
+PASS — Dashboard JavaScript parses with Node --check.
+PASS — Worker JavaScript parses with Node --check.
+PASS — V0.7.9 dashboard/build fingerprint.
+PASS — V0.7.9 Worker fingerprint.
+PASS — V0.7.9 manifest/start URL.
+PASS — V0.7.9 service-worker registration/cache namespace.
+PASS — MODEL_VERSION is fixed to football-077-frozen.
+PASS — Official TAKE ledger rows store modelVersion.
+PASS — Research rows store modelVersion.
+PASS — Decision fingerprint is keyed to MODEL_VERSION, not UI VERSION.
+PASS — quantFair unchanged from V0.7.8.
+PASS — verifiedQuantEdge unchanged from V0.7.8.
+PASS — deterministicClass unchanged from V0.7.8.
+PASS — deterministicEvidence unchanged from V0.7.8.
+PASS — playableLine unchanged from V0.7.8.
+PASS — watchGate/watchTarget unchanged from V0.7.8.
+PASS — PGA refresh path remains blocked by renderPGAComingSoon().
+PASS — DraftKings remains the only actionable sportsbook path.
+PASS — Final deployment package contains exactly 8 files.
+PASS — ZIP CRC/integrity test.
 
-BROWSER LIFECYCLE LIMITATION
-A local headless Chromium dump was attempted. Chromium timed out before producing a usable DOM (RC 124), consistent with prior sandbox behavior. Therefore physical iPhone rendering, live ESPN/DraftKings responses, and the deployed Cloudflare Worker path are NOT claimed as locally browser-verified. The user's deployed iPhone smoke test remains the authoritative end-to-end runtime check.
-
-NO MODEL RECALIBRATION IN THIS RELEASE
-NFL thresholds, CFB thresholds, market-shrinkage weights, noise floor, decision fingerprints, and official classification logic are intentionally unchanged from V0.7.7. This release fixes presentation/decision-object integrity so model performance can begin accumulating against a stable football formula.
+IMPORTANT LIMITATIONS
+- This release intentionally does NOT activate PGA betting recommendations.
+- CFB remains beta because current free team context is not explicitly opponent-strength adjusted.
+- NFL formula is frozen for out-of-sample tracking; future UI/history releases should not change its thresholds without evidence from accumulated performance.
+- Sandbox tests validate source/runtime syntax and deterministic integrity. They do not prove live iPhone rendering, ESPN/DraftKings availability, or deployed Cloudflare behavior. Production iPhone smoke testing remains the final deployment check.

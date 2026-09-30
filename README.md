@@ -1,15 +1,16 @@
-# AI Market Terminal — V0.7.8 Decision Object Integrity
+# AI Market Terminal — V0.7.9 Model Freeze + History Integrity
 
-Built from the deployed V0.7.7 Football Production Certification baseline.
+Built from the production-smoke-tested V0.7.8 baseline.
 
-## Release focus
-- Deterministic decision object is now the single source of truth for TAKE-card reason, risk, full analysis, edge, and playable threshold.
-- Raw Workers AI explanation/risk text can no longer contradict an official TAKE card.
-- Playable-number boundaries are conservative half-point boundaries derived from the deterministic fair value and sport/market TAKE threshold.
-- NFL/CFB classification thresholds and market anchoring from V0.7.7 are intentionally unchanged.
-- PGA remains fail-closed until a verified zero-cost golf data/market pipeline exists.
+## What changed
+- NFL decision engine is explicitly **FROZEN** for clean out-of-sample tracking.
+- Football model identity is now independent from app/UI version: `football-077-frozen`.
+- Official TAKE and research history store the frozen model version.
+- Decision fingerprints use the frozen model version, so UI-only releases do not masquerade as model changes.
+- CFB remains **BETA** with its conservative market anchoring unchanged.
+- PGA is now labeled **SHADOW** but remains fail-closed; no golf picks are fabricated.
 
-## Deploy
-Upload all 8 files in this ZIP to the GitHub Pages repository root, replacing the prior files. `wrangler.jsonc` and `ai-analyst-worker.js` are the Cloudflare Worker source/config used by the existing deployment workflow.
+## Deployment
+Upload all 8 files in this ZIP to the GitHub Pages repository root, replacing the existing files.
 
-See `VALIDATION.txt` for the sandbox release-gate results and limitations.
+See `VALIDATION.txt` for the release gate and limitations.
