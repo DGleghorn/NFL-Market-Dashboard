@@ -1,29 +1,21 @@
-Degenerate’s Advisor V0.8.7 — Turf Production UI
-Validation date: 2026-09-30
-Baseline: V0.8.6 Analysis Consistency
+Degenerate’s Advisor v0.8.8 — Release Validation
 
-PASS — JavaScript syntax (node --check)
-PASS — Manifest JSON parses
-PASS — Service worker/cache fingerprint references V0.8.7
-PASS — ZIP archive integrity
-PASS — Brand/title/PWA metadata updated to Degenerate’s Advisor
-PASS — Turf production UI stylesheet present
-PASS — iOS viewport-fit and bottom safe-area retained
-PASS — Today’s Card / Leans / Watch List / Stay Off / The Read labels present
-PASS — Stay Off remains progressively disclosed/collapsed
-PASS — Developer diagnostics remain behind Developer Mode
-PASS — MODEL_VERSION unchanged: football-077-frozen
-PASS — CFB_MODEL_VERSION unchanged: cfb-080-opponent-adjusted-v1
-PASS — PGA_MODEL_VERSION unchanged: pga-084-historical-strength-shadow-v1
-PASS — quantFair unchanged vs V0.8.6
-PASS — deterministicClass unchanged vs V0.8.6
-PASS — deterministicSlate unchanged vs V0.8.6
-PASS — verifiedQuantEdge unchanged vs V0.8.6
-PASS — playableLine unchanged vs V0.8.6
-PASS — settleRecord unchanged vs V0.8.6
-PASS — pgaHistoricalStrength unchanged vs V0.8.6
+PASS — JavaScript syntax
+PASS — Header simplified
+PASS — Old UI build wording removed
+PASS — Version fingerprint
+PASS — Cached snapshot before refresh
+PASS — Nonblocking background refresh
+PASS — PGA nonblocking refresh
+PASS — Last-known-good protection
+PASS — Raw AI diagnostics collapsed
+PASS — Manifest brand
+PASS — Frozen function: quantFair
+PASS — Frozen function: settleRecord
+PASS — v0.8.7 boot contained blocking await refresh
+PASS — v0.8.8 boot removes blocking await refresh
+PASS — v0.8.8 starts refresh in background
 
-NOTE — cfbOpponentAdjustment, pgaFormScore, and pgaRecentRead were included in an initial broad comparison list but do not exist as named functions in either V0.8.6 or V0.8.7. They are therefore not regressions and are not counted as validation passes/failures.
+NOTE — Four broader historical helper names are absent in both v0.8.7 and v0.8.8 and were not counted as regressions.
 
-Sandbox conclusion: PASS for packaging/static regression and frozen-model integrity.
-Deployment smoke test still recommended after GitHub Pages upload because this sandbox cannot reproduce Orion/iOS/GitHub Pages network/runtime behavior exactly.
+RESULT: PASS
