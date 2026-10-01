@@ -1,15 +1,9 @@
 {
-  "name": "AI Market Terminal V0.8.5 PGA Historical Strength",
-  "short_name": "AI Market",
-  "start_url": "./?v=0.8.5",
+  "name": "Degenerate’s Advisor V0.8.7",
+  "short_name": "Advisor",
+  "start_url": "./?v=0.8.7",
   "display": "standalone",
-  "background_color": "#07111f",
-  "theme_color": "#07111f",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
+  "background_color": "#123b1f",
+  "theme_color": "#123b1f",
+  "icons": [{"src":"icon.png","sizes":"512x512","type":"image/png"}]
 }
