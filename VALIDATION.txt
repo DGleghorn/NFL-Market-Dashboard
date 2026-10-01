@@ -1,21 +1,24 @@
-Degenerate’s Advisor v0.8.8 — Release Validation
+Degenerate’s Advisor v0.8.9 — Release Validation
 
 PASS — JavaScript syntax
-PASS — Header simplified
-PASS — Old UI build wording removed
-PASS — Version fingerprint
-PASS — Cached snapshot before refresh
-PASS — Nonblocking background refresh
-PASS — PGA nonblocking refresh
-PASS — Last-known-good protection
-PASS — Raw AI diagnostics collapsed
-PASS — Manifest brand
-PASS — Frozen function: quantFair
-PASS — Frozen function: settleRecord
-PASS — v0.8.7 boot contained blocking await refresh
-PASS — v0.8.8 boot removes blocking await refresh
-PASS — v0.8.8 starts refresh in background
+PASS — v0.8.9 header
+PASS — Sport state isolated
+PASS — Refresh captures requested sport
+PASS — Late response render guard
+PASS — Render-level sport guard
+PASS — History explicitly sport scoped
+PASS — Failure fallback sport scoped
+PASS — Switch invalidates old requests
+PASS — Switch refresh explicitly sport scoped
+PASS — Endpoint sport integrity gate
+PASS — CFB ESPN league mapping
+PASS — No blocking switch refresh
+PASS — Frozen MODEL_VERSION
+PASS — Frozen CFB_MODEL_VERSION
+PASS — Frozen PGA_MODEL_VERSION
+PASS — Race simulation NFL→CFB late NFL blocked
+PASS — Manifest v8.9 brand
+PASS — Service worker bumped
+PASS — No old header version
 
-NOTE — Four broader historical helper names are absent in both v0.8.7 and v0.8.8 and were not counted as regressions.
-
-RESULT: PASS
+RESULT: PASS (20/20)
