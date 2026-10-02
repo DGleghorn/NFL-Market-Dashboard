@@ -1,5 +1,7 @@
-# Degenerate’s Advisor v0.8.18 — Production Binding Diagnostics
+# Degenerate’s Advisor v0.8.19 — NFL Prop Market Intelligence
 
-Targeted deployment hardening. Betting models remain frozen. NFL props remain SHADOW-only.
+NFL prop UX now pairs DraftKings OVER/UNDER quotes into one player-market card and calculates the two-way no-vig market probability. Props remain SHADOW-only.
 
-The companion Worker adds GET /binding-check, which reports only boolean presence for AI, PROP_API_KEY, and AI_SHARED_SECRET. It never returns secret values. This lets us distinguish a Cloudflare runtime-binding problem from a prop-parser problem safely.
+Important: sportsbook probability is market intelligence, not an independent player projection. v0.8.19 never fabricates historical/usage inputs; when verified projection inputs are unavailable, the UI explicitly says no statistical edge is claimed.
+
+Official NFL/CFB game models remain frozen.
