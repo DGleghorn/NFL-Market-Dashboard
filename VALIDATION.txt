@@ -1,14 +1,24 @@
-Degenerate’s Advisor v0.8.11 — Sandbox Validation
+Degenerate’s Advisor v0.8.12 — Full Sandbox Validation
 
-PASS — JavaScript syntax
-PASS — renderSignals declares usable
-PASS — aiUsable helper exists
-PASS — Partial rows use usable
-PASS — Partial empty guard uses usable
+PASS — JS syntax
+PASS — v8.12 fingerprint
+PASS — Count banner reconciled
+PASS — Props DraftKings-only
+PASS — Props require player ID/name/game
+PASS — Props future-game gate
+PASS — Props supported-market allowlist
+PASS — Props dedup
+PASS — Props projection is shadow
+PASS — Props not in official slate
+PASS — Props panel NFL-only
 PASS — v8.9 race guard retained
-PASS — Payload sport integrity retained
-PASS — NFL Props remains shadow
-PASS — Runtime harness 0/12/15/16
+PASS — Sport integrity retained
+PASS — Partial AI usable retained
+PASS — Prop runtime valid accepted
+PASS — Prop runtime invalid rejected
+PASS — Prop runtime duplicate rejected
+PASS — Prop runtime projection deterministic
+PASS — Prop runtime shadow class
 PASS — Frozen quantFair
 PASS — Frozen deterministicClass
 PASS — Frozen deterministicSlate
@@ -16,7 +26,14 @@ PASS — Frozen verifiedQuantEdge
 PASS — Frozen playableLine
 PASS — Frozen settleRecord
 PASS — Frozen pgaHistoricalStrength
-PASS — SW v8.11
-PASS — Header v8.11
+PASS — Reject nonnumeric line
+PASS — Reject missing player
+PASS — Reject unsupported TD market
+PASS — Reject unmatched game
+PASS — Reject non-DK book
+PASS — Normalize rush+receiving alias
+PASS — Reject incomplete projection inputs
+PASS — Manifest brand
+PASS — SW v8.12
 
-RESULT: PASS (18/18)
+RESULT: PASS (35/35)
