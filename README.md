@@ -1,11 +1,9 @@
-# Degenerate’s Advisor v0.8.10
+# Degenerate’s Advisor v0.8.11
+Targeted AI Recovery regression fix.
 
-Partial AI Recovery + NFL Props Shadow Foundation.
-
-- Keeps official PLAY thresholds frozen from v0.8.9.
-- Allows valid deterministic slate information to remain visible when AI returns a partial response.
-- Clearly reports unresolved AI rows instead of suppressing the entire slate.
-- Retains v0.8.9 sport-state isolation and payload integrity guards.
-- Adds an NFL-only Props SHADOW foundation for core volume/yardage markets.
-- Props cannot enter official Best Bets in this release.
-- NFL, CFB and PGA model versions remain frozen.
+- Fixes `Can't find variable: usable` in renderSignals.
+- Uses aiUsable(p) as the declared partial-analysis gate.
+- 12/16 and 15/16 AI responses remain usable; 0/16 remains blocked; 16/16 is fully ready.
+- Retains v8.9 sport-state isolation.
+- Retains NFL Props in SHADOW only.
+- Official betting thresholds/model functions are unchanged.
