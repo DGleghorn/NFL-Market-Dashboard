@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='dcc-ai-worker-v0.8.21-prop-feed-reliability';
+const VERSION='dcc-ai-worker-v0.8.22-prop-coverage-diagnostics';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -109,7 +109,7 @@ async function nflProps(reqUrl,env){
  const r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}});
  if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}throw new Error(`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`)}
  const raw=await r.json();if(!Array.isArray(raw))throw new Error('Prop provider returned an unexpected response shape.');
- const games=week?await espnGameMap(season,week):[],props=[];const rejected={book:0,period:0,market:0,game:0,playerLine:0,freshness:0,price:0};
+ const games=week?await espnGameMap(season,week):[],props=[];const marketRows={};for(const x of raw){const k=String(x.market_key||'unknown');marketRows[k]=(marketRows[k]||0)+1}const rejected={book:0,period:0,market:0,game:0,playerLine:0,freshness:0,price:0};
  for(const x of raw){
   if(String(x.bookmaker||'').toLowerCase()!=='draftkings'){rejected.book++;continue}
   if(String(x.period||'FULL').toUpperCase()!=='FULL'){rejected.period++;continue}
@@ -124,7 +124,7 @@ async function nflProps(reqUrl,env){
   if(Number.isFinite(under)){props.push({...base,side:'UNDER',price:under});added++}
   if(!added)rejected.price++;
  }
- return json({ok:true,sport:'nfl',source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,matchedProps:props.length,rejected,props});
+ const accepted={receiving:props.filter(x=>x.market==='receiving_yards'||x.market==='receptions').length,rushing:props.filter(x=>x.market==='rushing_yards').length,passing:props.filter(x=>x.market==='passing_yards'||x.market==='completions').length};return json({ok:true,sport:'nfl',source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,matchedProps:props.length,rejected,diagnostics:{requestedMarkets:PROP_MARKETS.split(','),providerMarketRows:marketRows,acceptedSelections:accepted},props});
 }
 
 export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=new URL(req.url);
