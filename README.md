@@ -1,15 +1,19 @@
-# Degenerate’s Advisor v0.8.13 — NFL Prop Pipeline
+# Degenerate’s Advisor v0.8.14 — Live NFL Props Data Readiness
 
-## Added
-- End-to-end NFL prop payload pipeline: ingest → normalize → game/player validation → dedupe → shadow projection → shadow ranking → UI.
-- Accepts prop arrays from `nflProps`, `playerProps`, or `props` on the configured market endpoint payload.
-- DraftKings-only and supported-market validation from v8.12 remains enforced.
-- Displays up to eight strongest shadow rows with line, price, projection and edge.
-- Explicit WAITING FOR FEED / NO VALID PROPS / LIVE SHADOW states.
-- One automatic AI retry for partial game analysis, then retains the manual Retry AI option.
+Built on v0.8.13 with the official NFL/CFB game-market engine frozen.
 
-## Safety
-NFL props remain SHADOW and cannot enter official Best Bets. All official game-market model functions remain frozen.
+## Prop feed hardening
+- DraftKings-only prop rows.
+- Supported core NFL volume/yardage markets only.
+- Requires player ID/name and a matching future NFL game.
+- Rejects suspended/unavailable markets.
+- Rejects stale prop timestamps older than 15 minutes.
+- Rejects timestamps materially in the future.
+- Validates OVER/UNDER when a side is supplied.
+- Deduplicates identical rows.
+- Preserves line, price, side and source timestamp.
+- Projects/ranks valid rows in SHADOW only.
+- WAITING FOR FEED remains the safe state when the endpoint supplies no prop rows.
 
-## Data-source limitation
-The existing ESPN fallback supplies game schedules/odds, not DraftKings player-prop rows. Live prop cards therefore require the configured market endpoint to include real DraftKings prop rows. The dashboard will say WAITING FOR FEED rather than fabricate props when none are supplied.
+## Important
+This build does not scrape or fabricate DraftKings player props. The configured market endpoint must supply legitimate DraftKings prop rows. ESPN fallback does not provide them. Props remain excluded from official Best Bets.
