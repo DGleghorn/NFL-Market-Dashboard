@@ -1,19 +1,15 @@
-# Degenerate’s Advisor v0.8.14 — Live NFL Props Data Readiness
+# Degenerate’s Advisor v0.8.15 — Live NFL Prop Feed Integration
 
-Built on v0.8.13 with the official NFL/CFB game-market engine frozen.
-
-## Prop feed hardening
-- DraftKings-only prop rows.
-- Supported core NFL volume/yardage markets only.
-- Requires player ID/name and a matching future NFL game.
-- Rejects suspended/unavailable markets.
-- Rejects stale prop timestamps older than 15 minutes.
-- Rejects timestamps materially in the future.
-- Validates OVER/UNDER when a side is supplied.
-- Deduplicates identical rows.
-- Preserves line, price, side and source timestamp.
-- Projects/ranks valid rows in SHADOW only.
-- WAITING FOR FEED remains the safe state when the endpoint supplies no prop rows.
+## Added
+- Dedicated optional NFL prop-feed endpoint under More → Advanced connections.
+- Feed request includes sport=nfl, season, and week.
+- Adapter accepts common JSON envelopes: nflProps, playerProps, props, markets, or data.
+- Prop-feed failures are isolated from NFL game markets and AI analysis.
+- Real rows are merged into the current NFL snapshot before the existing v8.14 validation pipeline.
+- Existing DraftKings-only, freshness, active-status, player/game matching, dedupe, projection, and SHADOW ranking remain enforced.
+- CFB/PGA never consume the NFL prop endpoint.
 
 ## Important
-This build does not scrape or fabricate DraftKings player props. The configured market endpoint must supply legitimate DraftKings prop rows. ESPN fallback does not provide them. Props remain excluded from official Best Bets.
+This release provides the live-feed integration path but does not bundle a third-party sportsbook data service or scrape DraftKings. A legitimate prop provider/Worker URL still has to be configured in the new NFL prop-feed endpoint field. Until then, the UI safely reports that the feed is not configured.
+
+Official NFL/CFB game models remain frozen, and props remain SHADOW-only.

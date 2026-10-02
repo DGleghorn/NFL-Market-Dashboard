@@ -1,24 +1,21 @@
-Degenerate’s Advisor v0.8.14 — Full Sandbox Validation
+Degenerate’s Advisor v0.8.15 — Sandbox Validation
 
-PASS — JavaScript syntax
-PASS — v8.14 fingerprint
-PASS — Valid DK prop accepted
-PASS — Duplicate rejected
-PASS — Stale prop rejected
-PASS — Suspended prop rejected
-PASS — Non-DK rejected
-PASS — Invalid side rejected
-PASS — Future timestamp rejected
-PASS — Player/game identity required
-PASS — Past game rejected
-PASS — Props remain shadow
+PASS — JS syntax
+PASS — v8.15 fingerprint
+PASS — Dedicated prop endpoint UI
+PASS — Prop endpoint persisted
+PASS — Adapter supports common envelopes
+PASS — Feed attaches NFL only
+PASS — Feed query carries season/week
+PASS — Feed failure isolated
+PASS — Valid feed reaches LIVE SHADOW
+PASS — Valid DK prop projected
+PASS — Duplicate/stale/suspended/non-DK rejected
+PASS — CFB prop pipeline OFF
 PASS — Props excluded official slate
-PASS — Waiting-for-feed retained
-PASS — Automatic AI retry retained
-PASS — Manual AI fallback retained
+PASS — Auto AI retry retained
 PASS — Sport race guard retained
 PASS — Sport integrity retained
-PASS — Partial AI usable retained
 PASS — Count reconciliation retained
 PASS — Frozen quantFair
 PASS — Frozen deterministicClass
@@ -28,6 +25,6 @@ PASS — Frozen playableLine
 PASS — Frozen settleRecord
 PASS — Frozen pgaHistoricalStrength
 PASS — Manifest brand
-PASS — Service worker v8.14
+PASS — Service worker v8.15
 
-RESULT: PASS (29/29)
+RESULT: PASS (26/26)
