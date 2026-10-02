@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='dcc-ai-worker-v0.8.6-analysis-consistency';
+const VERSION='dcc-ai-worker-v0.8.16-prop-integration';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -88,8 +88,32 @@ function buildAnalysis(raw,s){
  audit:'DraftKings market verification remains deterministic in the dashboard.',
  challenge:'Exactly one normalized decision is retained per game; malformed or missing rows are forced to PASS.',sources:[],bets,validated:usable===s.games.length};
 }
+
+const PROP_MARKETS='player_pass_yds,player_pass_completions,player_rush_yds,player_rec_yds,player_receptions';
+const PROP_MAP={player_pass_yds:'passing_yards',player_pass_completions:'completions',player_rush_yds:'rushing_yards',player_rec_yds:'receiving_yards',player_receptions:'receptions'};
+const teamKey=x=>clean(x,100).toLowerCase().replace(/[^a-z0-9]/g,'');
+const stablePlayerId=(name,team='')=>{let h=2166136261;for(const c of `${name}|${team}`.toLowerCase()){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return `name-${(h>>>0).toString(16)}`};
+async function espnGameMap(season,week){
+ const u=`https://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates=${encodeURIComponent(season)}&seasontype=2&week=${encodeURIComponent(week)}&limit=100`;
+ const r=await fetch(u,{headers:{Accept:'application/json'}});if(!r.ok)throw new Error(`ESPN matchup map HTTP ${r.status}`);const d=await r.json(),out=[];
+ for(const e of d.events||[]){const cs=e.competitions?.[0]?.competitors||[],h=cs.find(x=>x.homeAway==='home')?.team||{},a=cs.find(x=>x.homeAway==='away')?.team||{};out.push({id:String(e.id),home:[h.displayName,h.shortDisplayName,h.name,h.abbreviation].filter(Boolean).map(teamKey),away:[a.displayName,a.shortDisplayName,a.name,a.abbreviation].filter(Boolean).map(teamKey)})}return out;
+}
+function matchEspnGame(row,games){const h=teamKey(row.home_team),a=teamKey(row.away_team);if(!h||!a)return null;return games.find(g=>g.home.includes(h)&&g.away.includes(a))||null}
+function propIso(row){const v=row.last_update??row.updated_at??row.timestamp;if(v==null)return new Date().toISOString();const d=new Date(typeof v==='number'&&v<1e12?v*1000:v);return Number.isNaN(d.getTime())?new Date().toISOString():d.toISOString()}
+async function nflProps(reqUrl,env){
+ if(!env.PROP_API_KEY)return json({ok:false,sport:'nfl',error:'PROP_API_KEY secret is not configured in Cloudflare.',props:[]},503);
+ const season=reqUrl.searchParams.get('season')||new Date().getFullYear(),week=reqUrl.searchParams.get('week')||'';
+ const u=new URL('https://parlay-api.com/v1/sports/americanfootball_nfl/props');u.searchParams.set('bookmakers','draftkings');u.searchParams.set('markets',PROP_MARKETS);u.searchParams.set('maxAgeSec','900');u.searchParams.set('limit','5000');
+ const r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}});if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}throw new Error(`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`)}
+ const raw=await r.json();if(!Array.isArray(raw))throw new Error('Prop provider returned an unexpected response shape.');const games=week?await espnGameMap(season,week):[];const props=[];
+ for(const x of raw){if(String(x.bookmaker||'').toLowerCase()!=='draftkings'||String(x.period||'FULL').toUpperCase()!=='FULL')continue;const market=PROP_MAP[String(x.market_key||'')];if(!market)continue;const game=matchEspnGame(x,games);if(!game)continue;const player=clean(x.player,100),line=Number(x.line);if(!player||!Number.isFinite(line))continue;const base={gameId:game.id,playerId:stablePlayerId(player,x.team||''),player,team:clean(x.team||'',40),market,line,book:'DraftKings',status:'active',updatedAt:propIso(x)};const over=Number(x.over_price),under=Number(x.under_price);if(Number.isFinite(over))props.push({...base,side:'OVER',price:over});if(Number.isFinite(under))props.push({...base,side:'UNDER',price:under});
+ }
+ return json({ok:true,sport:'nfl',source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,props});
+}
+
 export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=new URL(req.url);
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
+ if(req.method==='GET'&&url.pathname==='/nfl-props'){try{return await nflProps(url,env)}catch(e){return json({ok:false,sport:'nfl',error:clean(e?.message||e,500),props:[]},502)}}
  if(env.AI_SHARED_SECRET&&(req.headers.get('X-DCC-Secret')||'')!==env.AI_SHARED_SECRET)return json({error:'Unauthorized',stage:'auth',requestId:id},401);
  if(req.method==='GET'){
   if(url.searchParams.get('diagnostic')==='1'){if(!env.AI)return json({ok:false,version:VERSION,stage:'binding',requestId:id,message:'Workers AI binding AI is missing.'},500);try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'user',content:'Reply with exactly OK.'}],max_tokens:8,temperature:0});return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,stage:'inference',inferenceMs:Date.now()-t,requestId:id,message:'Zero-cost Workers AI connectivity test passed.',sample:clean(modelText(r),80),responseShape:responseShape(r)})}catch(e){return json({ok:false,version:VERSION,stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}}

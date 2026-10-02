@@ -1,15 +1,15 @@
-# Degenerate’s Advisor v0.8.15 — Live NFL Prop Feed Integration
+# Degenerate’s Advisor v0.8.16 — Prop Worker Integration
 
-## Added
-- Dedicated optional NFL prop-feed endpoint under More → Advanced connections.
-- Feed request includes sport=nfl, season, and week.
-- Adapter accepts common JSON envelopes: nflProps, playerProps, props, markets, or data.
-- Prop-feed failures are isolated from NFL game markets and AI analysis.
-- Real rows are merged into the current NFL snapshot before the existing v8.14 validation pipeline.
-- Existing DraftKings-only, freshness, active-status, player/game matching, dedupe, projection, and SHADOW ranking remain enforced.
-- CFB/PGA never consume the NFL prop endpoint.
+## What changed
+- The existing Cloudflare AI Worker now also exposes `GET /nfl-props`.
+- The dashboard defaults its NFL prop endpoint to the existing Worker URL + `/nfl-props`; no second Worker URL is required.
+- The Worker requests DraftKings-only NFL props from a provider adapter, limited to supported full-game markets and max age 900 seconds.
+- Provider matchups are mapped to the ESPN game IDs used by the dashboard.
+- Both OVER and UNDER can coexist at the same line/price; v8.15's side-blind dedupe bug is fixed.
+- Shadow edge math is now side-aware (OVER = projection-line; UNDER = line-projection).
+- Official NFL/CFB game models remain frozen. Props remain SHADOW-only.
 
-## Important
-This release provides the live-feed integration path but does not bundle a third-party sportsbook data service or scrape DraftKings. A legitimate prop provider/Worker URL still has to be configured in the new NFL prop-feed endpoint field. Until then, the UI safely reports that the feed is not configured.
+## Required one-time setup
+The bundled Worker expects a Cloudflare secret named `PROP_API_KEY`. The default adapter targets ParlayAPI's NFL props endpoint. Create your own provider key and store it as a Worker secret; never put it in the GitHub Pages frontend.
 
-Official NFL/CFB game models remain frozen, and props remain SHADOW-only.
+If the secret is missing, `/nfl-props` returns a clear configuration error while game markets and AI remain unaffected.
