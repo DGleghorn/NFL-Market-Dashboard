@@ -1,15 +1,7 @@
-# Degenerate’s Advisor v0.8.16 — Prop Worker Integration
+# Degenerate’s Advisor v0.8.17 — ParlayAPI Response Mapping Fix
 
-## What changed
-- The existing Cloudflare AI Worker now also exposes `GET /nfl-props`.
-- The dashboard defaults its NFL prop endpoint to the existing Worker URL + `/nfl-props`; no second Worker URL is required.
-- The Worker requests DraftKings-only NFL props from a provider adapter, limited to supported full-game markets and max age 900 seconds.
-- Provider matchups are mapped to the ESPN game IDs used by the dashboard.
-- Both OVER and UNDER can coexist at the same line/price; v8.15's side-blind dedupe bug is fixed.
-- Shadow edge math is now side-aware (OVER = projection-line; UNDER = line-projection).
-- Official NFL/CFB game models remain frozen. Props remain SHADOW-only.
+Targeted production fix for the live NFL prop Worker. The official game-market models remain frozen.
 
-## Required one-time setup
-The bundled Worker expects a Cloudflare secret named `PROP_API_KEY`. The default adapter targets ParlayAPI's NFL props endpoint. Create your own provider key and store it as a Worker secret; never put it in the GitHub Pages frontend.
+The Worker now maps ParlayAPI's documented flat prop rows (`player`, `market_key`, `line`, `over_price`, `under_price`, `home_team`, `away_team`, `canonical_event_id`, `snapshot_time`/`last_update`, `age_seconds`), keeps only DraftKings full-game supported markets, maps the fixture to the dashboard ESPN game ID, and reports rejection counts by gate.
 
-If the secret is missing, `/nfl-props` returns a clear configuration error while game markets and AI remain unaffected.
+Props remain SHADOW-only and cannot enter official Best Bets.

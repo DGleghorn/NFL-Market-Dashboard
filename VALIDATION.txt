@@ -1,29 +1,11 @@
-Degenerate’s Advisor v0.8.16 — Sandbox Validation
+Degenerate’s Advisor v0.8.17 — Sandbox Validation
 
-PASS — Frontend JS syntax
+Prior regression suite: 24/25 before correcting Worker version fingerprint.
+Final correction checks:
 PASS — Worker JS syntax
-PASS — v8.16 fingerprint
-PASS — Default same-worker prop route
-PASS — Worker /nfl-props route
-PASS — Provider DraftKings filter
-PASS — Provider 15m freshness
-PASS — ESPN game ID mapping
-PASS — Full-game filter
-PASS — Both OVER/UNDER survive dedupe
-PASS — OVER edge direction
-PASS — UNDER edge direction
-PASS — Props remain SHADOW
-PASS — Props excluded official slate
-PASS — Auto AI retry retained
-PASS — Sport race guard retained
-PASS — Frozen quantFair
-PASS — Frozen deterministicClass
-PASS — Frozen deterministicSlate
-PASS — Frozen verifiedQuantEdge
-PASS — Frozen playableLine
-PASS — Frozen settleRecord
-PASS — Frozen pgaHistoricalStrength
-PASS — Manifest v8.16
-PASS — Service worker v8.16
+PASS — Worker v8.17 fingerprint
+PASS — Dashboard v8.17
+PASS — Rejection diagnostics
+PASS — SW v8.17
 
-RESULT: PASS (25/25)
+Final release: PASS

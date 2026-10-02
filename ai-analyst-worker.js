@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='dcc-ai-worker-v0.8.16-prop-integration';
+const VERSION='0.8.17';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -98,17 +98,33 @@ async function espnGameMap(season,week){
  const r=await fetch(u,{headers:{Accept:'application/json'}});if(!r.ok)throw new Error(`ESPN matchup map HTTP ${r.status}`);const d=await r.json(),out=[];
  for(const e of d.events||[]){const cs=e.competitions?.[0]?.competitors||[],h=cs.find(x=>x.homeAway==='home')?.team||{},a=cs.find(x=>x.homeAway==='away')?.team||{};out.push({id:String(e.id),home:[h.displayName,h.shortDisplayName,h.name,h.abbreviation].filter(Boolean).map(teamKey),away:[a.displayName,a.shortDisplayName,a.name,a.abbreviation].filter(Boolean).map(teamKey)})}return out;
 }
-function matchEspnGame(row,games){const h=teamKey(row.home_team),a=teamKey(row.away_team);if(!h||!a)return null;return games.find(g=>g.home.includes(h)&&g.away.includes(a))||null}
-function propIso(row){const v=row.last_update??row.updated_at??row.timestamp;if(v==null)return new Date().toISOString();const d=new Date(typeof v==='number'&&v<1e12?v*1000:v);return Number.isNaN(d.getTime())?new Date().toISOString():d.toISOString()}
+function teamAliases(x){const s=teamKey(x);if(!s)return[];const aliases=new Set([s]);const map={washingtoncommanders:['washington','was'],greenbaypackers:['greenbay','gb'],tampabaybuccaneers:['tampabay','tb'],newenglandpatriots:['newengland','ne'],newyorkgiants:['newyorkgiants','nyg'],newyorkjets:['newyorkjets','nyj'],losangelesrams:['losangelesrams','la','lar'],losangeleschargers:['losangeleschargers','lac'],lasvegasraiders:['lasvegas','lv'],sanfrancisco49ers:['sanfrancisco','sf'],kansascitychiefs:['kansascity','kc'],neworleanssaints:['neworleans','no']};for(const a of map[s]||[])aliases.add(a);return [...aliases]}
+function matchEspnGame(row,games){const hs=teamAliases(row.home_team),as=teamAliases(row.away_team);if(!hs.length||!as.length)return null;return games.find(g=>hs.some(h=>g.home.includes(h))&&as.some(a=>g.away.includes(a)))||null}
+function propIso(row){const v=row.snapshot_time??row.last_update??row.updated_at??row.timestamp;if(v==null)return null;const n=Number(v),raw=Number.isFinite(n)?(n<1e12?n*1000:n):v,d=new Date(raw);return Number.isNaN(d.getTime())?null:d.toISOString()}
 async function nflProps(reqUrl,env){
  if(!env.PROP_API_KEY)return json({ok:false,sport:'nfl',error:'PROP_API_KEY secret is not configured in Cloudflare.',props:[]},503);
  const season=reqUrl.searchParams.get('season')||new Date().getFullYear(),week=reqUrl.searchParams.get('week')||'';
- const u=new URL('https://parlay-api.com/v1/sports/americanfootball_nfl/props');u.searchParams.set('bookmakers','draftkings');u.searchParams.set('markets',PROP_MARKETS);u.searchParams.set('maxAgeSec','900');u.searchParams.set('limit','5000');
- const r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}});if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}throw new Error(`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`)}
- const raw=await r.json();if(!Array.isArray(raw))throw new Error('Prop provider returned an unexpected response shape.');const games=week?await espnGameMap(season,week):[];const props=[];
- for(const x of raw){if(String(x.bookmaker||'').toLowerCase()!=='draftkings'||String(x.period||'FULL').toUpperCase()!=='FULL')continue;const market=PROP_MAP[String(x.market_key||'')];if(!market)continue;const game=matchEspnGame(x,games);if(!game)continue;const player=clean(x.player,100),line=Number(x.line);if(!player||!Number.isFinite(line))continue;const base={gameId:game.id,playerId:stablePlayerId(player,x.team||''),player,team:clean(x.team||'',40),market,line,book:'DraftKings',status:'active',updatedAt:propIso(x)};const over=Number(x.over_price),under=Number(x.under_price);if(Number.isFinite(over))props.push({...base,side:'OVER',price:over});if(Number.isFinite(under))props.push({...base,side:'UNDER',price:under});
+ const u=new URL('https://parlay-api.com/v1/sports/americanfootball_nfl/props');
+ u.searchParams.set('bookmakers','draftkings');u.searchParams.set('markets',PROP_MARKETS);u.searchParams.set('maxAgeSec','900');u.searchParams.set('limit','5000');
+ const r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}});
+ if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}throw new Error(`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`)}
+ const raw=await r.json();if(!Array.isArray(raw))throw new Error('Prop provider returned an unexpected response shape.');
+ const games=week?await espnGameMap(season,week):[],props=[];const rejected={book:0,period:0,market:0,game:0,playerLine:0,freshness:0,price:0};
+ for(const x of raw){
+  if(String(x.bookmaker||'').toLowerCase()!=='draftkings'){rejected.book++;continue}
+  if(String(x.period||'FULL').toUpperCase()!=='FULL'){rejected.period++;continue}
+  const market=PROP_MAP[String(x.market_key||'')];if(!market){rejected.market++;continue}
+  const game=matchEspnGame(x,games);if(!game){rejected.game++;continue}
+  const player=clean(x.player||x.player_name,100),line=Number(x.line);if(!player||!Number.isFinite(line)){rejected.playerLine++;continue}
+  const updatedAt=propIso(x);if(!updatedAt){rejected.freshness++;continue}
+  const age=Number(x.age_seconds);if(Number.isFinite(age)&&age>900){rejected.freshness++;continue}
+  const base={gameId:game.id,playerId:stablePlayerId(player,x.team||''),player,team:clean(x.team||'',40),market,line,book:'DraftKings',status:'active',updatedAt,providerEventId:clean(x.canonical_event_id||x.event_id,80)};
+  let added=0;const over=Number(x.over_price),under=Number(x.under_price);
+  if(Number.isFinite(over)){props.push({...base,side:'OVER',price:over});added++}
+  if(Number.isFinite(under)){props.push({...base,side:'UNDER',price:under});added++}
+  if(!added)rejected.price++;
  }
- return json({ok:true,sport:'nfl',source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,props});
+ return json({ok:true,sport:'nfl',source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,matchedProps:props.length,rejected,props});
 }
 
 export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=new URL(req.url);
