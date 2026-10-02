@@ -1,7 +1,5 @@
-# Degenerate’s Advisor v0.8.20 — Props + Betslip Workspace
+# Degenerate’s Advisor v0.8.21 — Prop Feed Reliability
 
-Bottom navigation: Today · Games · Props · Betslip · More.
+Targeted reliability release. Healthy NFL prop responses are cached per season/week. A failed live request gets one controlled retry. If both live attempts fail, the last-known-good prop feed is rendered instead of blanking the Props workspace.
 
-NFL Props now has a dedicated workspace with market filters. Betslip generates only independently verified TAKE-class game selections at the high-confidence threshold. DraftKings market leans and unverified SHADOW props are explicitly excluded. History/performance now lives inside Betslip.
-
-Official NFL/CFB/PGA game-model functions remain frozen.
+Game markets and AI remain isolated. Props remain SHADOW-only. The v0.8.20 navigation/Betslip workspace is preserved. Official game-model functions remain frozen.

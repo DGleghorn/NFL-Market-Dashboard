@@ -1,15 +1,15 @@
-Degenerate’s Advisor v0.8.20 — Sandbox Validation
+Degenerate’s Advisor v0.8.21 — Sandbox Validation
 
-18/18 PASS
-- Dashboard/Worker syntax
-- 5-tab navigation
-- dedicated Props page
-- high-confidence Betslip generator
-- market leans excluded
-- SHADOW props excluded until independently qualified
-- History/ledger inside Betslip
+18/18 PASS after correction
+- Dashboard and Worker JavaScript syntax
+- per-season/week last-known-good prop cache
+- one controlled prop retry
+- cached fallback after timeout/error
+- explicit saved-data UI state
+- Props/Betslip navigation retained
+- Betslip generator retained
 - /binding-check and /nfl-props retained
 - sport isolation retained
-- seven frozen model functions byte-identical to v0.8.19
+- seven frozen model functions byte-identical to v0.8.20
 
-Live iPhone/GitHub/Cloudflare behavior requires deployed-device verification.
+Live provider/iPhone behavior requires deployed-device verification.
