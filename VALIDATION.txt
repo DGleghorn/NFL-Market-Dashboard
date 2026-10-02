@@ -1,24 +1,29 @@
-Degenerate’s Advisor v0.8.9 — Release Validation
+Degenerate’s Advisor v0.8.10 — Sandbox Validation
 
 PASS — JavaScript syntax
-PASS — v0.8.9 header
-PASS — Sport state isolated
-PASS — Refresh captures requested sport
-PASS — Late response render guard
-PASS — Render-level sport guard
-PASS — History explicitly sport scoped
-PASS — Failure fallback sport scoped
-PASS — Switch invalidates old requests
-PASS — Switch refresh explicitly sport scoped
-PASS — Endpoint sport integrity gate
-PASS — CFB ESPN league mapping
-PASS — No blocking switch refresh
-PASS — Frozen MODEL_VERSION
-PASS — Frozen CFB_MODEL_VERSION
-PASS — Frozen PGA_MODEL_VERSION
-PASS — Race simulation NFL→CFB late NFL blocked
-PASS — Manifest v8.9 brand
-PASS — Service worker bumped
-PASS — No old header version
+PASS — Version 0.8.10
+PASS — Strict aiReady retained
+PASS — Partial AI usability added
+PASS — Partial slate can render
+PASS — Missing rows disclosed
+PASS — NFL props shadow only
+PASS — Core prop markets declared
+PASS — v8.9 sport race guard retained
+PASS — Sport payload integrity retained
+PASS — Frozen quantFair
+PASS — Frozen deterministicClass
+PASS — Frozen deterministicSlate
+PASS — Frozen verifiedQuantEdge
+PASS — Frozen playableLine
+PASS — Frozen settleRecord
+PASS — Frozen pgaHistoricalStrength
+PASS — 15/16 is usable but not fully ready
+PASS — 12/16 is usable but not fully ready
+PASS — 16/16 is fully ready
+PASS — 0/16 remains unusable
+PASS — Rapid NFL→CFB late NFL blocked
+PASS — Rapid NFL→CFB→PGA stale football blocked
+PASS — Manifest brand
+PASS — Service worker v8.10
 
-RESULT: PASS (20/20)
+RESULT: PASS (25/25)
