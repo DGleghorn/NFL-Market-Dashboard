@@ -1,15 +1,15 @@
-Degenerate’s Advisor v0.8.19 — Sandbox Validation
+Degenerate’s Advisor v0.8.20 — Sandbox Validation
 
-17/17 PASS
-- Dashboard and Worker JavaScript syntax
-- v0.8.19 fingerprint
-- paired OVER/UNDER market cards
-- American-odds no-vig calculation
-- explicit no-fabrication projection state
-- /binding-check retained
-- /nfl-props retained
-- SHADOW-only props
+18/18 PASS
+- Dashboard/Worker syntax
+- 5-tab navigation
+- dedicated Props page
+- high-confidence Betslip generator
+- market leans excluded
+- SHADOW props excluded until independently qualified
+- History/ledger inside Betslip
+- /binding-check and /nfl-props retained
 - sport isolation retained
-- seven frozen game-model functions byte-identical to v0.8.18
+- seven frozen model functions byte-identical to v0.8.19
 
-Live account/provider behavior still requires deployed-device verification.
+Live iPhone/GitHub/Cloudflare behavior requires deployed-device verification.

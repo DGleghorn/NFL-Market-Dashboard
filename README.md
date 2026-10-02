@@ -1,7 +1,7 @@
-# Degenerate’s Advisor v0.8.19 — NFL Prop Market Intelligence
+# Degenerate’s Advisor v0.8.20 — Props + Betslip Workspace
 
-NFL prop UX now pairs DraftKings OVER/UNDER quotes into one player-market card and calculates the two-way no-vig market probability. Props remain SHADOW-only.
+Bottom navigation: Today · Games · Props · Betslip · More.
 
-Important: sportsbook probability is market intelligence, not an independent player projection. v0.8.19 never fabricates historical/usage inputs; when verified projection inputs are unavailable, the UI explicitly says no statistical edge is claimed.
+NFL Props now has a dedicated workspace with market filters. Betslip generates only independently verified TAKE-class game selections at the high-confidence threshold. DraftKings market leans and unverified SHADOW props are explicitly excluded. History/performance now lives inside Betslip.
 
-Official NFL/CFB game models remain frozen.
+Official NFL/CFB/PGA game-model functions remain frozen.
