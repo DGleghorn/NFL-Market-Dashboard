@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='0.8.17';
+const VERSION='dcc-ai-worker-v0.8.18-binding-diagnostics';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -129,6 +129,7 @@ async function nflProps(reqUrl,env){
 
 export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=new URL(req.url);
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
+ if(req.method==='GET'&&url.pathname==='/binding-check')return json({ok:true,version:VERSION,environment:'production-runtime',bindings:{AI:!!env.AI,PROP_API_KEY:typeof env.PROP_API_KEY==='string'&&env.PROP_API_KEY.length>0,AI_SHARED_SECRET:typeof env.AI_SHARED_SECRET==='string'&&env.AI_SHARED_SECRET.length>0},note:'Boolean presence only; secret values are never returned.'});
  if(req.method==='GET'&&url.pathname==='/nfl-props'){try{return await nflProps(url,env)}catch(e){return json({ok:false,sport:'nfl',error:clean(e?.message||e,500),props:[]},502)}}
  if(env.AI_SHARED_SECRET&&(req.headers.get('X-DCC-Secret')||'')!==env.AI_SHARED_SECRET)return json({error:'Unauthorized',stage:'auth',requestId:id},401);
  if(req.method==='GET'){

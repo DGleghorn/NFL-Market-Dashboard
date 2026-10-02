@@ -36,7 +36,7 @@ details{border-color:#d8d2c3}summary{color:#35483a}.detail p{color:#415246}.noti
 <body>
 <div id="offlineBanner" class="banner hidden">Offline — showing the last saved snapshot.</div>
 <div id="updateBanner" class="banner hidden"><span>New version available.</span><button id="updateBtn">Update</button></div>
-<header class="topbar"><div><div class="eyebrow" id="sportEyebrow">NFL · CFB · PGA</div><h1>Degenerate’s Advisor</h1><div id="buildLabel" class="build">V0.8.17</div></div><button id="refreshBtn" class="iconbtn" aria-label="Pull latest data">↻</button></header>
+<header class="topbar"><div><div class="eyebrow" id="sportEyebrow">NFL · CFB · PGA</div><h1>Degenerate’s Advisor</h1><div id="buildLabel" class="build">V0.8.18</div></div><button id="refreshBtn" class="iconbtn" aria-label="Pull latest data">↻</button></header>
 <main>
 <section class="sportSwitch" aria-label="Sport selector"><button class="active" data-sport="nfl">🏈 NFL <span class="beta">FROZEN</span></button><button data-sport="cfb">🏟️ CFB <span class="beta">FROZEN</span></button><button data-sport="pga">⛳ PGA <span class="beta">SHADOW</span></button></section>
 <section id="sportNotice" class="notice hidden"></section><section id="nflPropsShadow" class="card hidden" style="margin:14px 0"><div class="row"><div><b>🏈 NFL Props · SHADOW</b><div class="tiny muted">Phase 3 — live DraftKings props with verified ParlayAPI response mapping.</div></div><span class="pill">SHADOW</span></div><div id="propShadowStatus" class="tiny" style="margin-top:10px">Loading NFL prop pipeline…</div><div id="propShadowCards" class="stack" style="margin-top:10px"></div></section>
@@ -62,7 +62,7 @@ details{border-color:#d8d2c3}summary{color:#35483a}.detail p{color:#415246}.noti
 <nav class="tabbar"><button class="active" data-page="bets">⌂<span>Today</span></button><button data-page="games"><b id="eventsTabIcon" style="font-size:17px">🏈</b><span id="eventsTabLabel">Games</span></button><button data-page="performance">▥<span>History</span></button><button data-page="more">⚙<span>More</span></button></nav>
 <script>
 'use strict';
-const VERSION='0.8.17',BUILD_ID='0817-PARLAY-MAPPING-20261002',MODEL_VERSION='football-077-frozen',CFB_MODEL_VERSION='cfb-080-opponent-adjusted-v1',PGA_MODEL_VERSION='pga-084-historical-strength-shadow-v1',DB_NAME='nfl-market-dashboard',DB_VERSION=7,STORE='snapshots';
+const VERSION='0.8.18',BUILD_ID='0818-BINDING-DIAGNOSTICS-20261002',MODEL_VERSION='football-077-frozen',CFB_MODEL_VERSION='cfb-080-opponent-adjusted-v1',PGA_MODEL_VERSION='pga-084-historical-strength-shadow-v1',DB_NAME='nfl-market-dashboard',DB_VERSION=7,STORE='snapshots';
 const SPORT_KEY='nflmd.activeSport.v70';let activeSport=localStorage.getItem(SPORT_KEY)||'nfl';if(!['nfl','cfb','pga'].includes(activeSport))activeSport='nfl'; const sportState={nfl:null,cfb:null,pga:null};let refreshGeneration=0;const refreshControllers={nfl:null,cfb:null,pga:null};
 const KEYS={settings:'nflmd.settings.v51',ledger:'nflmd.ledger.v51',history:'nflmd.history.v51',analyses:'nflmd.analyses.v62',research:'nflmd.research.v73'};
 const PROD_AI_ENDPOINT='https://nfl-market-dashboard.daltongleghorn03.workers.dev';
