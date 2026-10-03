@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='dcc-ai-worker-v0.8.34-props-provider-resilience';
+const VERSION='dcc-ai-worker-v0.8.35-props-endpoint-recovery';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -167,13 +167,13 @@ async function parlayFootballProps(reqUrl,env,sport='nfl'){
 }
 
 const SGO_MARKET_MAP={passing_yards:'passing_yards',passing_completions:'completions',rushing_yards:'rushing_yards',receiving_yards:'receiving_yards',receiving_receptions:'receptions'};
-function sgoPlayerName(odd,event){const id=String(odd?.statEntityID||''),ep=event?.players?.[id]||{};const full=[ep.firstName,ep.lastName].filter(Boolean).join(' '),candidates=[odd?.statEntity?.name,odd?.statEntity?.displayName,odd?.playerName,odd?.player?.name,ep.name,ep.displayName,full];return clean(candidates.find(Boolean)||'',100)}
-function sgoTeamName(side,event){const t=event?.teams?.[side]||event?.[`${side}Team`]||{};return clean(t?.name||t?.displayName||t?.teamName||t,100)}
+function sgoPlayerName(odd,event){const id=String(odd?.statEntityID||''),ep=event?.players?.[id]||{};const full=[ep.firstName||ep?.names?.firstName,ep.lastName||ep?.names?.lastName].filter(Boolean).join(' '),candidates=[odd?.statEntity?.name,odd?.statEntity?.displayName,odd?.playerName,odd?.player?.name,ep.name,ep.displayName,ep?.names?.display,full];return clean(candidates.find(Boolean)||'',100)}
+function sgoTeamName(side,event){const t=event?.teams?.[side]||event?.[`${side}Team`]||{};return clean(t?.names?.long||t?.names?.medium||t?.names?.short||t?.name||t?.displayName||t?.teamName||(typeof t==='string'?t:''),100)}
 async function sportsGameOddsProps(reqUrl,env,sport='nfl'){
  if(!env.SGO_API_KEY)return{ok:false,configured:false,stage:'fallback_not_configured',status:503,error:'SportsGameOdds fallback secret is not configured.',props:[]};
  const league=sport==='cfb'?'NCAAF':'NFL',u=new URL('https://api.sportsgameodds.com/v2/events');
  u.searchParams.set('leagueID',league);u.searchParams.set('oddsAvailable','true');u.searchParams.set('bookmakerID','draftkings');u.searchParams.set('includeOpposingOdds','true');u.searchParams.set('includeAltLines','false');u.searchParams.set('limit',sport==='cfb'?'100':'32');
- let r;try{r=await fetch(u,{headers:{'x-api-key':env.SGO_API_KEY,Accept:'application/json'}})}catch(e){return{ok:false,configured:true,stage:'fallback_fetch',status:502,error:clean(e?.message||e,200),props:[]}}
+ let r;try{r=await fetch(u,{headers:{'x-api-key':String(env.SGO_API_KEY).trim(),Accept:'application/json'}})}catch(e){return{ok:false,configured:true,stage:'fallback_fetch',status:502,error:clean(e?.message||e,200),props:[]}}
  if(!r.ok)return{ok:false,configured:true,stage:'fallback_http',status:r.status,error:`SportsGameOdds HTTP ${r.status}`,props:[]};
  let d;try{d=await r.json()}catch{return{ok:false,configured:true,stage:'fallback_parse',status:r.status,error:'SportsGameOdds returned invalid JSON.',props:[]}}
  const events=Array.isArray(d)?d:Array.isArray(d?.data)?d.data:Array.isArray(d?.events)?d.events:[];let games=[],gameMapError=null;const season=reqUrl.searchParams.get('season')||new Date().getFullYear(),week=reqUrl.searchParams.get('week')||'';

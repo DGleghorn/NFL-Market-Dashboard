@@ -1,4 +1,4 @@
-# Degenerate's Advisor v0.8.34 — Props Provider Resilience
+# Degenerate's Advisor v0.8.35 — Production Cleanup + Props Endpoint Recovery
 
 Production release candidate focused exclusively on Props data-source resilience.
 
@@ -17,4 +17,12 @@ Upload the package to the existing GitHub Pages repository as usual. The existin
 To activate the secondary provider, create a SportsGameOdds API key and add it to the existing Cloudflare Worker as an encrypted secret named `SGO_API_KEY`. Do not put either API key in GitHub or client-side settings. The fallback remains inactive until that secret exists.
 
 ## Important
-The fallback provider is optional. Without `SGO_API_KEY`, v0.8.34 still runs safely with ParlayAPI + cache and reports the fallback as not configured. A ParlayAPI HTTP 500 cannot be repaired by client code; live recovery during that outage requires either the fallback secret or a fresh cached feed.
+The fallback provider is optional. Without `SGO_API_KEY`, v0.8.35 still runs safely with ParlayAPI + cache and reports the fallback as not configured. A ParlayAPI HTTP 500 cannot be repaired by client code; live recovery during that outage requires either the fallback secret or a fresh cached feed.
+
+
+## v0.8.35 additions
+- Production Props endpoint is self-healing and no longer inherits stale localStorage URLs outside Developer Mode.
+- Worker binding preflight confirms SGO_API_KEY presence without exposing the secret.
+- Market Movement removed from normal UI.
+- Snapshot display condensed to the single latest snapshot for the active sport.
+- Diagnostics distinguish Worker reachability, fallback configuration, active provider, and DK feed health.
