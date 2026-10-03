@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='dcc-ai-worker-v0.8.33-props-data-recovery';
+const VERSION='dcc-ai-worker-v0.8.34-props-provider-resilience';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -129,7 +129,7 @@ async function providerPropRequest(env,providerSport,markets){
  if(guard>12)return{ok:false,stage:'provider_pagination',status:502,error:'Provider pagination exceeded the safety limit.'};
  return{ok:true,raw,pages,providerState}
 }
-async function footballProps(reqUrl,env,sport='nfl'){
+async function parlayFootballProps(reqUrl,env,sport='nfl'){
  if(!env.PROP_API_KEY)return json({ok:false,sport,stage:'binding',error:'PROP_API_KEY secret is not configured in Cloudflare.',props:[]},503);
  const season=reqUrl.searchParams.get('season')||new Date().getFullYear(),week=reqUrl.searchParams.get('week')||'';
  const providerSport=sport==='cfb'?'americanfootball_ncaaf':'americanfootball_nfl',configured=PROP_MARKETS.split(','),discovery=await discoverPropCoverage(env,providerSport);
@@ -165,10 +165,42 @@ async function footballProps(reqUrl,env,sport='nfl'){
  const stage=gameMapError?'game_map_degraded':recovery.used?'provider_recovered':raw.length?'healthy':'no_draftkings_rows';
  return json({ok:true,sport,source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,matchedProps:props.length,rejected,diagnostics:{stage,gameMapError,providerSport,configuredMarkets:configured,requestedMarkets:markets,availableMarkets:discovery.markets,discovery:{marketsOk:discovery.marketsOk,marketsStatus:discovery.marketsStatus,coverageOk:discovery.coverageOk,coverageStatus:discovery.coverageStatus,errors:discovery.errors},recovery,pages,providerMarketRows:marketRows,acceptedSelections:accepted,providerState:clean(attempt.providerState||discovery.providerState||'',1800)},props});
 }
+
+const SGO_MARKET_MAP={passing_yards:'passing_yards',passing_completions:'completions',rushing_yards:'rushing_yards',receiving_yards:'receiving_yards',receiving_receptions:'receptions'};
+function sgoPlayerName(odd,event){const id=String(odd?.statEntityID||''),ep=event?.players?.[id]||{};const full=[ep.firstName,ep.lastName].filter(Boolean).join(' '),candidates=[odd?.statEntity?.name,odd?.statEntity?.displayName,odd?.playerName,odd?.player?.name,ep.name,ep.displayName,full];return clean(candidates.find(Boolean)||'',100)}
+function sgoTeamName(side,event){const t=event?.teams?.[side]||event?.[`${side}Team`]||{};return clean(t?.name||t?.displayName||t?.teamName||t,100)}
+async function sportsGameOddsProps(reqUrl,env,sport='nfl'){
+ if(!env.SGO_API_KEY)return{ok:false,configured:false,stage:'fallback_not_configured',status:503,error:'SportsGameOdds fallback secret is not configured.',props:[]};
+ const league=sport==='cfb'?'NCAAF':'NFL',u=new URL('https://api.sportsgameodds.com/v2/events');
+ u.searchParams.set('leagueID',league);u.searchParams.set('oddsAvailable','true');u.searchParams.set('bookmakerID','draftkings');u.searchParams.set('includeOpposingOdds','true');u.searchParams.set('includeAltLines','false');u.searchParams.set('limit',sport==='cfb'?'100':'32');
+ let r;try{r=await fetch(u,{headers:{'x-api-key':env.SGO_API_KEY,Accept:'application/json'}})}catch(e){return{ok:false,configured:true,stage:'fallback_fetch',status:502,error:clean(e?.message||e,200),props:[]}}
+ if(!r.ok)return{ok:false,configured:true,stage:'fallback_http',status:r.status,error:`SportsGameOdds HTTP ${r.status}`,props:[]};
+ let d;try{d=await r.json()}catch{return{ok:false,configured:true,stage:'fallback_parse',status:r.status,error:'SportsGameOdds returned invalid JSON.',props:[]}}
+ const events=Array.isArray(d)?d:Array.isArray(d?.data)?d.data:Array.isArray(d?.events)?d.events:[];let games=[],gameMapError=null;const season=reqUrl.searchParams.get('season')||new Date().getFullYear(),week=reqUrl.searchParams.get('week')||'';
+ if(week){try{games=await espnGameMap(season,week,sport)}catch(e){gameMapError=clean(e?.message||e,300)}}
+ const props=[],rejected={period:0,market:0,game:0,player:0,book:0,price:0};
+ for(const event of events){const home=sgoTeamName('home',event),away=sgoTeamName('away',event),game=games.length?matchEspnGame({home_team:home,away_team:away},games):null;if(!game){rejected.game++;continue}
+  const odds=event?.odds&&typeof event.odds==='object'?Object.values(event.odds):[];
+  for(const odd of odds){if(String(odd?.periodID||'game').toLowerCase()!=='game'){rejected.period++;continue}const market=SGO_MARKET_MAP[String(odd?.statID||'').toLowerCase()];if(!market){rejected.market++;continue}const entity=String(odd?.statEntityID||'');if(!entity||['all','home','away'].includes(entity.toLowerCase())){rejected.player++;continue}const player=sgoPlayerName(odd,event);if(!player){rejected.player++;continue}
+   const dk=odd?.byBookmaker?.draftkings||odd?.byBookmaker?.DraftKings;if(!dk||dk.available===false){rejected.book++;continue}const side=String(odd?.sideID||'').toUpperCase();if(!['OVER','UNDER'].includes(side)){rejected.market++;continue}const line=Number(dk.overUnder??dk.spread??odd.bookOverUnder??odd.bookSpread),price=Number(dk.odds??odd.bookOdds),updatedAt=dk.lastUpdatedAt||odd.lastUpdatedAt||null,ts=updatedAt?new Date(updatedAt).getTime():NaN;if(!Number.isFinite(line)||!Number.isFinite(price)){rejected.price++;continue}if(!updatedAt||!Number.isFinite(ts)||Date.now()-ts>15*60*1000||ts>Date.now()+60000){rejected.price++;continue}props.push({gameId:game.id,playerId:entity,player,team:'',market,line,book:'DraftKings',status:'active',updatedAt,providerEventId:clean(event?.eventID||'',80),side,price})
+  }
+ }
+ return{ok:true,configured:true,stage:props.length?'fallback_healthy':'fallback_no_rows',status:200,source:'DraftKings via SportsGameOdds',providerRows:events.length,props,rejected,diagnostics:{stage:props.length?'fallback_healthy':'fallback_no_rows',provider:'SportsGameOdds',league,eventCount:events.length,matchedProps:props.length,gameMapError}};
+}
+async function resilientFootballProps(reqUrl,env,sport='nfl'){
+ const primary=await parlayFootballProps(reqUrl,env,sport),primaryBody=await primary.clone().json().catch(()=>({}));
+ if(primary.ok&&Array.isArray(primaryBody.props)&&primaryBody.props.length)return primary;
+ const primaryFailed=!primary.ok||['provider_http','provider_fetch','provider_parse','provider_shape','provider_pagination'].includes(primaryBody.stage);
+ const primaryEmpty=primary.ok&&Array.isArray(primaryBody.props)&&primaryBody.props.length===0;
+ if(primaryFailed||primaryEmpty){const fb=await sportsGameOddsProps(reqUrl,env,sport);if(fb.ok&&fb.props.length)return json({ok:true,sport,source:fb.source,fetchedAt:new Date().toISOString(),providerRows:fb.providerRows,matchedProps:fb.props.length,rejected:fb.rejected,diagnostics:{stage:'fallback_active',activeProvider:'SportsGameOdds',primaryProvider:'ParlayAPI',primary:{ok:primary.ok,stage:primaryBody.stage||primaryBody?.diagnostics?.stage||null,status:primaryBody.providerStatus||primary.status,error:primaryBody.error||null},fallback:fb.diagnostics},props:fb.props});
+  if(primaryFailed)return json({...primaryBody,ok:false,sport,diagnostics:{...(primaryBody.diagnostics||{}),stage:primaryBody.stage||'primary_failed',activeProvider:null,primaryProvider:'ParlayAPI',fallbackProvider:'SportsGameOdds',fallback:{configured:fb.configured,stage:fb.stage,status:fb.status||null,error:fb.error||null}}},502);
+ }
+ return primary;
+}
 export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=new URL(req.url);
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
- if(req.method==='GET'&&url.pathname==='/binding-check')return json({ok:true,version:VERSION,environment:'production-runtime',bindings:{AI:!!env.AI,PROP_API_KEY:typeof env.PROP_API_KEY==='string'&&env.PROP_API_KEY.length>0,AI_SHARED_SECRET:typeof env.AI_SHARED_SECRET==='string'&&env.AI_SHARED_SECRET.length>0},note:'Boolean presence only; secret values are never returned.'});
- if(req.method==='GET'&&(url.pathname==='/nfl-props'||url.pathname==='/cfb-props')){const propSport=url.pathname==='/cfb-props'?'cfb':'nfl';try{return await footballProps(url,env,propSport)}catch(e){return json({ok:false,sport:propSport,stage:'worker_unhandled',error:clean(e?.message||e,500),props:[]},502)}}
+ if(req.method==='GET'&&url.pathname==='/binding-check')return json({ok:true,version:VERSION,environment:'production-runtime',bindings:{AI:!!env.AI,PROP_API_KEY:typeof env.PROP_API_KEY==='string'&&env.PROP_API_KEY.length>0,SGO_API_KEY:typeof env.SGO_API_KEY==='string'&&env.SGO_API_KEY.length>0,AI_SHARED_SECRET:typeof env.AI_SHARED_SECRET==='string'&&env.AI_SHARED_SECRET.length>0},note:'Boolean presence only; secret values are never returned.'});
+ if(req.method==='GET'&&(url.pathname==='/nfl-props'||url.pathname==='/cfb-props')){const propSport=url.pathname==='/cfb-props'?'cfb':'nfl';try{return await resilientFootballProps(url,env,propSport)}catch(e){return json({ok:false,sport:propSport,stage:'worker_unhandled',error:clean(e?.message||e,500),props:[]},502)}}
  if(env.AI_SHARED_SECRET&&(req.headers.get('X-DCC-Secret')||'')!==env.AI_SHARED_SECRET)return json({error:'Unauthorized',stage:'auth',requestId:id},401);
  if(req.method==='GET'){
   if(url.searchParams.get('diagnostic')==='1'){if(!env.AI)return json({ok:false,version:VERSION,stage:'binding',requestId:id,message:'Workers AI binding AI is missing.'},500);try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'user',content:'Reply with exactly OK.'}],max_tokens:8,temperature:0});return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,stage:'inference',inferenceMs:Date.now()-t,requestId:id,message:'Zero-cost Workers AI connectivity test passed.',sample:clean(modelText(r),80),responseShape:responseShape(r)})}catch(e){return json({ok:false,version:VERSION,stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}}

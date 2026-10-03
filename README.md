@@ -1,19 +1,20 @@
-# Degenerate’s Advisor v0.8.33 — Production Release Candidate
+# Degenerate's Advisor v0.8.34 — Props Provider Resilience
 
-Production-hardening release built from v0.8.31 after an end-to-end audit of sport ownership, CFB classification, AI finalization, Props failure handling, navigation/refresh state, Betslip eligibility, caching, Worker deployment, and release metadata.
+Production release candidate focused exclusively on Props data-source resilience.
 
-## Resolved in v0.8.33
-- Model calculations now require an explicit sport; they no longer inherit mutable UI sport state.
-- AI prompt/batch fair-number context is calculated from the payload sport.
-- Public wager explanation text uses the payload sport rather than the currently selected tab.
-- Props feed/cache ownership requires an explicit payload sport.
-- Removed the redundant browser-level second Props Worker request. The Worker remains responsible for bundled + per-market provider recovery, while the dashboard circuit breaker handles outages.
-- Preserved v0.8.31 bounded AI finalization: missing AI rows become deterministic-only context after one bounded batch retry.
-- Preserved v0.8.30 sport/page/generation ownership and stale-response rejection.
-- Preserved v0.8.29 Props circuit breaker and clean degraded UI.
+## What changed
+- ParlayAPI remains the primary DraftKings Props source.
+- Optional SportsGameOdds fallback adapter added for NFL and NCAAF when ParlayAPI fails or returns no usable rows.
+- Fallback is server-side only and requires a Cloudflare secret named `SGO_API_KEY`.
+- Fallback accepts DraftKings only, full-game (`game`) player O/U markets only, and rejects rows older than 15 minutes.
+- Existing browser last-known-good Props cache and circuit breaker remain in place.
+- Diagnostics now separate Props Worker, primary provider, fallback provider, and DraftKings Props Feed health.
+- No game recommendation, AI classification, settlement, PGA, or Props threshold mathematics were changed.
 
-## CFB audit conclusion
-The prior 6 PLAY / 3 LEAN / 4 WATCH / 3 STAY OFF screen that appeared under CFB was cross-sport leakage: the visible card contained an NFL matchup (DET @ CAR). After state isolation, the CFB slate consistently produces its own classification. v0.8.33 does not lower thresholds or manufacture additional wagers.
+## Deployment
+Upload the package to the existing GitHub Pages repository as usual. The existing `PROP_API_KEY` continues to power ParlayAPI.
 
-## External dependency
-Live NFL/CFB Props remain dependent on the third-party provider. The provider returned HTTP 500 during deployed testing. v0.8.33 handles that failure safely and quickly, but cannot make an unavailable upstream service return data.
+To activate the secondary provider, create a SportsGameOdds API key and add it to the existing Cloudflare Worker as an encrypted secret named `SGO_API_KEY`. Do not put either API key in GitHub or client-side settings. The fallback remains inactive until that secret exists.
+
+## Important
+The fallback provider is optional. Without `SGO_API_KEY`, v0.8.34 still runs safely with ParlayAPI + cache and reports the fallback as not configured. A ParlayAPI HTTP 500 cannot be repaired by client code; live recovery during that outage requires either the fallback secret or a fresh cached feed.
