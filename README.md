@@ -1,17 +1,17 @@
-# Degenerate’s Advisor v0.8.29 — Production Hardening / Production Candidate 2
+# Degenerate’s Advisor v0.8.31 — Production Finalization
 
-Built from v0.8.28 after live iPhone testing confirmed the shared prop provider was returning HTTP 500 for both NFL and CFB and exposed a remaining cross-sport summary race.
+Built from v0.8.30 after live iPhone testing confirmed sport-state integrity was working but exposed a prolonged 14/16 AI partial-completion state.
 
-## Production hardening
-- Every rendered market/AI summary is owned by its sport. A delayed NFL response cannot update a CFB view and vice versa.
-- The shared summary banner is regenerated from the currently rendered sport on every render, including cached sport switches.
-- AI prompt sport identity comes from the payload rather than mutable global UI state.
-- Props has a per-sport 5-minute circuit breaker after confirmed provider 5xx failures.
-- During the cooldown, a fresh last-known-good prop cache is used when available; otherwise Props enters a clean unavailable state.
-- Healthy prop responses automatically close that sport’s circuit.
-- Main Props UI no longer exposes provider HTTP/stage jargon. Engineering details remain in More → Diagnostics.
-- v0.8.28 bundled-request + individual-market recovery remains available when the circuit is closed.
-- Smart refresh, request deduplication, page isolation, and NFL/CFB Props synchronization remain.
+## Production finalization
+- AI batches still receive one bounded retry inside the existing batch pipeline.
+- The redundant second full-slate automatic AI retry has been removed.
+- Missing AI rows after the bounded retry are explicitly finalized as AI-context unavailable, never fabricated analysis.
+- Deterministic game classification remains authoritative for every game, including rows without AI context.
+- Terminal status distinguishes real AI rows from deterministic-only rows (for example, 14/16 AI + 2 deterministic-only).
+- A complete AI outage can still finalize the deterministic slate without pretending AI reviewed the games.
+- v0.8.30 sport/page/generation ownership remains intact.
+- v0.8.29 Props circuit breaker and graceful provider-outage behavior remain intact.
+- Diagnostics build fingerprint is corrected for v0.8.31.
 
 ## Frozen recommendation logic
-No recommendation mathematics changed. v0.8.24 CFB calibration, the frozen NFL model, PGA shadow model, playable-line logic, settlement logic, and game-only Betslip eligibility are unchanged.
+No recommendation mathematics changed. `quantFair`, `verifiedQuantEdge`, `deterministicCandidate`, `deterministicClass`, `deterministicSlate`, `playableLine`, `settleRecord`, and `pgaHistoricalStrength` are byte-identical to v0.8.30. The v0.8.24 CFB calibration and frozen NFL/PGA model versions are retained.

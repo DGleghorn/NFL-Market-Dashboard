@@ -1,34 +1,35 @@
-Degenerate’s Advisor v0.8.29 — Production Candidate 2 Validation
+Degenerate’s Advisor v0.8.31 — Production Finalization Validation
 
-39/39 structural/regression checks PASS.
-10/10 production behavioral acceptance tests PASS.
+33/33 structural/regression checks PASS.
+10/10 partial-AI behavioral acceptance tests PASS.
 Dashboard JavaScript syntax PASS.
 Worker JavaScript syntax PASS.
-ZIP integrity PASS.
+ZIP integrity PASS (verified after packaging).
 
-P0 acceptance coverage:
-- stale asynchronous NFL result cannot own a CFB render
-- stale asynchronous CFB result cannot own an NFL render
-- summary banner is rebuilt from the active sport payload
-- AI prompt sport comes from its payload
-- prop provider 5xx opens a sport-specific five-minute circuit
-- NFL and CFB circuit state is isolated
-- fresh last-known-good props may be used during provider outage
-- no valid cache means a clean unavailable state, never fabricated rows
-- healthy provider recovery closes the circuit
-- provider engineering details are kept out of the normal Props UI
+Validated production issues:
+- no redundant second full-slate AI auto-retry
+- one bounded retry remains at failed-batch level
+- 14/16 AI completion finalizes cleanly as 14 AI + 2 deterministic-only
+- 16/16 AI completion remains normal
+- 0/16 AI completion does not fabricate AI opinions and still permits deterministic slate finalization
+- fallback AI rows are PASS/confidence 0 and cannot promote a wager
+- real parsed count is preserved and never inflated by fallback rows
+- sport/page/generation ownership retained from v0.8.30
+- mismatched sport rendering guards retained
+- Props five-minute circuit breaker retained
+- graceful live-Props unavailable state retained
+- v0.8.31 Diagnostics build fingerprint corrected
+- AI prompt sport identity does not use mutable global sport fallback
 
-Regression locks:
-- quantFair unchanged
-- verifiedQuantEdge unchanged
-- deterministicCandidate unchanged
-- deterministicClass unchanged
-- deterministicSlate unchanged
-- playableLine unchanged
-- settleRecord unchanged
-- pgaHistoricalStrength unchanged
-- v0.8.24 CFB calibration retained
-- game-only Betslip retained
+Frozen recommendation functions (byte-identical to v0.8.30):
+quantFair
+verifiedQuantEdge
+deterministicCandidate
+deterministicClass
+deterministicSlate
+playableLine
+settleRecord
+pgaHistoricalStrength
 
 External limitation:
-The upstream prop provider was returning HTTP 500 in live iPhone testing. v0.8.29 makes that dependency failure non-disruptive; it cannot make an unavailable third-party provider return live props. A successful deployed provider recovery remains the final gate before live Props can be considered production-proven.
+The third-party live Props provider was returning HTTP 500 during deployed testing. v0.8.31 preserves the production-safe degraded state and circuit breaker; sandbox validation cannot make or verify recovery of that external provider.
