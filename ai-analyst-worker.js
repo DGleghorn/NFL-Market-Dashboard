@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='dcc-ai-worker-v0.8.26-nav-live-state-reliability';
+const VERSION='dcc-ai-worker-v0.8.27-cfb-prop-backend-recovery';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -103,14 +103,14 @@ function teamAliases(x){const s=teamKey(x);if(!s)return[];const aliases=new Set(
 function matchEspnGame(row,games){const hs=teamAliases(row.home_team),as=teamAliases(row.away_team);if(!hs.length||!as.length)return null;return games.find(g=>hs.some(h=>g.home.includes(h))&&as.some(a=>g.away.includes(a)))||null}
 function propIso(row){const v=row.snapshot_time??row.last_update??row.updated_at??row.timestamp;if(v==null)return null;const n=Number(v),raw=Number.isFinite(n)?(n<1e12?n*1000:n):v,d=new Date(raw);return Number.isNaN(d.getTime())?null:d.toISOString()}
 async function footballProps(reqUrl,env,sport='nfl'){
- if(!env.PROP_API_KEY)return json({ok:false,sport,stage:'binding',error:'PROP_API_KEY secret is not configured in Cloudflare.',props:[]},503);
+ if(!env.PROP_API_KEY)return json({ok:false,sport,stage:'binding',error:'PROP_API_KEY secret is not configured in Cloudflare.',providerSport:sport==='cfb'?'americanfootball_ncaaf':'americanfootball_nfl',props:[]},503);
  const season=reqUrl.searchParams.get('season')||new Date().getFullYear(),week=reqUrl.searchParams.get('week')||'';
  const providerSport=sport==='cfb'?'americanfootball_ncaaf':'americanfootball_nfl';const u=new URL(`https://parlay-api.com/v1/sports/${providerSport}/props`);
  u.searchParams.set('bookmakers','draftkings');u.searchParams.set('markets',PROP_MARKETS);u.searchParams.set('maxAgeSec','900');u.searchParams.set('limit','5000');
- let r;try{r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}})}catch(e){return json({ok:false,sport,stage:'provider_fetch',error:`Prop provider network failure: ${clean(e?.message||e,300)}`,props:[]},502)}
- if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}return json({ok:false,sport,stage:'provider_http',providerStatus:r.status,error:`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`,props:[]},502)}
- let raw;try{raw=await r.json()}catch(e){return json({ok:false,sport,stage:'provider_parse',error:'Prop provider returned invalid JSON.',props:[]},502)}
- if(!Array.isArray(raw))return json({ok:false,sport,stage:'provider_shape',error:'Prop provider returned an unexpected response shape.',props:[]},502);
+ let r;try{r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}})}catch(e){return json({ok:false,sport,stage:'provider_fetch',providerSport,requestedMarkets:PROP_MARKETS.split(','),error:`Prop provider network failure: ${clean(e?.message||e,300)}`,props:[]},502)}
+ if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}return json({ok:false,sport,stage:'provider_http',providerSport,providerStatus:r.status,requestedMarkets:PROP_MARKETS.split(','),error:`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`,props:[]},502)}
+ let raw;try{raw=await r.json()}catch(e){return json({ok:false,sport,stage:'provider_parse',providerSport,requestedMarkets:PROP_MARKETS.split(','),error:'Prop provider returned invalid JSON.',props:[]},502)}
+ if(!Array.isArray(raw))return json({ok:false,sport,stage:'provider_shape',providerSport,requestedMarkets:PROP_MARKETS.split(','),error:'Prop provider returned an unexpected response shape.',props:[]},502);
  let games=[],gameMapError=null;if(week){try{games=await espnGameMap(season,week,sport)}catch(e){gameMapError=clean(e?.message||e,300)}}
  const props=[],marketRows={};for(const x of raw){const k=String(x.market_key||'unknown');marketRows[k]=(marketRows[k]||0)+1}
  const rejected={book:0,period:0,market:0,game:0,playerLine:0,freshness:0,price:0};
