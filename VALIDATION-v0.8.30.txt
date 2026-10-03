@@ -1,0 +1,22 @@
+Degenerate’s Advisor v0.8.30 — Production State Integrity
+
+24/24 structural/regression checks PASS.
+10/10 state-machine behavioral acceptance tests PASS.
+Dashboard JavaScript syntax PASS.
+Worker JavaScript syntax PASS.
+
+Production integrity changes:
+- one authoritative UI state owns sport, page, and generation
+- sport switches update header, sport selector, Props selector/title synchronously
+- renderAll requires an explicit payload sport matching the active UI sport
+- refresh callbacks require active UI sport ownership
+- AI completion requires sport + snapshot ownership before rendering
+- AI batches use payload sport, never mutable global sport fallback
+- Props rejects mismatched sport payloads and forces title/selector from the active owner
+- snapshot identity helper distinguishes sport + season/week + snapshot
+- v0.8.29 five-minute Props provider circuit breaker retained
+
+Frozen recommendation logic:
+quantFair, verifiedQuantEdge, deterministicCandidate, deterministicClass,
+deterministicSlate, playableLine, settleRecord, pgaHistoricalStrength.
+v0.8.24 CFB calibration retained. NFL and PGA model versions retained.
