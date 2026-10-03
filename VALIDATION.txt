@@ -1,13 +1,23 @@
-Degenerate’s Advisor v0.8.24 — Validation
+Degenerate’s Advisor v0.8.25 — Sandbox Validation
 
-24/24 structural/regression checks PASS.
-12/12 CFB calibration boundary/monotonicity tests PASS.
-ZIP integrity verified separately during packaging.
+Core structural/regression suite: 33/33 PASS after sport-cache correction.
+Refresh/routing behavioral tests: 6/6 PASS.
+Final packaging checks: 9/9 PASS.
 
-At a representative four-game opponent-adjusted sample:
-- reliability weight: 54%
-- spread raw disagreement required to clear PLAY: ~4.63 points
-- total raw disagreement required to clear PLAY: ~5.56 points
-v0.8.23 final thresholds themselves remain unchanged.
+Validated:
+- dashboard + Worker JavaScript syntax
+- instant cached sport rendering
+- stale-only refresh policy
+- visible-app auto-refresh and resume refresh
+- 2-minute near-game / 10-minute quiet-slate freshness targets
+- per-sport request deduplication
+- main game render before prop completion
+- NFL/CFB prop UI and endpoint routing
+- CFB NCAAF provider route + ESPN college-football mapping
+- sport-isolated prop caches + 30-minute prop cache expiry
+- v0.8.24 CFB calibration and decision trace unchanged
+- NFL/PGA decision models unchanged
+- Betslip remains game-only; SHADOW props excluded
 
-Live DraftKings/ESPN/Cloudflare behavior still requires deployment verification.
+Important: sandbox tests validate code behavior and routing, not live ParlayAPI CFB inventory.
+The deployed provider must confirm whether supported DraftKings CFB props are currently available.

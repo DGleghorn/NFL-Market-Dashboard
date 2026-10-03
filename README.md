@@ -1,19 +1,24 @@
-# Degenerate’s Advisor v0.8.24 — CFB Calibration & Transparency
+# Degenerate’s Advisor v0.8.25 — Instant Switching, CFB Props & Fast Refresh
 
-Production-candidate build based on final v0.8.23.
+Built from validated v0.8.24.
 
-CFB-only model change:
-- Keeps existing PLAY/LEAN/WATCH thresholds.
-- Reduces the double-conservatism identified in v0.8.23 by increasing the independent-model reliability weight only for CFB.
-- Opponent-adjusted CFB samples scale from 42% toward a 60% cap as sample size grows.
-- Non-opponent-adjusted fallback remains more conservative, capped at 42%.
-- Adds a per-game CFB decision trace: raw fair → reliability → adjusted fair → final edge → exact classification gate.
+Performance / freshness:
+- Sport switching renders the in-memory snapshot immediately, then checks IndexedDB and refreshes only when stale.
+- Smart freshness: 2 minutes near kickoff/recent live windows; 10 minutes otherwise.
+- Visible-app freshness check every 60 seconds plus immediate check when returning to the app.
+- Per-sport request deduplication prevents duplicate refreshes.
+- Game markets render before the prop request completes; props no longer block the main card.
+- Existing AI analysis remains downstream of the usable deterministic market card.
 
-Preserved:
-- NFL model `football-077-frozen`.
-- PGA model `pga-084-historical-strength-shadow-v1`.
-- v0.8.23 hardened NFL Props pipeline and stale-cache protection.
-- Existing CFB PLAY thresholds: 2.5 spread / 3.0 total.
-- Betslip eligibility remains TAKE-only; SHADOW props remain excluded.
+Props:
+- Props workspace now supports NFL and CFB.
+- Separate sport-scoped prop caches prevent NFL/CFB contamination.
+- CFB Worker route `/cfb-props` uses the provider's NCAAF sport path and ESPN college-football game mapping.
+- Same DraftKings-only, paired-side, freshness, TAKE/LEAN/MARKET LEAN/AVOID safeguards as NFL.
+- Provider availability is not fabricated: if the deployed provider returns no supported CFB props, the UI reports that state.
+- SHADOW props remain excluded from Betslip.
 
-No target number of CFB bets is enforced. A game still has to clear the same final threshold.
+Decision logic:
+- v0.8.24 CFB calibration and transparency retained unchanged.
+- NFL model remains `football-077-frozen`.
+- PGA shadow model retained unchanged.
