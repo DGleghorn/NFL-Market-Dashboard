@@ -1,23 +1,23 @@
-Degenerate’s Advisor v0.8.25 — Sandbox Validation
+Degenerate’s Advisor v0.8.26 — Sandbox Validation
 
-Core structural/regression suite: 33/33 PASS after sport-cache correction.
-Refresh/routing behavioral tests: 6/6 PASS.
-Final packaging checks: 9/9 PASS.
+Navigation/live-state targeted checks: 12/12 PASS after correcting the test harness.
+DOM page-visibility sequence: PASS.
+Frozen decision-function regression checks: 8/8 PASS.
+Final syntax/package checks: 8/8 PASS.
 
-Validated:
-- dashboard + Worker JavaScript syntax
-- instant cached sport rendering
-- stale-only refresh policy
-- visible-app auto-refresh and resume refresh
-- 2-minute near-game / 10-minute quiet-slate freshness targets
-- per-sport request deduplication
-- main game render before prop completion
-- NFL/CFB prop UI and endpoint routing
-- CFB NCAAF provider route + ESPN college-football mapping
-- sport-isolated prop caches + 30-minute prop cache expiry
-- v0.8.24 CFB calibration and decision trace unchanged
-- NFL/PGA decision models unchanged
-- Betslip remains game-only; SHADOW props excluded
+Validated scenarios:
+- Props workspace is visible when Props is selected.
+- CFB is no longer hidden by NFL-only renderStatus logic.
+- NFL -> CFB preserves the current bottom navigation page.
+- A sport with no in-memory snapshot clears previous-sport content to an explicit loading state.
+- Background market refresh re-renders the page currently on screen.
+- Prop completion re-renders Props in place.
+- NFL and CFB prop URLs route to /nfl-props and /cfb-props respectively.
+- CFB provider empty/error/loading states are visible rather than blank.
+- CFB route uses americanfootball_ncaaf.
+- v0.8.24 CFB calibration, NFL frozen model, PGA model, and game-only Betslip eligibility remain unchanged.
 
-Important: sandbox tests validate code behavior and routing, not live ParlayAPI CFB inventory.
-The deployed provider must confirm whether supported DraftKings CFB props are currently available.
+External verification:
+ParlayAPI public documentation confirms `americanfootball_ncaaf` and `/v1/sports/americanfootball_ncaaf/props` are supported, with DraftKings appearing in current NCAAF coverage. Actual rows returned to this deployed Worker still depend on the live provider/account/market inventory.
+
+Real iPhone deployment remains the final acceptance test.
