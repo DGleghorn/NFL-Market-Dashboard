@@ -1,35 +1,39 @@
-Degenerate’s Advisor v0.8.31 — Production Finalization Validation
+Degenerate’s Advisor v0.8.32 — Production Release Candidate Validation
 
-33/33 structural/regression checks PASS.
-10/10 partial-AI behavioral acceptance tests PASS.
-Dashboard JavaScript syntax PASS.
-Worker JavaScript syntax PASS.
-ZIP integrity PASS (verified after packaging).
+37/37 structural/regression checks PASS
+10/10 controlled football-model fixture tests PASS
+Dashboard JavaScript syntax PASS
+Cloudflare Worker JavaScript syntax PASS
+Service Worker JavaScript syntax PASS
+Release metadata/version/cache consistency PASS
+ZIP integrity PASS (verified after packaging)
 
-Validated production issues:
-- no redundant second full-slate AI auto-retry
-- one bounded retry remains at failed-batch level
-- 14/16 AI completion finalizes cleanly as 14 AI + 2 deterministic-only
-- 16/16 AI completion remains normal
-- 0/16 AI completion does not fabricate AI opinions and still permits deterministic slate finalization
-- fallback AI rows are PASS/confidence 0 and cannot promote a wager
-- real parsed count is preserved and never inflated by fallback rows
-- sport/page/generation ownership retained from v0.8.30
-- mismatched sport rendering guards retained
+Controlled model fixtures verified:
+- CFB result is independent of mutable UI/global sport state
+- NFL result is independent of mutable UI/global sport state
+- CFB opponent-adjusted path activates only for CFB
+- NFL does not inherit CFB opponent adjustment
+- CFB spread threshold remains 2.5
+- NFL spread threshold remains 2.0
+- TAKE boundary is monotonic
+- LEAN boundary is monotonic
+- WATCH boundary is monotonic
+- values below WATCH remain PASS
+
+Production audit verified:
+- explicit sport ownership in quantFair / verifiedQuantEdge / deterministicCandidate
+- payload-owned sport in AI prompt and batch context
+- sport-owned public explanation text
+- sport/page/generation render ownership gates retained
+- stale refresh and AI completion rejection retained
+- bounded partial-AI finalization retained
 - Props five-minute circuit breaker retained
-- graceful live-Props unavailable state retained
-- v0.8.31 Diagnostics build fingerprint corrected
-- AI prompt sport identity does not use mutable global sport fallback
+- redundant browser-level Props retry removed
+- Worker bundled + per-market recovery retained
+- game-only Betslip retained; shadow Props excluded
+- DraftKings remains the actionable sportsbook
+- no PROP_API_KEY secret is embedded in deployment files
+- deterministic classification, playable-line, settlement, PGA strength, and prop threshold functions remain unchanged from v0.8.31
 
-Frozen recommendation functions (byte-identical to v0.8.30):
-quantFair
-verifiedQuantEdge
-deterministicCandidate
-deterministicClass
-deterministicSlate
-playableLine
-settleRecord
-pgaHistoricalStrength
-
-External limitation:
-The third-party live Props provider was returning HTTP 500 during deployed testing. v0.8.31 preserves the production-safe degraded state and circuit breaker; sandbox validation cannot make or verify recovery of that external provider.
+Known external limitation:
+Sandbox validation cannot restore or certify availability of the third-party Props provider. Deployed testing previously returned provider HTTP 500 for both NFL and CFB. The application now treats that as an isolated degraded dependency rather than an app failure.
