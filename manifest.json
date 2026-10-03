@@ -1,7 +1,7 @@
 {
-  "name": "Degenerate\u2019s Advisor",
-  "short_name": "Degenerate\u2019s Advisor",
-  "start_url": "./?v=0.8.35",
+  "name": "D.I.L.D.O. — Dalton’s Intelligent Learning Dashboard Optimizer",
+  "short_name": "D.I.L.D.O.",
+  "start_url": "./?v=0.8.36",
   "display": "standalone",
   "background_color": "#123b1f",
   "theme_color": "#123b1f",
