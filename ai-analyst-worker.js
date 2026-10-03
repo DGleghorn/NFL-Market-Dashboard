@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='dcc-ai-worker-v0.8.22-prop-coverage-diagnostics';
+const VERSION='dcc-ai-worker-v0.8.23-prop-backend-recovery';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -102,19 +102,22 @@ function teamAliases(x){const s=teamKey(x);if(!s)return[];const aliases=new Set(
 function matchEspnGame(row,games){const hs=teamAliases(row.home_team),as=teamAliases(row.away_team);if(!hs.length||!as.length)return null;return games.find(g=>hs.some(h=>g.home.includes(h))&&as.some(a=>g.away.includes(a)))||null}
 function propIso(row){const v=row.snapshot_time??row.last_update??row.updated_at??row.timestamp;if(v==null)return null;const n=Number(v),raw=Number.isFinite(n)?(n<1e12?n*1000:n):v,d=new Date(raw);return Number.isNaN(d.getTime())?null:d.toISOString()}
 async function nflProps(reqUrl,env){
- if(!env.PROP_API_KEY)return json({ok:false,sport:'nfl',error:'PROP_API_KEY secret is not configured in Cloudflare.',props:[]},503);
+ if(!env.PROP_API_KEY)return json({ok:false,sport:'nfl',stage:'binding',error:'PROP_API_KEY secret is not configured in Cloudflare.',props:[]},503);
  const season=reqUrl.searchParams.get('season')||new Date().getFullYear(),week=reqUrl.searchParams.get('week')||'';
  const u=new URL('https://parlay-api.com/v1/sports/americanfootball_nfl/props');
  u.searchParams.set('bookmakers','draftkings');u.searchParams.set('markets',PROP_MARKETS);u.searchParams.set('maxAgeSec','900');u.searchParams.set('limit','5000');
- const r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}});
- if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}throw new Error(`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`)}
- const raw=await r.json();if(!Array.isArray(raw))throw new Error('Prop provider returned an unexpected response shape.');
- const games=week?await espnGameMap(season,week):[],props=[];const marketRows={};for(const x of raw){const k=String(x.market_key||'unknown');marketRows[k]=(marketRows[k]||0)+1}const rejected={book:0,period:0,market:0,game:0,playerLine:0,freshness:0,price:0};
+ let r;try{r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}})}catch(e){return json({ok:false,sport:'nfl',stage:'provider_fetch',error:`Prop provider network failure: ${clean(e?.message||e,300)}`,props:[]},502)}
+ if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}return json({ok:false,sport:'nfl',stage:'provider_http',providerStatus:r.status,error:`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`,props:[]},502)}
+ let raw;try{raw=await r.json()}catch(e){return json({ok:false,sport:'nfl',stage:'provider_parse',error:'Prop provider returned invalid JSON.',props:[]},502)}
+ if(!Array.isArray(raw))return json({ok:false,sport:'nfl',stage:'provider_shape',error:'Prop provider returned an unexpected response shape.',props:[]},502);
+ let games=[],gameMapError=null;if(week){try{games=await espnGameMap(season,week)}catch(e){gameMapError=clean(e?.message||e,300)}}
+ const props=[],marketRows={};for(const x of raw){const k=String(x.market_key||'unknown');marketRows[k]=(marketRows[k]||0)+1}
+ const rejected={book:0,period:0,market:0,game:0,playerLine:0,freshness:0,price:0};
  for(const x of raw){
   if(String(x.bookmaker||'').toLowerCase()!=='draftkings'){rejected.book++;continue}
   if(String(x.period||'FULL').toUpperCase()!=='FULL'){rejected.period++;continue}
   const market=PROP_MAP[String(x.market_key||'')];if(!market){rejected.market++;continue}
-  const game=matchEspnGame(x,games);if(!game){rejected.game++;continue}
+  const game=games.length?matchEspnGame(x,games):null;if(!game){rejected.game++;continue}
   const player=clean(x.player||x.player_name,100),line=Number(x.line);if(!player||!Number.isFinite(line)){rejected.playerLine++;continue}
   const updatedAt=propIso(x);if(!updatedAt){rejected.freshness++;continue}
   const age=Number(x.age_seconds);if(Number.isFinite(age)&&age>900){rejected.freshness++;continue}
@@ -124,13 +127,14 @@ async function nflProps(reqUrl,env){
   if(Number.isFinite(under)){props.push({...base,side:'UNDER',price:under});added++}
   if(!added)rejected.price++;
  }
- const accepted={receiving:props.filter(x=>x.market==='receiving_yards'||x.market==='receptions').length,rushing:props.filter(x=>x.market==='rushing_yards').length,passing:props.filter(x=>x.market==='passing_yards'||x.market==='completions').length};return json({ok:true,sport:'nfl',source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,matchedProps:props.length,rejected,diagnostics:{requestedMarkets:PROP_MARKETS.split(','),providerMarketRows:marketRows,acceptedSelections:accepted},props});
+ const accepted={receiving:props.filter(x=>x.market==='receiving_yards'||x.market==='receptions').length,rushing:props.filter(x=>x.market==='rushing_yards').length,passing:props.filter(x=>x.market==='passing_yards'||x.market==='completions').length};
+ return json({ok:true,sport:'nfl',source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,matchedProps:props.length,rejected,diagnostics:{stage:gameMapError?'game_map_degraded':'healthy',gameMapError,requestedMarkets:PROP_MARKETS.split(','),providerMarketRows:marketRows,acceptedSelections:accepted},props});
 }
 
 export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=new URL(req.url);
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
  if(req.method==='GET'&&url.pathname==='/binding-check')return json({ok:true,version:VERSION,environment:'production-runtime',bindings:{AI:!!env.AI,PROP_API_KEY:typeof env.PROP_API_KEY==='string'&&env.PROP_API_KEY.length>0,AI_SHARED_SECRET:typeof env.AI_SHARED_SECRET==='string'&&env.AI_SHARED_SECRET.length>0},note:'Boolean presence only; secret values are never returned.'});
- if(req.method==='GET'&&url.pathname==='/nfl-props'){try{return await nflProps(url,env)}catch(e){return json({ok:false,sport:'nfl',error:clean(e?.message||e,500),props:[]},502)}}
+ if(req.method==='GET'&&url.pathname==='/nfl-props'){try{return await nflProps(url,env)}catch(e){return json({ok:false,sport:'nfl',stage:'worker_unhandled',error:clean(e?.message||e,500),props:[]},502)}}
  if(env.AI_SHARED_SECRET&&(req.headers.get('X-DCC-Secret')||'')!==env.AI_SHARED_SECRET)return json({error:'Unauthorized',stage:'auth',requestId:id},401);
  if(req.method==='GET'){
   if(url.searchParams.get('diagnostic')==='1'){if(!env.AI)return json({ok:false,version:VERSION,stage:'binding',requestId:id,message:'Workers AI binding AI is missing.'},500);try{const t=Date.now(),r=await env.AI.run(MODEL,{messages:[{role:'user',content:'Reply with exactly OK.'}],max_tokens:8,temperature:0});return json({ok:true,version:VERSION,provider:'Cloudflare Workers AI',model:MODEL,stage:'inference',inferenceMs:Date.now()-t,requestId:id,message:'Zero-cost Workers AI connectivity test passed.',sample:clean(modelText(r),80),responseShape:responseShape(r)})}catch(e){return json({ok:false,version:VERSION,stage:'inference',requestId:id,message:clean(e?.message||e,500),zeroCost:true,paidFallback:false},503)}}

@@ -1,15 +1,16 @@
-Degenerate’s Advisor v0.8.22 — Sandbox Validation
+Degenerate’s Advisor v0.8.23 — Sandbox Validation
 
-19/19 PASS
+18/18 PASS
 - Dashboard/Worker syntax
-- visible Receiving/Rushing/Passing coverage
-- provider market-key diagnostics
-- accepted category diagnostics
-- verified core market keys retained
-- v0.8.21 cache/retry retained
+- staged provider failure diagnostics
+- ESPN game-map failure isolation
+- provider-row diagnostics survive map degradation
+- zero-row caches rejected
+- retry/cache retained
+- coverage counts retained
 - Betslip retained
-- /binding-check and /nfl-props retained
+- /binding-check retained
 - sport isolation retained
-- seven frozen model functions byte-identical to v0.8.21
+- seven frozen model functions byte-identical to v0.8.22
 
-Live provider coverage can only be determined after deployment.
+Live provider behavior requires deployment verification.
