@@ -1,15 +1,17 @@
-# Degenerate’s Advisor v0.8.28 — Prop Provider Recovery
+# Degenerate’s Advisor v0.8.29 — Production Hardening / Production Candidate 2
 
-Built from v0.8.27 after live diagnostics proved both NFL and CFB prop failures originated at the upstream provider (`provider_http`, provider HTTP 500).
+Built from v0.8.28 after live iPhone testing confirmed the shared prop provider was returning HTTP 500 for both NFL and CFB and exposed a remaining cross-sport summary race.
 
-Changes:
-- NFL and CFB still use independent provider sport paths.
-- Worker tries the normal bundled DraftKings prop request first.
-- If the provider returns a 5xx, the Worker retries each supported market independently.
-- Healthy individual markets are recovered even if another market is causing the provider failure.
-- If every individual market also fails, the dashboard reports the failure without fabricating prop data.
-- Provider internal JSON/support text is no longer dumped into the user-facing card.
-- Props now treats the global active NFL/CFB sport as authoritative and rejects mismatched stale payload rendering.
-- v0.8.27 diagnostics, v0.8.26 navigation isolation, and cached-first refresh remain.
+## Production hardening
+- Every rendered market/AI summary is owned by its sport. A delayed NFL response cannot update a CFB view and vice versa.
+- The shared summary banner is regenerated from the currently rendered sport on every render, including cached sport switches.
+- AI prompt sport identity comes from the payload rather than mutable global UI state.
+- Props has a per-sport 5-minute circuit breaker after confirmed provider 5xx failures.
+- During the cooldown, a fresh last-known-good prop cache is used when available; otherwise Props enters a clean unavailable state.
+- Healthy prop responses automatically close that sport’s circuit.
+- Main Props UI no longer exposes provider HTTP/stage jargon. Engineering details remain in More → Diagnostics.
+- v0.8.28 bundled-request + individual-market recovery remains available when the circuit is closed.
+- Smart refresh, request deduplication, page isolation, and NFL/CFB Props synchronization remain.
 
-No recommendation mathematics changed.
+## Frozen recommendation logic
+No recommendation mathematics changed. v0.8.24 CFB calibration, the frozen NFL model, PGA shadow model, playable-line logic, settlement logic, and game-only Betslip eligibility are unchanged.
