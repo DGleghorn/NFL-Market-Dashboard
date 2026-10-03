@@ -1,0 +1,51 @@
+Degenerate’s Advisor v0.8.33 — Props Data Recovery Validation
+Date: 2026-10-03
+
+RESULT: PASS — deployment package validated in sandbox.
+
+Scope
+- Rebuilt ParlayAPI Props adapter around current documented contract.
+- Added free /props/markets and /props/coverage discovery.
+- Removed oversized limit=5000 request.
+- Added x-result-has-more / x-next-offset pagination with safety guard.
+- Reads X-Provider-State for source-health diagnostics.
+- Requires DraftKings, FULL period, supported market, valid player/line, <=900s age, and valid price.
+- Uses native paired over_price / under_price values.
+- Retains bundled request -> individual-market recovery on provider 5xx.
+- Preserves dashboard-side cache/circuit breaker and isolated degraded state.
+- Distinguishes no supported markets / no DK coverage / provider failure.
+
+Behavioral adapter tests: 5/5 PASS
+1. Current-schema paired DraftKings response -> PASS
+2. Multi-page x-next-offset pagination -> PASS
+3. No supported markets -> PASS; paid props request skipped
+4. Bundled HTTP 500 -> per-market recovery -> PASS
+5. Non-FULL and stale rows rejected -> PASS
+
+Frozen regression functions: 9/9 byte-identical vs v0.8.32
+- quantFair
+- verifiedQuantEdge
+- deterministicCandidate
+- deterministicClass
+- deterministicSlate
+- playableLine
+- settleRecord
+- pgaHistoricalStrength
+- propThresholds
+
+Static/deployment checks: PASS
+- Dashboard JS syntax
+- Worker JS syntax
+- Service Worker JS syntax
+- v0.8.33 UI/version/build fingerprint
+- v0.8.33 service-worker cache/version
+- v0.8.33 manifest start_url
+- Wrangler config retained
+- PROP_API_KEY value not embedded
+- DraftKings-only filter retained
+- FULL-period filter retained
+- freshness bound retained
+- native paired prices retained
+
+Important production boundary
+Sandbox tests cannot authenticate with the user's private Cloudflare PROP_API_KEY. Therefore this validates code, contract handling, recovery behavior, and deployment packaging; actual live DraftKings row recovery must be confirmed after Cloudflare deploy using the existing secret. No provider data was fabricated.
