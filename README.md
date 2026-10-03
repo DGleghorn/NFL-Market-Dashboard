@@ -1,11 +1,19 @@
-# Degenerate’s Advisor v0.8.23 — Prop Backend Recovery
+# Degenerate’s Advisor v0.8.24 — CFB Calibration & Transparency
 
-Targeted recovery release for the v0.8.22 HTTP 502 path.
+Production-candidate build based on final v0.8.23.
 
-The Worker now distinguishes binding, provider network, provider HTTP, provider JSON/shape, game-map degradation, and unhandled Worker failures. A temporary ESPN matchup-map failure no longer destroys the provider fetch/diagnostics. Empty prop arrays are never treated as a last-known-good cache.
+CFB-only model change:
+- Keeps existing PLAY/LEAN/WATCH thresholds.
+- Reduces the double-conservatism identified in v0.8.23 by increasing the independent-model reliability weight only for CFB.
+- Opponent-adjusted CFB samples scale from 42% toward a 60% cap as sample size grows.
+- Non-opponent-adjusted fallback remains more conservative, capped at 42%.
+- Adds a per-game CFB decision trace: raw fair → reliability → adjusted fair → final edge → exact classification gate.
 
-v0.8.22 coverage diagnostics, v0.8.21 retry/cache reliability, Props/Betslip navigation, and all frozen game models are preserved.
+Preserved:
+- NFL model `football-077-frozen`.
+- PGA model `pga-084-historical-strength-shadow-v1`.
+- v0.8.23 hardened NFL Props pipeline and stale-cache protection.
+- Existing CFB PLAY thresholds: 2.5 spread / 3.0 total.
+- Betslip eligibility remains TAKE-only; SHADOW props remain excluded.
 
-
-## Prop card language refinement
-Prop cards now use TAKE / LEAN / AVOID language. TAKE is reserved for independently verified SHADOW STRONG model edges. Market pricing alone can create LEAN or AVOID, never TAKE. Raw no-vig percentages are replaced on-card by a brief plain-language explanation.
+No target number of CFB bets is enforced. A game still has to clear the same final threshold.
