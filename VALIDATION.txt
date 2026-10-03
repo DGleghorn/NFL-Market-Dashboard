@@ -1,21 +1,26 @@
-Degenerate’s Advisor v0.8.27 — Sandbox Validation
+Degenerate’s Advisor v0.8.28 — Sandbox Validation
 
-28/28 structural/regression checks PASS.
+27/27 structural/regression checks PASS.
+4/4 provider-recovery behavioral tests PASS.
 Dashboard JavaScript syntax PASS.
 Worker JavaScript syntax PASS.
 ZIP integrity verified during packaging.
 
-Validated:
-- structured HTTP/Worker errors survive to the dashboard
-- backend stage is visible in Props
-- duplicate full error rendering removed
-- Props selector -> global sport synchronization
-- global sport -> Props selector synchronization
-- /cfb-props route and americanfootball_ncaaf retained
-- provider_fetch/provider_http/provider_parse/provider_shape diagnostics retained
-- v0.8.26 page visibility and request deduplication retained
-- v0.8.24 CFB calibration unchanged
-- NFL/PGA models unchanged
-- Betslip remains game-only
+Recovery behavior tested:
+- bundled provider 500 + some healthy individual markets => partial prop feed succeeds
+- failing individual market is isolated in diagnostics
+- all individual markets failing => clean failure, no fabricated rows
+- healthy bundled request => no unnecessary fallback
 
-The purpose of this release is to turn the live CFB HTTP 502 into an actionable root-cause stage. Live provider behavior still requires deployed verification.
+State behavior:
+- active global sport is authoritative on Props
+- stale mismatched sport payload cannot overwrite the visible Props workspace
+- raw provider INTERNAL_SERVER_ERROR/support JSON is suppressed from the card
+
+Frozen:
+- v0.8.24 CFB calibration
+- NFL decision model
+- PGA shadow model
+- game-only Betslip eligibility
+
+Live provider behavior still requires deployed verification.

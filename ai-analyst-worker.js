@@ -1,5 +1,5 @@
 // AI Market Terminal V0.8.2 — PGA Event Intelligence
-const VERSION='dcc-ai-worker-v0.8.27-cfb-prop-backend-recovery';
+const VERSION='dcc-ai-worker-v0.8.28-prop-provider-recovery';
 const MODEL='@cf/google/gemma-4-26b-a4b-it',PROMPT_VERSION='dcc-chief-analyst-cf-v6.2';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'Content-Type, X-DCC-Secret','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Access-Control-Max-Age':'86400','Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'};
 const json=(x,status=200)=>new Response(JSON.stringify(x),{status,headers:cors});
@@ -102,15 +102,33 @@ async function espnGameMap(season,week,sport='nfl'){
 function teamAliases(x){const s=teamKey(x);if(!s)return[];const aliases=new Set([s]);const map={washingtoncommanders:['washington','was'],greenbaypackers:['greenbay','gb'],tampabaybuccaneers:['tampabay','tb'],newenglandpatriots:['newengland','ne'],newyorkgiants:['newyorkgiants','nyg'],newyorkjets:['newyorkjets','nyj'],losangelesrams:['losangelesrams','la','lar'],losangeleschargers:['losangeleschargers','lac'],lasvegasraiders:['lasvegas','lv'],sanfrancisco49ers:['sanfrancisco','sf'],kansascitychiefs:['kansascity','kc'],neworleanssaints:['neworleans','no']};for(const a of map[s]||[])aliases.add(a);return [...aliases]}
 function matchEspnGame(row,games){const hs=teamAliases(row.home_team),as=teamAliases(row.away_team);if(!hs.length||!as.length)return null;return games.find(g=>hs.some(h=>g.home.includes(h))&&as.some(a=>g.away.includes(a)))||null}
 function propIso(row){const v=row.snapshot_time??row.last_update??row.updated_at??row.timestamp;if(v==null)return null;const n=Number(v),raw=Number.isFinite(n)?(n<1e12?n*1000:n):v,d=new Date(raw);return Number.isNaN(d.getTime())?null:d.toISOString()}
+async function providerPropRequest(env,providerSport,markets){
+ const u=new URL(`https://parlay-api.com/v1/sports/${providerSport}/props`);
+ u.searchParams.set('bookmakers','draftkings');u.searchParams.set('markets',markets.join(','));u.searchParams.set('maxAgeSec','900');u.searchParams.set('limit','5000');
+ let r;try{r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}})}catch(e){return{ok:false,stage:'provider_fetch',status:502,error:`Provider network failure: ${clean(e?.message||e,160)}`}}
+ if(!r.ok){let providerRequestId=null;try{const d=await r.json();providerRequestId=clean(d?.request_id||'',80)}catch{}return{ok:false,stage:'provider_http',status:r.status,providerRequestId,error:`Provider HTTP ${r.status}`}}
+ let raw;try{raw=await r.json()}catch{return{ok:false,stage:'provider_parse',status:r.status,error:'Provider returned invalid JSON'}}
+ if(!Array.isArray(raw))return{ok:false,stage:'provider_shape',status:r.status,error:'Provider returned an unexpected response shape'};
+ return{ok:true,raw}
+}
 async function footballProps(reqUrl,env,sport='nfl'){
- if(!env.PROP_API_KEY)return json({ok:false,sport,stage:'binding',error:'PROP_API_KEY secret is not configured in Cloudflare.',providerSport:sport==='cfb'?'americanfootball_ncaaf':'americanfootball_nfl',props:[]},503);
+ if(!env.PROP_API_KEY)return json({ok:false,sport,stage:'binding',error:'PROP_API_KEY secret is not configured in Cloudflare.',props:[]},503);
  const season=reqUrl.searchParams.get('season')||new Date().getFullYear(),week=reqUrl.searchParams.get('week')||'';
- const providerSport=sport==='cfb'?'americanfootball_ncaaf':'americanfootball_nfl';const u=new URL(`https://parlay-api.com/v1/sports/${providerSport}/props`);
- u.searchParams.set('bookmakers','draftkings');u.searchParams.set('markets',PROP_MARKETS);u.searchParams.set('maxAgeSec','900');u.searchParams.set('limit','5000');
- let r;try{r=await fetch(u,{headers:{'X-API-Key':env.PROP_API_KEY,Accept:'application/json'}})}catch(e){return json({ok:false,sport,stage:'provider_fetch',providerSport,requestedMarkets:PROP_MARKETS.split(','),error:`Prop provider network failure: ${clean(e?.message||e,300)}`,props:[]},502)}
- if(!r.ok){let detail='';try{detail=clean(await r.text(),300)}catch{}return json({ok:false,sport,stage:'provider_http',providerSport,providerStatus:r.status,requestedMarkets:PROP_MARKETS.split(','),error:`Prop provider HTTP ${r.status}${detail?`: ${detail}`:''}`,props:[]},502)}
- let raw;try{raw=await r.json()}catch(e){return json({ok:false,sport,stage:'provider_parse',providerSport,requestedMarkets:PROP_MARKETS.split(','),error:'Prop provider returned invalid JSON.',props:[]},502)}
- if(!Array.isArray(raw))return json({ok:false,sport,stage:'provider_shape',providerSport,requestedMarkets:PROP_MARKETS.split(','),error:'Prop provider returned an unexpected response shape.',props:[]},502);
+ const providerSport=sport==='cfb'?'americanfootball_ncaaf':'americanfootball_nfl',markets=PROP_MARKETS.split(',');
+ let attempt=await providerPropRequest(env,providerSport,markets),raw=[],recovery={used:false,successfulMarkets:[],failedMarkets:[]};
+ if(!attempt.ok&&attempt.stage==='provider_http'&&attempt.status>=500){
+  recovery.used=true;
+  for(const market of markets){
+   const one=await providerPropRequest(env,providerSport,[market]);
+   if(one.ok){raw.push(...one.raw);recovery.successfulMarkets.push(market)}
+   else recovery.failedMarkets.push({market,stage:one.stage,status:one.status||null,providerRequestId:one.providerRequestId||null});
+  }
+  if(!recovery.successfulMarkets.length)return json({ok:false,sport,stage:'provider_http',providerSport,providerStatus:attempt.status,requestedMarkets:markets,recovery,error:`Prop provider failed for the bundled request and every individual market request.`,props:[]},502);
+ }else if(!attempt.ok){
+  return json({ok:false,sport,stage:attempt.stage,providerSport,providerStatus:attempt.status||null,providerRequestId:attempt.providerRequestId||null,requestedMarkets:markets,error:attempt.error,props:[]},502);
+ }else raw=attempt.raw;
+ // de-duplicate rows that may overlap across recovered market requests
+ const seen=new Set();raw=raw.filter(x=>{const k=[x.event_id,x.canonical_event_id,x.market_key,x.player,x.player_name,x.line,x.bookmaker].join('|');if(seen.has(k))return false;seen.add(k);return true});
  let games=[],gameMapError=null;if(week){try{games=await espnGameMap(season,week,sport)}catch(e){gameMapError=clean(e?.message||e,300)}}
  const props=[],marketRows={};for(const x of raw){const k=String(x.market_key||'unknown');marketRows[k]=(marketRows[k]||0)+1}
  const rejected={book:0,period:0,market:0,game:0,playerLine:0,freshness:0,price:0};
@@ -129,9 +147,8 @@ async function footballProps(reqUrl,env,sport='nfl'){
   if(!added)rejected.price++;
  }
  const accepted={receiving:props.filter(x=>x.market==='receiving_yards'||x.market==='receptions').length,rushing:props.filter(x=>x.market==='rushing_yards').length,passing:props.filter(x=>x.market==='passing_yards'||x.market==='completions').length};
- return json({ok:true,sport,source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,matchedProps:props.length,rejected,diagnostics:{stage:gameMapError?'game_map_degraded':'healthy',gameMapError,requestedMarkets:PROP_MARKETS.split(','),providerMarketRows:marketRows,acceptedSelections:accepted},props});
+ return json({ok:true,sport,source:'DraftKings via ParlayAPI',fetchedAt:new Date().toISOString(),providerRows:raw.length,matchedProps:props.length,rejected,diagnostics:{stage:gameMapError?'game_map_degraded':recovery.used?'provider_recovered':'healthy',gameMapError,providerSport,requestedMarkets:markets,recovery,providerMarketRows:marketRows,acceptedSelections:accepted},props});
 }
-
 export default{async fetch(req,env){const id=crypto.randomUUID().slice(0,8),url=new URL(req.url);
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers:cors});
  if(req.method==='GET'&&url.pathname==='/binding-check')return json({ok:true,version:VERSION,environment:'production-runtime',bindings:{AI:!!env.AI,PROP_API_KEY:typeof env.PROP_API_KEY==='string'&&env.PROP_API_KEY.length>0,AI_SHARED_SECRET:typeof env.AI_SHARED_SECRET==='string'&&env.AI_SHARED_SECRET.length>0},note:'Boolean presence only; secret values are never returned.'});
