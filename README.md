@@ -1,4 +1,4 @@
-# D.I.L.D.O. v0.8.36 — Dalton’s Intelligent Learning Dashboard Optimizer
+# D.I.L.D.O. v0.8.38 — Dalton’s Intelligent Learning Dashboard Optimizer
 
 Production release candidate focused exclusively on Props data-source resilience.
 
@@ -17,10 +17,10 @@ Upload the package to the existing GitHub Pages repository as usual. The existin
 To activate the secondary provider, create a SportsGameOdds API key and add it to the existing Cloudflare Worker as an encrypted secret named `SGO_API_KEY`. Do not put either API key in GitHub or client-side settings. The fallback remains inactive until that secret exists.
 
 ## Important
-The fallback provider is optional. Without `SGO_API_KEY`, v0.8.36 still runs safely with ParlayAPI + cache and reports the fallback as not configured. A ParlayAPI HTTP 500 cannot be repaired by client code; live recovery during that outage requires either the fallback secret or a fresh cached feed.
+The fallback provider is optional. Without `SGO_API_KEY`, v0.8.38 still runs safely with ParlayAPI + cache and reports the fallback as not configured. A ParlayAPI HTTP 500 cannot be repaired by client code; live recovery during that outage requires either the fallback secret or a fresh cached feed.
 
 
-## v0.8.36 additions
+## v0.8.38 additions
 - Production Props endpoint is self-healing and no longer inherits stale localStorage URLs outside Developer Mode.
 - Worker binding preflight confirms SGO_API_KEY presence without exposing the secret.
 - Market Movement removed from normal UI.
@@ -28,8 +28,24 @@ The fallback provider is optional. Without `SGO_API_KEY`, v0.8.36 still runs saf
 - Diagnostics distinguish Worker reachability, fallback configuration, active provider, and DK feed health.
 
 
-## v0.8.36 branding
+## v0.8.38 branding
 - Product brand: **D.I.L.D.O.**
 - Full name: **Dalton’s Intelligent Learning Dashboard Optimizer**
 - Tagline: **Advanced Analytics for Questionable Decisions**
 - This release intentionally preserves the v0.8.35 Props recovery and betting/model logic.
+
+
+## v0.8.38 Production Refinement
+- Today ranks official plays strongest-first.
+- Betslip is now D.I.L.D.O.’s Final Card with human-readable rationale, risk, and playable line.
+- Season Performance and Recent Bets moved to More so Betslip stays decision-focused.
+- Production cache/version metadata advanced to v0.8.38.
+- Betting/model math and Props recovery architecture remain frozen.
+
+
+## v0.8.38 Production Refinement
+- Adds a plain-English Pick Logic / threshold / controlled-learning card.
+- Condenses Recent Bets to five rows plus expandable history.
+- Fixes AI Analyst readability in the turf theme.
+- Removes the legacy Market Movement UI from More.
+- Keeps Season Performance and all frozen recommendation math intact.
