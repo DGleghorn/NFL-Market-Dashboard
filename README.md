@@ -1,10 +1,11 @@
-# D.I.L.D.O. v0.8.53 — Snapshot Auto-Load & NBA Quota Guard
+D.I.L.D.O. v0.8.54 — NBA Archive Integrity
 
-- Switch NFL/CFB tabs: instantly restore today’s pinned analysis without another AI request.
-- NBA: immediately display saved daily research and use at most five scoreboard date requests on a normal daily refresh, rather than seventeen.
-- NBA: six-hour provider cooldown after a quota/rate-limit error; saved research retained if available.
-- NBA: partial data does not erase previously saved future games; archive retained locally.
-- Official NFL/CFB betting models, bets, and PGA SHADOW unchanged.
-- NBA remains SHADOW; no NBA official bets.
+Upload these seven files to the ROOT of NFL-Market-Dashboard GitHub Pages repository.
 
-Upload all seven files to the root of NFL-Market-Dashboard. Verify V0.8.53. The dashboard cannot guarantee new odds while a provider quota is exceeded.
+- Incremental historical recovery: up to two additional older ESPN dates per day (seven daily requests max).
+- Existing NBA archive and forecast ledger preserved; NBA remains SHADOW / NO BET.
+- More precise team-specific reasons for missing projections.
+- Existing quota cooldown retained across upgrade; no forced retries when quota exhausted.
+- Frozen NFL/CFB model math unchanged.
+
+Limitations: Backfill cannot recover data that ESPN does not provide, and may take several days. Browser storage may be cleared by the device. No live provider or iPhone testing performed.
