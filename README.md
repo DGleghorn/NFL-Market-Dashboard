@@ -1,12 +1,5 @@
-D.I.L.D.O. v0.8.55 — NBA Market Integrity & Archive Validation
+D.I.L.D.O. v0.8.57 — NBA Shadow Data Integrity
 
-Upload all seven files to the ROOT of the NFL-Market-Dashboard GitHub Pages repository.
+Changes: recovered schedule games never carry cached market prices or research projections; only pre-tipoff forecasts enter the shadow ledger; invalid final scores are not graded; local storage quota errors do not crash forecast persistence; cache version bumped. NFL/CFB frozen models and NBA projection mathematics remain unchanged. NBA remains SHADOW / NO BET.
 
-- NBA cached schedule recovery never reuses old DraftKings quotes as newly verified prices.
-- Recovered games are explicitly identified; market values are withheld until refreshed.
-- NBA confidence evidence does not count recovered stale markets as verified.
-- Daily seven-date request budget, two-date historical backfill, quota cooldown and rolling archive retained.
-- NFL and CFB frozen betting-model functions unchanged. NBA remains SHADOW / NO BET.
-- Daily snapshots and saved NBA history persist under the original storage keys.
-
-Static/sandbox checks are not a substitute for live ESPN/DraftKings and iPhone/Orion testing.
+Deploy all seven files to the root of NFL-Market-Dashboard GitHub Pages. Live provider and iPhone browser tests are not included.
