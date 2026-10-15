@@ -1,4 +1,4 @@
-# D.I.L.D.O. v0.8.50 — NBA Layout + Sample Diagnostics
+# D.I.L.D.O. v0.8.50.1.1 — NBA Layout + Sample Diagnostics
 
 Seven-file GitHub Pages deployment. Upload all seven extracted files to the root of `NFL-Market-Dashboard`.
 
@@ -13,3 +13,8 @@ Changes since v0.8.49:
 NBA research limitations: no prior-season historical database, injuries, confirmed lineups, or possession-level pace/efficiency. NBA bets remain excluded from the official Betslip. The ESPN feed and mobile browser require live testing.
 
 All eight protected football/PGA model functions are byte-identical to v0.8.49. Cloudflare Worker file unchanged.
+
+### v0.8.50.1
+- Removed sticky positioning from topbar and sport selector using final cascade overrides.
+- Added NBA research evidence confidence (%) to game cards when projections exist. Not a win probability. Missing projections show unavailable rather than fabricated percentages.
+- No changes to NBA projection calculations or NFL/CFB betting math.
