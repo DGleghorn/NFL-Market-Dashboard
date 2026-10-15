@@ -1,7 +1,12 @@
-# D.I.L.D.O. v0.8.48 — NBA SHADOW Research Engine
+# D.I.L.D.O. v0.8.49 — NBA Model Intelligence (SHADOW)
 
-Upload the seven files in this ZIP to the root of **NFL-Market-Dashboard** GitHub Pages.
+Seven-file GitHub Pages deployment. Upload the contents to the root of NFL-Market-Dashboard.
 
-NBA research now uses up to 10 preceding calendar days of ESPN final scores to compute a deliberately simple, sample-shrunk team scoring baseline. It displays experimental score/total estimates only where enough completed games exist. **It is not a pace-adjusted or injury-adjusted model and does not produce NBA picks or bets.** Future games are stored in a local immutable shadow ledger and graded when final scores are subsequently retrieved; MAE is displayed only for settled forecasts. ESPN odds are shown only when DraftKings is explicitly named. Daily cache limits repeated API calls; manual Refresh NBA Games fetches new data (up to 17 daily ESPN scoreboard requests). Partial failures are reported.
+- NBA research cards use the same MARKET / OUR NUMBER / DECISION structure as other sports.
+- Separates preseason, regular season, and playoffs; never pools their scores.
+- Opponent-adjusted scoring estimates with shrinkage and conservative minimum sample gates.
+- Explicit model-health sample counts and MAE from stored pregame shadow forecasts.
+- No NBA official wagers or BetSlip entries. DraftKings prices are displayed only when provider is identified.
+- Existing football/PGA model code and Cloudflare Worker are unchanged.
 
-NFL/CFB frozen model math, PGA SHADOW, official Betslip and Cloudflare Worker are unchanged. Live ESPN availability, Orion performance, and NBA forecasting quality require real-world validation.
+Known limitations: scoreboard history is limited to the sampled date range, so early regular-season games may have no projection. NBA research has no injury, pace, or lineup inputs yet. Browser storage holds shadow forecasts.
