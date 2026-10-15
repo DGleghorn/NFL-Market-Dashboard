@@ -1,7 +1,7 @@
-# D.I.L.D.O. v0.8.47 — NBA Shadow Foundation
+# D.I.L.D.O. v0.8.47.1 — NBA Schedule Hotfix
 
 Upload all seven files to the ROOT of NFL-Market-Dashboard GitHub Pages repository.
 
-NBA tab adds upcoming games from ESPN public NBA schedule and only displays odds where ESPN explicitly identifies DraftKings. A missing line is marked Unavailable; no estimates or picks are fabricated. NBA has no model, official bets, or props in this release. A local daily schedule cache limits requests, and Refresh NBA Games fetches on demand. Provider coverage is not guaranteed and should be assessed before building an NBA model. NFL and CFB models are unchanged. The Cloudflare worker file is retained without changes.
+Fixes ESPN NBA schedule HTTP 400 from unsupported multi-day date-range requests by querying individual dates. Limits concurrency to two requests, caches successful results daily, and shows a partial-feed warning when some dates fail. Seven requests per day maximum during the normal daily refresh; manual refresh can issue seven more. NBA remains SHADOW; no NBA picks or props. No Cloudflare Worker change.
 
-Release validation: syntax and protected-function equality; live ESPN/DraftKings and iOS Orion behavior not verified.
+Validation: JavaScript syntax, package integrity, and protected betting-function equality checked. Live ESPN response and iOS behavior not verified.
