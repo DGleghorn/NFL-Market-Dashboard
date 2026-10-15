@@ -1,12 +1,15 @@
-# D.I.L.D.O. v0.8.49 — NBA Model Intelligence (SHADOW)
+# D.I.L.D.O. v0.8.50 — NBA Layout + Sample Diagnostics
 
-Seven-file GitHub Pages deployment. Upload the contents to the root of NFL-Market-Dashboard.
+Seven-file GitHub Pages deployment. Upload all seven extracted files to the root of `NFL-Market-Dashboard`.
 
-- NBA research cards use the same MARKET / OUR NUMBER / DECISION structure as other sports.
-- Separates preseason, regular season, and playoffs; never pools their scores.
-- Opponent-adjusted scoring estimates with shrinkage and conservative minimum sample gates.
-- Explicit model-health sample counts and MAE from stored pregame shadow forecasts.
-- No NBA official wagers or BetSlip entries. DraftKings prices are displayed only when provider is identified.
-- Existing football/PGA model code and Cloudflare Worker are unchanged.
+Changes since v0.8.49:
+- Fix overlapping mobile navigation: header and sport selector now scroll naturally instead of obscuring content.
+- Remove forced scroll-to-NBA-panel behavior when switching sports.
+- Show per-team same-season completed-game sample counts and the specific reason a projection is withheld.
+- Clearly label the limited 10-day-back/6-day-forward NBA research window; this is **not** full-season history.
+- Preserve NBA MARKET / OUR NUMBER / DECISION cards, season isolation, model math, DraftKings-only labeling, and SHADOW / NO BET status.
+- Update version, service-worker cache, and PWA manifest references.
 
-Known limitations: scoreboard history is limited to the sampled date range, so early regular-season games may have no projection. NBA research has no injury, pace, or lineup inputs yet. Browser storage holds shadow forecasts.
+NBA research limitations: no prior-season historical database, injuries, confirmed lineups, or possession-level pace/efficiency. NBA bets remain excluded from the official Betslip. The ESPN feed and mobile browser require live testing.
+
+All eight protected football/PGA model functions are byte-identical to v0.8.49. Cloudflare Worker file unchanged.
