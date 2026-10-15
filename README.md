@@ -1,7 +1,7 @@
-# D.I.L.D.O. v0.8.47.1 — NBA Schedule Hotfix
+# D.I.L.D.O. v0.8.48 — NBA SHADOW Research Engine
 
-Upload all seven files to the ROOT of NFL-Market-Dashboard GitHub Pages repository.
+Upload the seven files in this ZIP to the root of **NFL-Market-Dashboard** GitHub Pages.
 
-Fixes ESPN NBA schedule HTTP 400 from unsupported multi-day date-range requests by querying individual dates. Limits concurrency to two requests, caches successful results daily, and shows a partial-feed warning when some dates fail. Seven requests per day maximum during the normal daily refresh; manual refresh can issue seven more. NBA remains SHADOW; no NBA picks or props. No Cloudflare Worker change.
+NBA research now uses up to 10 preceding calendar days of ESPN final scores to compute a deliberately simple, sample-shrunk team scoring baseline. It displays experimental score/total estimates only where enough completed games exist. **It is not a pace-adjusted or injury-adjusted model and does not produce NBA picks or bets.** Future games are stored in a local immutable shadow ledger and graded when final scores are subsequently retrieved; MAE is displayed only for settled forecasts. ESPN odds are shown only when DraftKings is explicitly named. Daily cache limits repeated API calls; manual Refresh NBA Games fetches new data (up to 17 daily ESPN scoreboard requests). Partial failures are reported.
 
-Validation: JavaScript syntax, package integrity, and protected betting-function equality checked. Live ESPN response and iOS behavior not verified.
+NFL/CFB frozen model math, PGA SHADOW, official Betslip and Cloudflare Worker are unchanged. Live ESPN availability, Orion performance, and NBA forecasting quality require real-world validation.
