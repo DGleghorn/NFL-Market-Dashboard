@@ -1,5 +1,5 @@
-D.I.L.D.O. v0.8.58 — Football Model Validation Hold
+D.I.L.D.O. v0.8.59 — Football Recommendation Coverage Reconciliation
 
-Adds read-only NFL/CFB audit in More with exportable JSON of current device snapshots, deterministic model candidates, evidence indices, fingerprints, and locally recorded settled results. Makes explicit that model confidence is not a calibrated win probability. Adds Betslip validation-hold warning and suspends suggested parlays while validation is pending. No frozen model function or threshold was changed. No historical win rate or ROI is claimed without recorded data. NBA/PGA remain SHADOW.
+Adds a device-local pregame-only recommendation journal for NFL/CFB TAKE/LEAN/WATCH/PASS, independent of the AI readiness gate used by the official ledger. More → Football Model Audit shows TAKE coverage against the official ledger and exports full coverage JSON. Preserves existing records and never retroactively invents old recommendations. A journal entry is not proof of a placed wager. All frozen prediction/settlement functions remain unchanged. NBA/PGA remain SHADOW.
 
-Deploy all seven files to the root of the NFL-Market-Dashboard GitHub Pages repository. This package does not test live sportsbook/provider feeds or iOS browser behavior.
+Upload all seven files to GitHub Pages. No live iOS or DraftKings integration test performed.
