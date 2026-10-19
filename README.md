@@ -1,5 +1,5 @@
-D.I.L.D.O. v0.8.57 — NBA Shadow Data Integrity
+D.I.L.D.O. v0.8.58 — Football Model Validation Hold
 
-Changes: recovered schedule games never carry cached market prices or research projections; only pre-tipoff forecasts enter the shadow ledger; invalid final scores are not graded; local storage quota errors do not crash forecast persistence; cache version bumped. NFL/CFB frozen models and NBA projection mathematics remain unchanged. NBA remains SHADOW / NO BET.
+Adds read-only NFL/CFB audit in More with exportable JSON of current device snapshots, deterministic model candidates, evidence indices, fingerprints, and locally recorded settled results. Makes explicit that model confidence is not a calibrated win probability. Adds Betslip validation-hold warning and suspends suggested parlays while validation is pending. No frozen model function or threshold was changed. No historical win rate or ROI is claimed without recorded data. NBA/PGA remain SHADOW.
 
-Deploy all seven files to the root of NFL-Market-Dashboard GitHub Pages. Live provider and iPhone browser tests are not included.
+Deploy all seven files to the root of the NFL-Market-Dashboard GitHub Pages repository. This package does not test live sportsbook/provider feeds or iOS browser behavior.
