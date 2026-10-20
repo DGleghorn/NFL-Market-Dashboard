@@ -1,5 +1,13 @@
-D.I.L.D.O. v0.8.59 — Football Recommendation Coverage Reconciliation
+D.I.L.D.O. v0.8.60 — NBA Season-Specific Model Health + Football Audit Continuity
 
-Adds a device-local pregame-only recommendation journal for NFL/CFB TAKE/LEAN/WATCH/PASS, independent of the AI readiness gate used by the official ledger. More → Football Model Audit shows TAKE coverage against the official ledger and exports full coverage JSON. Preserves existing records and never retroactively invents old recommendations. A journal entry is not proof of a placed wager. All frozen prediction/settlement functions remain unchanged. NBA/PGA remain SHADOW.
+Upload the seven files in this ZIP to the root of the NFL-Market-Dashboard GitHub Pages repository.
 
-Upload all seven files to GitHub Pages. No live iOS or DraftKings integration test performed.
+Changes:
+- NBA model-health report now displays forecast MAE separately for REGULAR, PRESEASON and PLAYOFFS, avoiding the misleading appearance that preseason validation establishes regular-season accuracy.
+- Explicit zero-regular-season validation notice and improved cold-start explanation.
+- NBA forecast settlement additionally verifies matching teams and season type; protects against cross-season or mismatched score records.
+- Saved NBA snapshots explicitly label their DK markets as not current-verified.
+- Football recommendation coverage journal and audit retained.
+- NFL/CFB model calculations and all eight protected functions unchanged. NBA remains SHADOW / NO BET.
+
+Limitations: Does not import prior-year regular-season statistics, establish a validated betting edge, or guarantee data-provider availability. Live iPhone, ESPN, and DraftKings integrations were not exercised in sandbox.
