@@ -1,13 +1,10 @@
-D.I.L.D.O. v0.8.60 — NBA Season-Specific Model Health + Football Audit Continuity
+# D.I.L.D.O. v0.8.70 — NFL Shadow Recalibration and Validation Hold
 
-Upload the seven files in this ZIP to the root of the NFL-Market-Dashboard GitHub Pages repository.
+Deploy all seven files to the GitHub Pages repository root.
 
-Changes:
-- NBA model-health report now displays forecast MAE separately for REGULAR, PRESEASON and PLAYOFFS, avoiding the misleading appearance that preseason validation establishes regular-season accuracy.
-- Explicit zero-regular-season validation notice and improved cold-start explanation.
-- NBA forecast settlement additionally verifies matching teams and season type; protects against cross-season or mismatched score records.
-- Saved NBA snapshots explicitly label their DK markets as not current-verified.
-- Football recommendation coverage journal and audit retained.
-- NFL/CFB model calculations and all eight protected functions unchanged. NBA remains SHADOW / NO BET.
-
-Limitations: Does not import prior-year regular-season statistics, establish a validated betting edge, or guarantee data-provider availability. Live iPhone, ESPN, and DraftKings integrations were not exercised in sandbox.
+- Adds a **separate experimental NFL shadow challenger** to More → Football Model Audit; export NFL Shadow Comparison JSON.
+- Challenger requires >=4 prior games per team, stronger market shrinkage (max 32%), minimum 3.0 spread / 3.5 total research edge, and a numeric DraftKings line/price. These are conservative hypotheses, **not statistically calibrated thresholds**.
+- Preserves all eight frozen football/CFB/PGA functions byte-for-byte; no claim of improved prediction accuracy.
+- Disables actionable generated NFL/CFB betting tickets while models remain unvalidated. Home candidate labels indicate research, not staking advice.
+- Prior historical gaps cannot be reconstructed. The challenger needs pregame snapshots and independent graded outcomes before any promotion.
+- NBA remains SHADOW. No provider integration or iPhone end-to-end test is claimed.

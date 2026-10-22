@@ -65,10 +65,10 @@ details{border-color:#d8d2c3}summary{color:#35483a}.detail p{color:#415246}.noti
 <body>
 <div id="offlineBanner" class="banner hidden">Offline — showing the last saved snapshot.</div>
 <div id="updateBanner" class="banner hidden"><span>New version available.</span><button id="updateBtn">Update</button></div>
-<header class="topbar"><div><div class="eyebrow" id="sportEyebrow">NFL · CFB · NBA · PGA</div><h1>D.I.L.D.O.</h1><div class="tiny">Dalton’s Intelligent Learning Dashboard Optimizer</div><div class="tiny">Advanced Analytics for Questionable Decisions</div><div id="buildLabel" class="build">V0.8.58</div></div><button id="refreshBtn" class="iconbtn" aria-label="Pull latest data">↻</button></header>
+<header class="topbar"><div><div class="eyebrow" id="sportEyebrow">NFL · CFB · NBA · PGA</div><h1>D.I.L.D.O.</h1><div class="tiny">Dalton’s Intelligent Learning Dashboard Optimizer</div><div class="tiny">Advanced Analytics for Questionable Decisions</div><div id="buildLabel" class="build">V0.8.70</div></div><button id="refreshBtn" class="iconbtn" aria-label="Pull latest data">↻</button></header>
 <main>
 <section class="sportSwitch" aria-label="Sport selector"><button class="active" data-sport="nfl">🏈 NFL <span class="beta">FROZEN</span></button><button data-sport="cfb">🏟️ CFB <span class="beta">FROZEN</span></button><button data-sport="nba">🏀 NBA <span class="beta">SHADOW</span></button><button data-sport="pga">⛳ PGA <span class="beta">SHADOW</span></button></section>
-<section id="nbaShadowPanel" class="hidden" style="margin-bottom:18px"><article class="card"><div class="row"><h2>🏀 NBA · SHADOW</h2><span class="pill warn">NO OFFICIAL BETS</span></div><p class="tiny">NBA research in the same compact card format as football. Historical samples and model diagnostics remain available in Research details. No NBA official bets.</p><div class="row" style="margin:12px 0"><button id="nbaRefresh" class="secondary">↻ Refresh NBA Games</button><span id="nbaStamp" class="tiny">Not checked</span></div><div id="nbaHealth" class="notice">Waiting for NBA schedule data.</div><div id="nbaValidation" class="notice" style="margin-top:10px">Shadow validation begins when projected games finish.</div><div id="nbaGames" class="stack"></div><p class="footnote">Schedule: ESPN public NBA scoreboard. Prices appear only when a provider is explicitly identified as DraftKings. Unavailable prices are never estimated. Research data may be delayed; verify directly at DraftKings.</p></article></section>
+<section id="nbaShadowPanel" class="hidden" style="margin-bottom:18px"><article class="card"><div class="row"><h2>🏀 NBA · SHADOW</h2><span class="pill warn">NO OFFICIAL BETS</span></div><p class="tiny">NBA research in the same compact card format as football. Historical samples and model diagnostics remain available in Research details. No NBA official bets.</p><div class="row" style="margin:12px 0"><button id="nbaRefresh" class="secondary">↻ Refresh NBA Games</button><span id="nbaStamp" class="tiny">Not checked</span></div><div id="nbaHealth" class="notice">Waiting for NBA schedule data.</div><div id="nbaValidation" class="notice" style="margin-top:10px">Shadow validation begins when projected games finish.</div><div class="row" style="margin:10px 0"><button id="nbaExportAudit" class="secondary">↓ Export NBA Research Audit</button></div><div id="nbaGames" class="stack"></div><p class="footnote">Schedule: ESPN public NBA scoreboard. Prices appear only when a provider is explicitly identified as DraftKings. Unavailable prices are never estimated. Research data may be delayed; verify directly at DraftKings.</p></article></section>
 <section id="sportNotice" class="notice hidden"></section><section id="nflPropsShadow" data-page="props" class="card appSection hiddenPage" style="margin:14px 0"><div class="row"><div><b id="propSportTitle">🏈 NFL Props · SHADOW</b><div class="tiny muted">Live DraftKings prop intelligence · paired sides · no-vig market probability · projections only when verified inputs exist.</div></div><span class="pill">SHADOW</span></div><div class="buttonRow" style="margin-top:10px"><button class="secondary propSport active" data-propsport="nfl">NFL</button><button class="secondary propSport" data-propsport="cfb">CFB</button></div><div id="propShadowStatus" class="tiny" style="margin-top:10px">Loading NFL prop pipeline…</div><div class="buttonRow" style="margin-top:10px"><button class="secondary propFilter active" data-propfilter="all">All</button><button class="secondary propFilter" data-propfilter="receiving">Receiving</button><button class="secondary propFilter" data-propfilter="rushing">Rushing</button><button class="secondary propFilter" data-propfilter="passing">Passing</button></div><div id="propShadowCards" class="stack" style="margin-top:10px"></div></section>
 <section class="hero card compactHero appSection" data-page="bets"><div><div class="muted">CURRENT SLATE</div><div id="slateStatus" class="heroValue">Waiting for snapshot…</div><div id="freshness" class="healthCompact"></div></div><div><div id="dataMode" class="pill">CHECKING</div></div></section>
 <section data-page="bets" id="pullMessage" class="notice hidden appSection"></section><section data-page="bets" id="retryAIWrap" class="appSection hidden"><button id="retryAI" class="secondary" style="width:100%">↻ Retry AI only</button></section>
@@ -81,10 +81,10 @@ details{border-color:#d8d2c3}summary{color:#35483a}.detail p{color:#415246}.noti
 <section class="appSection" data-page="bets" id="slateSection"><div class="sectionHead"><h2>The Read</h2><span id="aiModelPill" class="pill ai hidden">OFFLINE</span></div><article class="card"><div id="aiSummary" class="aiSummary">No AI analysis has been run.</div><div id="aiSources"></div></article></section>
 <section class="appSection" data-page="games" id="gamesSection"><div class="sectionHead"><h2>Games &amp; Markets</h2><span id="gameMeta" class="muted"></span></div><div id="games" class="stack"></div></section>
 <section class="appSection devOnly" data-page="more" id="aiSection"><div class="sectionHead"><h2>🔎 AI Analyst</h2><span class="muted">challenge the model</span></div><article class="card"><div id="aiAudit" class="aiSummary">AI has not reviewed this slate.</div><div class="aiMeta" id="aiMeta"></div><div id="rawAIDiagnostics"></div><details><summary>Analyst prompt / decision rules</summary><textarea id="promptPreview" class="copyBox" readonly></textarea></details><button id="copyPrompt" class="smallBtn" style="margin-top:9px">Copy analysis prompt</button></article></section>
-<section class="appSection" data-page="betslip" id="betslipSection"><div class="sectionHead"><h2>🎟️ D.I.L.D.O.’s Betslip</h2><span class="muted">structured card</span></div><article class="card"><div class="notice warn"><b>MODEL VALIDATION HOLD:</b> Betting edges and confidence tiers have not been established out-of-sample. This ticket is research only; no automated staking or parlay is recommended while the audit is pending.</div><button id="generateBetslip" class="primary" style="width:100%">Refresh My Betting Ticket</button><div class="footnote">Today’s NFL + CFB plays first · future games organized by date · no forced action. LEAN/WATCH and SHADOW props never qualify.</div></article><article class="card" id="marketWatchPanel" style="margin-top:10px"><div class="row"><b>📌 Daily Pin + Market Watch</b><span class="pill" id="pinStatus">Checking saved analysis</span></div><p class="tiny" id="pinSummary">Daily NFL + CFB analysis is saved on this device.</p><div class="buttonRow"><button class="secondary" id="checkLinesBtn">Check Lines</button><button class="secondary" id="forceAnalysisBtn">Force Reanalyze</button></div><div class="tiny" id="watchStatus" style="margin-top:9px">Market checks run while the dashboard is open.</div><div id="watchAlerts" class="stack" style="margin-top:8px"></div></article><div id="generatedBetslip" class="stack" style="margin-top:10px"></div></section>
+<section class="appSection" data-page="betslip" id="betslipSection"><div class="sectionHead"><h2>🎟️ D.I.L.D.O.’s Research Ticket</h2><span class="muted">structured card</span></div><article class="card"><div class="notice warn"><b>MODEL VALIDATION HOLD:</b> Betting edges and confidence tiers have not been established out-of-sample. This ticket is research only; no automated staking or parlay is recommended while the audit is pending.</div><button id="generateBetslip" class="primary" style="width:100%">Refresh My Betting Ticket</button><div class="footnote">Unvalidated NFL + CFB candidates withheld · future games organized by date · no forced action. LEAN/WATCH and SHADOW props never qualify.</div></article><article class="card" id="marketWatchPanel" style="margin-top:10px"><div class="row"><b>📌 Daily Pin + Market Watch</b><span class="pill" id="pinStatus">Checking saved analysis</span></div><p class="tiny" id="pinSummary">Daily NFL + CFB analysis is saved on this device.</p><div class="buttonRow"><button class="secondary" id="checkLinesBtn">Check Lines</button><button class="secondary" id="forceAnalysisBtn">Force Reanalyze</button></div><div class="tiny" id="watchStatus" style="margin-top:9px">Market checks run while the dashboard is open.</div><div id="watchAlerts" class="stack" style="margin-top:8px"></div></article><div id="generatedBetslip" class="stack" style="margin-top:10px"></div></section>
 <section class="appSection" data-page="more" id="pickLogicSection"><div class="sectionHead"><h2>🧠 How D.I.L.D.O. Picks</h2><span class="muted">logic · thresholds · learning</span></div><article class="card logicCard"><div class="logicFlow"><div><b>1 · MARKET</b><span>Start with the verified DraftKings line</span></div><i>→</i><div><b>2 · OUR NUMBER</b><span>Build a reliability-weighted fair line</span></div><i>→</i><div><b>3 · EDGE</b><span>Measure the gap vs. the market</span></div><i>→</i><div><b>4 · DECISION</b><span>Only act when the gap clears the threshold</span></div></div><div class="thresholdGrid"><div><b>PLAY</b><span>≥ 100% of minimum edge</span></div><div><b>LEAN</b><span>≥ 60%</span></div><div><b>WATCH</b><span>≥ 30%</span></div><div><b>STAY OFF</b><span>&lt; 30%</span></div></div><div class="logicDetail"><b>Current minimum edge</b><span>NFL: 2.0 pts spread · 2.5 pts total</span><span>CFB: 2.5 pts spread · 3.0 pts total</span></div><div class="learningNote"><b>📚 Controlled learning</b><span>Every official pick and result is retained for calibration. D.I.L.D.O. does not chase a few wins or losses by silently rewriting its rules. Results are used to identify persistent performance patterns before future threshold/model changes are validated.</span></div></article></section>
 <section class="appSection" data-page="more" id="modelHealthSection"><div class="sectionHead"><h2>🧠 Model Health</h2><span class="muted">learning without chasing results</span></div><article class="card"><div id="modelHealth" class="diagList"></div><p class="footnote">D.I.L.D.O. records outcomes and evidence for calibration. It does not silently rewrite frozen thresholds after a small sample.</p></article></section>
-<section class="appSection" data-page="more" id="validationSection"><div class="sectionHead"><h2>🔬 Football Model Audit</h2><span class="muted">v8.60 · coverage reconciliation</span></div><article class="card"><div class="notice warn"><b>NOT YET PERFORMANCE-VALIDATED</b><div style="margin-top:5px">NFL/CFB calculations are frozen for reproducibility, not proven profitable. Model Confidence is an evidence heuristic, NOT a win probability. A TAKE can currently arise from only two recent games per team. Avoid treating Best Bet tiers or suggested units as validated staking advice.</div></div><div id="validationSummary" class="tiny" style="line-height:1.6;margin:10px 0">Reviewing local snapshots…</div><div class="buttonRow"><button id="refreshValidation" class="secondary">Refresh Audit</button><button id="exportValidation" class="secondary">Export Audit JSON</button><button id="exportCoverage" class="secondary">Export Coverage JSON</button></div><p class="footnote" style="margin-top:10px">Coverage includes a new immutable, pregame-only recommendation journal, the existing official ledger, and research decisions. The journal starts with v8.59; missing older recommendations cannot be reconstructed.  This report does not independently verify external game outcomes.</p></article></section>
+<section class="appSection" data-page="more" id="validationSection"><div class="sectionHead"><h2>🔬 Football Model Audit</h2><span class="muted">v8.70 · NFL shadow recalibration</span></div><article class="card"><div class="notice warn"><b>NOT YET PERFORMANCE-VALIDATED</b><div style="margin-top:5px">NFL/CFB calculations are frozen for reproducibility, not proven profitable. Model Confidence is an evidence heuristic, NOT a win probability. Legacy TAKE can arise from only two recent games per team. A new NFL shadow challenger requires more evidence and is NOT an approved wager. Avoid treating Best Bet tiers or suggested units as validated staking advice.</div></div><div id="validationSummary" class="tiny" style="line-height:1.6;margin:10px 0">Reviewing local snapshots…</div><div class="buttonRow"><button id="refreshValidation" class="secondary">Refresh Audit</button><button id="exportValidation" class="secondary">Export Audit JSON</button><button id="exportCoverage" class="secondary">Export Coverage JSON</button><button id="exportNflShadow" class="secondary">Export NFL Shadow Comparison</button></div><p class="footnote" style="margin-top:10px">Coverage includes a new immutable, pregame-only recommendation journal, the existing official ledger, and research decisions. The journal starts with v8.59; missing older recommendations cannot be reconstructed.  This report does not independently verify external game outcomes.</p></article></section>
 <section class="appSection" data-page="more" id="performanceSection"><div class="sectionHead"><h2>📊 Season Performance</h2><span class="muted">official record · units · ROI</span></div><div class="sportSwitch performanceSwitch" aria-label="Performance sport filter"><button data-perf="overall">Overall</button><button data-perf="nfl">🏈 NFL</button><button data-perf="cfb">🏟️ CFB</button></div><div id="performance" class="stack"></div></section>
 <section class="appSection" data-page="more" id="ledgerSection"><div id="ledgerCount" class="hidden"></div><div id="ledger" class="hidden"></div><details class="collapsedTools"><summary>History, settlement &amp; export tools</summary><article class="card"><div class="buttonRow"><button id="settleBtn" class="primary">↻ Settle Finished Games</button><button id="exportLedger" class="secondary">Export Ledger</button><button id="exportTraining" class="secondary">Export Training Data</button></div><div id="settleMessage" class="tiny" style="margin-top:8px"></div></article></details></section>
 
@@ -95,7 +95,7 @@ details{border-color:#d8d2c3}summary{color:#35483a}.detail p{color:#415246}.noti
 <nav class="tabbar"><button class="active" data-page="bets">⌂<span>Today</span></button><button data-page="games">🏈<span>Games</span></button><button data-page="props">📋<span>Props</span></button><button data-page="betslip">🎟️<span>Betslip</span></button><button data-page="more">⚙<span>More</span></button></nav>
 <script>
 'use strict';
-const VERSION='0.8.60',BUILD_ID='0860-NBA-SEASON-VALIDATION-20261019',MODEL_VERSION='football-077-frozen',CFB_MODEL_VERSION='cfb-0824-calibrated-transparency-v1',PGA_MODEL_VERSION='pga-084-historical-strength-shadow-v1',DB_NAME='nfl-market-dashboard',DB_VERSION=7,STORE='snapshots';
+const VERSION='0.8.70',BUILD_ID='0870-NFL-SHADOW-RECALIBRATION-20261022',MODEL_VERSION='football-077-frozen',CFB_MODEL_VERSION='cfb-0824-calibrated-transparency-v1',PGA_MODEL_VERSION='pga-084-historical-strength-shadow-v1',DB_NAME='nfl-market-dashboard',DB_VERSION=7,STORE='snapshots';
 const SPORT_KEY='nflmd.activeSport.v70';let activeSport=localStorage.getItem(SPORT_KEY)||'nfl';if(!['nfl','cfb','pga','nba'].includes(activeSport))activeSport='nfl'; const sportState={nfl:null,cfb:null,pga:null,nba:null};let refreshGeneration=0;const refreshControllers={nfl:null,cfb:null,pga:null};let activePage='bets',propSport='nfl';
 const uiState={sport:activeSport,page:activePage,generation:0};
 function beginUITransition({sport=uiState.sport,page=uiState.page}={}){uiState.sport=sport;uiState.page=page;uiState.generation++;return{sport,page,generation:uiState.generation}}
@@ -277,8 +277,8 @@ function ceilHalf(v){return Math.ceil((Number(v)-1e-9)*2)/2}
 function dkMissingGames(p){return (p?.games||[]).filter(g=>!draftKingsBooks(g).length)}
 function publicReason(b,g,sport){const raw=String((b?.reasons||[])[0]||b?.explanation||'').trim();const q=b?.quant,a=g?.teamContext?.away,h=g?.teamContext?.home;if(q&&b?.structured?.type==='total'&&a&&h)return b.side==='over'?'Recent scoring profiles support a higher total than DraftKings.':'Recent scoring profiles support a lower total than DraftKings.';if(q&&b?.structured?.type==='spread'&&a&&h)return `${String(sport||'').toLowerCase()==='cfb'?'Opponent-adjusted results':'Recent scoring-margin profiles'} support ${String(b.structured.team||'this side').toUpperCase()} at the current number.`;let clean=raw.replace(/quant\s*fair/ig,'independent model').replace(/quantitative fair/ig,'independent model').replace(/quant model/ig,'independent model');if(clean&&!/quantfair|quant\s*fair/i.test(clean))return clean;return q?'Independent football model clears the required edge at this DraftKings number.':'No independently verified actionable edge at the current DraftKings number.'}
 function publicRisk(b,g,p){const sample=Math.min(Number(g?.teamContext?.away?.games||0),Number(g?.teamContext?.home?.games||0));if(String(p?.sport||activeSport).toLowerCase()==='cfb')return b?.quant?.opponentAdjusted?'Opponent-adjusted ratings reduce schedule bias, but early-season CFB samples remain volatile.':'Opponent adjustment is unavailable for this matchup; CFB remains strongly market-anchored.';if(sample<4)return 'Recent-form sample is still limited.';return 'Market movement can reduce or eliminate the verified edge before kickoff.'}
-function casualAnalysis(b,g,p){const q=b?.quant,x=b?.structured;if(!q||!x)return 'Nothing strong enough to play at the current DraftKings number.';const cls=b.classification||deterministicClass(b),fair=Number(q.fair).toFixed(1),edge=Number(q.edge).toFixed(1),side=x.type==='total'?(String(x.side||'').toLowerCase()==='over'?'higher':'lower'):`toward ${String(x.team||'this side').toUpperCase()}`;const verdict=cls==='TAKE'?`There is enough room to bet it.`:cls==='LEAN'?`We like the direction, but not enough for a full play.`:cls==='WATCH'?`It is close, but we need a better number.`:`The gap is too small to bet.`;return `Our number is ${fair}, about ${edge} points ${side} than the current market. ${verdict} ${publicRisk(b,g,p)}`}
-function gameQuickTake(a,g,p){if(!a||!a.quant)return 'No verified edge here right now. PASS.';const cls=a.classification||deterministicClass(a),q=a.quant,edge=Number(q.edge).toFixed(1),fair=Number(q.fair).toFixed(1);if(cls==='TAKE')return `Our number is ${fair}, giving us about ${edge} points of room. Good enough to play.`;if(cls==='LEAN')return `Our number leans this way, but the edge is only ${edge}. Worth noting, not betting yet.`;if(cls==='WATCH')return `This is close. We need a little more value before betting it.`;return `Our number is ${fair}, but the edge is only ${edge}. Not enough to bet. PASS.`}
+function casualAnalysis(b,g,p){const q=b?.quant,x=b?.structured;if(!q||!x)return 'Nothing strong enough to play at the current DraftKings number.';const cls=b.classification||deterministicClass(b),fair=Number(q.fair).toFixed(1),edge=Number(q.edge).toFixed(1),side=x.type==='total'?(String(x.side||'').toLowerCase()==='over'?'higher':'lower'):`toward ${String(x.team||'this side').toUpperCase()}`;const verdict=cls==='TAKE'?`Research threshold reached; not approved for wagering.`:cls==='LEAN'?`We like the direction, but not enough for a full play.`:cls==='WATCH'?`It is close, but we need a better number.`:`The gap is too small to bet.`;return `Our number is ${fair}, about ${edge} points ${side} than the current market. ${verdict} ${publicRisk(b,g,p)}`}
+function gameQuickTake(a,g,p){if(!a||!a.quant)return 'No verified edge here right now. PASS.';const cls=a.classification||deterministicClass(a),q=a.quant,edge=Number(q.edge).toFixed(1),fair=Number(q.fair).toFixed(1);if(cls==='TAKE')return `Our number is ${fair}, giving us about ${edge} points of room. Research threshold reached; not approved for wagering.`;if(cls==='LEAN')return `Our number leans this way, but the edge is only ${edge}. Worth noting, not betting yet.`;if(cls==='WATCH')return `This is close. We need a little more value before betting it.`;return `Our number is ${fair}, but the edge is only ${edge}. Not enough to bet. PASS.`}
 function modelConfidenceScore(b,g){
  // Presentation-only evidence-quality index; never interpreted as probability of winning.
  const edge=Number(b?.quant?.edge),minimum=Number(b?.quant?.minimum);
@@ -373,7 +373,7 @@ function renderSignals(p){
  if(!ready&&p.games?.length){const missing=Math.max(0,(p.games?.length||0)-Number(p.ai?.parsedCount||0));$('bestSub').textContent=`${takes.length} actionable · ${missing} AI context pending`}
  if(life.complete){$('bestBets').innerHTML='<div class="card empty completedNote"><b>WEEK COMPLETE</b><br><span class="tiny">All games on this slate have started or finished. Historical analysis remains available, but completed games cannot become actionable picks. Refresh will automatically look for the next regular-season slate.</span></div>'}
  else if(!takes.length){$('bestBets').innerHTML='<div class="card empty"><b>NO BETS MEET OUR STANDARD</b><br><span class="tiny">No current DraftKings line has enough independently verified edge to take. This is a valid result—do not force action.</span></div>'}
- else {takes.sort((a,b)=>Number(b.confidence||0)-Number(a.confidence||0)||Number(b.quant?.edge||0)-Number(a.quant?.edge||0));$('bestBets').innerHTML=takes.map((b,i)=>`<article class="card bet bestPlay"><div class="row"><span class="actionLabel take">${i===0?'🥇 #1 BEST BET':i===1?'🥈 #2 STRONG PLAY':i===2?'🥉 #3 STRONG PLAY':`#${i+1} PLAY`}</span><span class="pill live">${esc(modelConfidencePill(b,gm(b.gameId)))}</span></div><div class="matchContext">${esc(matchupContext(p,b))}</div><div class="playLine">${esc(b.selection||'—')} ${b.price==null?'':`(${esc(String(b.price))})`}</div><div class="edge">Our number ${esc(String(b.quant?.fair??'—'))} · ${esc(String(b.quant?.edge??'—'))} pts of room</div><div class="reason">${esc(publicReason(b,gm(b.gameId),p.sport))}</div><div class="tiny risk" style="margin-top:8px"><b>Main risk:</b> ${esc(publicRisk(b,gm(b.gameId),p))}</div><div class="playable">${esc(playableLine(b))}</div><details><summary>Quick analysis</summary><div class="detail"><p><b>Why:</b> ${esc(casualAnalysis(b,gm(b.gameId),p))}</p><p><b>Watch out:</b> ${esc(publicRisk(b,gm(b.gameId),p))}</p></div></details></article>`).join('')}
+ else {takes.sort((a,b)=>Number(b.confidence||0)-Number(a.confidence||0)||Number(b.quant?.edge||0)-Number(a.quant?.edge||0));$('bestBets').innerHTML=takes.map((b,i)=>`<article class="card bet bestPlay"><div class="row"><span class="actionLabel take">${i===0?'🥇 #1 RESEARCH CANDIDATE':i===1?'🥈 #2 RESEARCH CANDIDATE':i===2?'🥉 #3 RESEARCH CANDIDATE':`#${i+1} RESEARCH`}</span><span class="pill live">${esc(modelConfidencePill(b,gm(b.gameId)))}</span></div><div class="matchContext">${esc(matchupContext(p,b))}</div><div class="playLine">${esc(b.selection||'—')} ${b.price==null?'':`(${esc(String(b.price))})`}</div><div class="edge">Our number ${esc(String(b.quant?.fair??'—'))} · ${esc(String(b.quant?.edge??'—'))} pts of room</div><div class="reason">${esc(publicReason(b,gm(b.gameId),p.sport))}</div><div class="tiny risk" style="margin-top:8px"><b>Main risk:</b> ${esc(publicRisk(b,gm(b.gameId),p))}</div><div class="playable">${esc(playableLine(b))}</div><details><summary>Quick analysis</summary><div class="detail"><p><b>Why:</b> ${esc(casualAnalysis(b,gm(b.gameId),p))}</p><p><b>Watch out:</b> ${esc(publicRisk(b,gm(b.gameId),p))}</p></div></details></article>`).join('')}
  $('leans').innerHTML=leans.length?leans.map(b=>{const q=b.quant;const need=q?Math.max(0,Number(q.minimum)-Number(q.edge)).toFixed(1):null;return `<article class="card bet"><div class="row"><span class="actionLabel lean">👀 LEAN</span><span class="pill">${esc(modelConfidencePill(b,gm(b.gameId)))}</span></div><div class="matchContext">${esc(matchupContext(p,b))}</div><div class="playLine">${esc(b.selection||'—')}</div><div class="reason">${esc(publicReason(b,gm(b.gameId),p.sport))}</div><div class="playable">NOT A BET${need!=null?` · needs about ${need} more point${need==='1.0'?'':'s'} at the current number`:''}</div></article>`}).join(''):'<div class="card empty tiny">No directional leans on this slate.</div>';
  $('watchList').innerHTML=watches.length?watches.map(b=>{const gate=watchGate(b,gm(b.gameId),p,fresh);return `<article class="card bet watchCard"><div class="row"><span class="actionLabel watch">⏳ WATCH</span><span class="pill">${esc(modelConfidencePill(b,gm(b.gameId)))}</span></div><div class="matchContext">${esc(matchupContext(p,b))}</div><div class="playLine">${esc(b.selection||'—')}</div><div class="reason">${esc(gate.reason)}</div><div class="playable">${esc(gate.label)}</div></article>`}).join(''):'<div class="card empty tiny">Nothing is waiting on a better number right now.</div>';
  $('passList').innerHTML=passes.length?passes.map(b=>{const g=gm(b.gameId);return `<article class="card bet"><div class="row"><span class="actionLabel">— STAY OFF</span><span class="pill">NO ACTION</span></div><div class="matchContext">${esc(matchupContext(p,b))}</div><div class="reason">${esc(publicReason(b,g,p.sport))}</div>${g?`<div class="tiny" style="margin-top:7px">DK: ${fmt(g.market?.spread)} · O/U ${g.market?.total==null?'—':Number(g.market.total).toFixed(1)}</div>`:''}</article>`}).join(''):'<div class="card empty tiny">No passed games.</div>';
@@ -395,6 +395,7 @@ function ticketSportRows(sport){
  });
 }
 function qualifiedBetslip(){
+ return [];// Validation hold: unvalidated football candidates must not become an actionable ticket.
  return [...ticketSportRows('nfl'),...ticketSportRows('cfb')].sort((a,b)=>(b.edge/Math.max(.01,b.minimum||1))-(a.edge/Math.max(.01,a.minimum||1))||Number(b.confidence||0)-Number(a.confidence||0));
 }
 async function hydrateUnifiedTicket(){
@@ -436,6 +437,39 @@ function ticketTodayKey(){return ticketLocalDay(new Date().toISOString())}
 function ticketDayLabel(iso){const d=new Date(iso);return Number.isFinite(d.getTime())?d.toLocaleDateString([], {weekday:'long',month:'short',day:'numeric'}):'Date unavailable'}
 function ticketDateZone(){return Intl.DateTimeFormat().resolvedOptions().timeZone||'device local time'}
 function ticketCard(x,rank){const sp=stakeProfile(x,rank),g=(sportState[x.sport.toLowerCase()]?.games||[]).find(g=>String(g.id)===String(x.gameId));return `<article class="card bet"><div class="row"><span class="rankBadge take">${sp.stars?sp.stars+' ':''}${esc(sp.label)} · ${esc(x.sport)} · ${sp.units.toFixed(1)}u</span><span class="pill">${esc(modelConfidencePill(x.bet||x,g))}</span></div><div class="matchContext">${esc(x.gameContext||'MATCHUP UNAVAILABLE')}</div><div class="playLine">${esc(x.selection)} ${x.price==null?'':`(${esc(String(x.price))})`}</div><div class="reason"><b>Why D.I.L.D.O. likes it:</b> ${esc(x.reason)}</div><div class="tiny risk" style="margin-top:8px"><b>Main risk:</b> ${esc(x.risk)}</div><div class="playable">${esc(x.playable)}</div></article>`}
+// v8.70 NFL shadow challenger. Experimental coefficients are hypotheses, NOT fitted/calibrated probabilities.
+// All decisions are research-only; no automatic ticket promotion.
+function nflShadowCandidate(g){
+ const q=quantFair(g,'nfl'),a=g?.teamContext?.away,h=g?.teamContext?.home;
+ const n=Math.min(Number(a?.games||0),Number(h?.games||0));
+ const kickoff=new Date(g?.kickoff).getTime();
+ const result={gameId:String(g?.id||''),kickoff:g?.kickoff||null,sampleGames:n,status:'PASS',reason:'',candidates:[]};
+ if(!Number.isFinite(kickoff)||kickoff<=Date.now()){result.reason='Game started or kickoff missing';return result}
+ if(!q||n<4){result.reason='At least four completed games per team required';return result}
+ const books=draftKingsBooks(g);if(!books.length){result.reason='DraftKings market unavailable';return result}
+ // Low-sample shrinkage is intentionally more conservative than the frozen model.
+ const weight=Math.min(.32,.12+.04*(n-4));
+ for(const type of ['spread','total'])for(const side of (type==='spread'?['home','away']:['over','under'])){
+  const o=bestOption(g,type,side);if(!o||!Number.isFinite(o.line)||!Number.isFinite(o.price)||o.price===0)continue;
+  const raw=type==='spread'?(side==='home'?q.homeSpread:-q.homeSpread):q.total;
+  const fair=+(o.line+weight*(raw-o.line)).toFixed(2);
+  const edge=+(type==='spread'?(o.line-fair):(side==='over'?fair-o.line:o.line-fair)).toFixed(2);
+  const minimum=type==='spread'?3.0:3.5;
+  result.candidates.push({type,side,line:o.line,price:o.price,rawFair:raw,shadowFair:fair,edge,minimum,weight,book:o.book});
+ }
+ result.candidates.sort((x,y)=>(y.edge/y.minimum)-(x.edge/x.minimum));
+ const best=result.candidates[0];
+ if(!best){result.reason='No complete DraftKings market and price';return result}
+ result.best=best;
+ result.status=best.edge>=best.minimum?'SHADOW_THRESHOLD':'PASS';
+ result.reason=result.status==='SHADOW_THRESHOLD'?'Research threshold reached; NOT approved for wagering':'Insufficient conservative research edge';
+ return result;
+}
+function nflShadowReport(){
+ const p=sportState.nfl,games=Array.isArray(p?.games)?p.games:[];
+ return {version:VERSION,generatedAt:new Date().toISOString(),status:'UNVALIDATED_SHADOW_ONLY',hypothesis:'>=4 games per team, max 0.32 model weight, spread edge >=3.0, total edge >=3.5',snapshotAt:p?.updatedAt||null,source:p?.source||null,legacyModelVersion:MODEL_VERSION,rows:games.map(g=>({gameId:String(g.id),matchup:`${g?.away?.abbr||'?'} @ ${g?.home?.abbr||'?'}`,legacy:deterministicCandidate(g,'nfl'),shadow:nflShadowCandidate(g)}))};
+}
+function exportNflShadow(){downloadText(`dildo-nfl-shadow-comparison-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(nflShadowReport(),null,2))}
 function footballValidationReport(){
  const sports=['nfl','cfb'];const result={version:VERSION,generatedAt:new Date().toISOString(),status:'UNVALIDATED_RESEARCH_ONLY',modelVersions:{nfl:MODEL_VERSION,cfb:CFB_MODEL_VERSION},disclaimer:'Model Confidence is not calibrated win probability. Snapshot analysis is not independent performance validation.',sports:{},ledger:{}};
  for(const sport of sports){const p=sportState[sport],games=Array.isArray(p?.games)?p.games:[],decisions=games.length?deterministicSlate(p):[];result.sports[sport]={snapshotAt:p?.updatedAt||null,season:p?.season??null,week:p?.week??null,games:games.length,decisions:decisions.map(b=>{const g=games.find(g=>String(g.id)===String(b.gameId));return{gameId:b.gameId,kickoff:g?.kickoff||null,matchup:`${g?.away?.abbr||g?.away||'?'} @ ${g?.home?.abbr||g?.home||'?'}`,classification:b.classification,selection:b.selection,price:b.price,book:b.book,verifiedMarket:b.verifiedMarket,confidenceEvidenceIndex:g&&b.quant?modelConfidenceScore(b,g):null,teamSampleGames:Math.min(Number(g?.teamContext?.away?.games||0),Number(g?.teamContext?.home?.games||0)),rawFair:b.quant?.rawFair??null,shrunkFair:b.quant?.fair??null,edge:b.quant?.edge??null,minimum:b.quant?.minimum??null,reliabilityWeight:b.quant?.reliabilityWeight??null,method:b.quant?.method??null,fingerprint:b.quant?decisionFingerprint(p,b):null}})};}
@@ -443,7 +477,7 @@ function footballValidationReport(){
  const settled=ledger.filter(x=>['WIN','LOSS','PUSH'].includes(String(x.result||'').toUpperCase()));const wins=settled.filter(x=>x.result==='WIN').length,losses=settled.filter(x=>x.result==='LOSS').length,pushes=settled.filter(x=>x.result==='PUSH').length;
  result.coverage=footballCoverageReport().counts;result.ledger={total:ledger.length,settled:settled.length,wins,losses,pushes,unitsNet:settled.reduce((n,x)=>n+(Number(x.units)||0),0),missingOutcome:ledger.length-settled.length,rows:ledger.map(x=>({sport:x.sport||null,gameId:x.gameId,ts:x.ts,selection:x.bet?.selection,classification:x.bet?.classification,confidence:x.bet?.confidence,price:x.bet?.price,result:x.result||null,units:x.units??null,finalScore:x.finalScore||null}))};return result;
 }
-function renderFootballValidation(){const box=$('validationSummary');if(!box)return;const r=footballValidationReport(),n=r.ledger,c=footballCoverageReport().counts;box.innerHTML=`<b>Recommendation coverage (journal began v8.59):</b> ${c.highConfidenceTakes} TAKE captured · ${c.officialMatched} matched to official ledger · ${c.officialGraded} graded · ${c.officialOpen} open · ${c.highConfidenceMissingFromOfficial} missing official records<br><b>Prior history:</b> Cannot determine total historical coverage without pregame archives.<br><b>Local ledger:</b> ${n.settled} settled / ${n.total} recorded · ${n.wins}W–${n.losses}L–${n.pushes}P · ${Number(n.unitsNet).toFixed(2)} units (recorded only)<br><b>Current NFL snapshot:</b> ${r.sports.nfl.games} games · ${r.sports.nfl.decisions.filter(x=>x.classification==='TAKE').length} TAKE candidates<br><b>Current CFB snapshot:</b> ${r.sports.cfb.games} games · ${r.sports.cfb.decisions.filter(x=>x.classification==='TAKE').length} TAKE candidates<br><b>Coverage warning:</b> This ledger may omit actual wagers, past recommendations, and unrecorded outcomes. Do not interpret it as verified ROI.`;}
+function renderFootballValidation(){const box=$('validationSummary');if(!box)return;const r=footballValidationReport(),n=r.ledger,c=footballCoverageReport().counts;const sh=nflShadowReport(),eligible=sh.rows.filter(x=>x.shadow.status==='SHADOW_THRESHOLD').length;box.innerHTML=`<b>NFL SHADOW CHALLENGER:</b> ${eligible} research thresholds / ${sh.rows.length} games. Requires 4+ games/team, more shrinkage, wider edge minimums. NOT calibrated or approved. Export comparison for pregame testing.<br><b>Recommendation coverage (journal began v8.59):</b> ${c.highConfidenceTakes} TAKE captured · ${c.officialMatched} matched to official ledger · ${c.officialGraded} graded · ${c.officialOpen} open · ${c.highConfidenceMissingFromOfficial} missing official records<br><b>Prior history:</b> Cannot determine total historical coverage without pregame archives.<br><b>Local ledger:</b> ${n.settled} settled / ${n.total} recorded · ${n.wins}W–${n.losses}L–${n.pushes}P · ${Number(n.unitsNet).toFixed(2)} units (recorded only)<br><b>Current NFL snapshot:</b> ${r.sports.nfl.games} games · ${r.sports.nfl.decisions.filter(x=>x.classification==='TAKE').length} TAKE candidates<br><b>Current CFB snapshot:</b> ${r.sports.cfb.games} games · ${r.sports.cfb.decisions.filter(x=>x.classification==='TAKE').length} TAKE candidates<br><b>Coverage warning:</b> This ledger may omit actual wagers, past recommendations, and unrecorded outcomes. Do not interpret it as verified ROI.`;}
 function exportFootballValidation(){downloadText(`dildo-football-model-audit-${new Date().toISOString().slice(0,10)}.json`,JSON.stringify(footballValidationReport(),null,2))}
 function renderGeneratedBetslip(){
  const box=$('generatedBetslip');if(!box)return;
@@ -486,7 +520,7 @@ function renderGames(p){$('gameMeta').textContent=p.games?.length?`${p.games.len
 function renderMovement(p){$('movement').innerHTML=p.games?.length?p.games.map(g=>{const m=movement(g);return `<article class="card move"><div><b>${esc(g.away)} @ ${esc(g.home)}</b><span class="tiny">${g.snapshots?.length||0} prior local snapshot${(g.snapshots?.length||0)===1?'':'s'}</span></div><span>Spread ${m.spread==null?'—':fmt(m.spread)}</span><span>Total ${m.total==null?'—':fmt(m.total)}</span></article>`}).join(''):'<div class="card empty">No market snapshot loaded.</div>'}
 function ledgerRow(x){const b=x.bet||{},result=x.result||'OPEN',resultClass=result==='WIN'?'ok':result==='LOSS'?'bad':'';return `<div class="ledgerRow"><div class="ledgerPick"><b>${esc(b.selection||'')}</b><span>${x.topPlay?'TOP PLAY · ':'TAKE · '}${esc(b.market||'')} · ${esc(b.book||'')}</span></div><div class="ledgerMeta">${esc(String(b.confidence??''))}%</div><div class="ledgerResult ${resultClass}">${esc(result)}<span class="ledgerMeta">${x.units!=null?`${x.units>0?'+':''}${Number(x.units).toFixed(2)}u`:''}</span></div></div>`}
 function renderLedger(){const l=loadLedger();$('ledgerCount').textContent=`${l.length} tracked`;if(!l.length){$('ledger').innerHTML='<div class="card empty">No official TAKE recommendations recorded yet. Only immutable pregame TAKEs count toward the W/L record; LEAN/WATCH/PASS are retained separately for research.</div>';renderPerformance();return}const recent=l.slice(0,3),older=l.slice(3,60);$('ledger').innerHTML=`<article class="card ledgerCompact">${recent.map(ledgerRow).join('')}</article>${older.length?`<details class="ledgerMore"><summary>View ${older.length} more tracked bet${older.length===1?'':'s'}</summary><article class="card ledgerCompact" style="margin-top:8px">${older.map(ledgerRow).join('')}</article></details>`:''}`;renderPerformance()}
-function renderDiagnostics(p,mode,error){if(p){document.body.dataset.snapshotIdentity=snapshotIdentity(p);}const age=p.updatedAt?Date.now()-new Date(p.updatedAt).getTime():Infinity,pd=p.propDiagnostics||p.propFeedDiagnostics||{},primary=pd.primary||{},fallback=pd.fallback||{},propStatus=String(p.propFeedStatus||'').toUpperCase(),workerOk=!!p.propWorkerHealth?.ok,primaryOk=String(p.propSource||'').includes('ParlayAPI')||pd.activeProvider==='ParlayAPI'||(!p.propFeedErrorStage&&propStatus==='RECEIVED'&&pd.activeProvider!=='SportsGameOdds'),fallbackActive=pd.activeProvider==='SportsGameOdds'||String(p.propSource||'').includes('SportsGameOdds'),fallbackConfigured=!!p.propWorkerHealth?.bindings?.SGO_API_KEY,dkOk=['RECEIVED','CACHED'].includes(propStatus)&&Array.isArray(p.nflProps)&&p.nflProps.length>0;const checks=[['HTTPS context',location.protocol==='https:'||location.hostname==='localhost'],['Snapshot schema',!error&&!!p.games?.length],['Zero-cost Workers AI',true],['IndexedDB','indexedDB'in window],['Service worker','serviceWorker'in navigator],['Live market source',String(p.source||'').includes('ESPN public schedule')||p.source==='Secure endpoint'],['DraftKings actionable',!!p.games?.length&&p.games.some(g=>draftKingsBooks(g).length)],['Build fingerprint',VERSION==='0.8.60'&&BUILD_ID==='0860-NBA-SEASON-VALIDATION-20261019'&&MODEL_VERSION==='football-077-frozen'&&CFB_MODEL_VERSION==='cfb-0824-calibrated-transparency-v1'&&PGA_MODEL_VERSION==='pga-084-historical-strength-shadow-v1'],['Team intelligence',!!p.games?.length&&p.games.every(g=>g.teamContext&&g.contextMeta)],['AI validated',aiReady(p)],['Freshness',age<=currentSettings.staleMinutes*60000],['No demo fixtures',!String(p.source||'').toLowerCase().includes('demo')],['Props Worker',workerOk],['Primary Props Provider',primaryOk],['Fallback Props Provider',fallbackActive||fallbackConfigured],['DraftKings Props Feed',dkOk]];$('diagnostics').innerHTML=`<div class="diagList">${checks.map(([n,ok])=>`<div><span>${esc(n)}</span><b class="${ok?'ok':'bad'}">${ok?'PASS':'CHECK'}</b></div>`).join('')}</div><p class="tiny">${error?`Last refresh error: ${esc(error)}`:aiReady(p)?`AI ${esc(p.ai.model||'analyst')} is active and the response passed schema validation.`:'Deterministic picks are available from verified market data; AI context is still loading or unavailable.'} Props: ${esc(propStatus||'UNKNOWN')}${p.propWorkerHealth?.version?` · Worker ${esc(p.propWorkerHealth.version)}`:''}${fallbackConfigured?' · SGO key detected':' · SGO key not detected'}${p.propSource?` · ${esc(p.propSource)}`:''}.${p.propFeedErrorStage?` Primary failure: ${esc(p.propFeedErrorStage)}${p.propFeedProviderStatus?` / HTTP ${esc(String(p.propFeedProviderStatus))}`:''}.`:''}${fallback?.stage?` Fallback: ${esc(fallback.stage)}${fallback.configured===false?' (not configured)':''}.`:fallbackActive?' Fallback provider is active.':''}</p>`}
+function renderDiagnostics(p,mode,error){if(p){document.body.dataset.snapshotIdentity=snapshotIdentity(p);}const age=p.updatedAt?Date.now()-new Date(p.updatedAt).getTime():Infinity,pd=p.propDiagnostics||p.propFeedDiagnostics||{},primary=pd.primary||{},fallback=pd.fallback||{},propStatus=String(p.propFeedStatus||'').toUpperCase(),workerOk=!!p.propWorkerHealth?.ok,primaryOk=String(p.propSource||'').includes('ParlayAPI')||pd.activeProvider==='ParlayAPI'||(!p.propFeedErrorStage&&propStatus==='RECEIVED'&&pd.activeProvider!=='SportsGameOdds'),fallbackActive=pd.activeProvider==='SportsGameOdds'||String(p.propSource||'').includes('SportsGameOdds'),fallbackConfigured=!!p.propWorkerHealth?.bindings?.SGO_API_KEY,dkOk=['RECEIVED','CACHED'].includes(propStatus)&&Array.isArray(p.nflProps)&&p.nflProps.length>0;const checks=[['HTTPS context',location.protocol==='https:'||location.hostname==='localhost'],['Snapshot schema',!error&&!!p.games?.length],['Zero-cost Workers AI',true],['IndexedDB','indexedDB'in window],['Service worker','serviceWorker'in navigator],['Live market source',String(p.source||'').includes('ESPN public schedule')||p.source==='Secure endpoint'],['DraftKings actionable',!!p.games?.length&&p.games.some(g=>draftKingsBooks(g).length)],['Build fingerprint',VERSION==='0.8.70'&&BUILD_ID==='0870-NFL-SHADOW-RECALIBRATION-20261022'&&MODEL_VERSION==='football-077-frozen'&&CFB_MODEL_VERSION==='cfb-0824-calibrated-transparency-v1'&&PGA_MODEL_VERSION==='pga-084-historical-strength-shadow-v1'],['Team intelligence',!!p.games?.length&&p.games.every(g=>g.teamContext&&g.contextMeta)],['AI validated',aiReady(p)],['Freshness',age<=currentSettings.staleMinutes*60000],['No demo fixtures',!String(p.source||'').toLowerCase().includes('demo')],['Props Worker',workerOk],['Primary Props Provider',primaryOk],['Fallback Props Provider',fallbackActive||fallbackConfigured],['DraftKings Props Feed',dkOk]];$('diagnostics').innerHTML=`<div class="diagList">${checks.map(([n,ok])=>`<div><span>${esc(n)}</span><b class="${ok?'ok':'bad'}">${ok?'PASS':'CHECK'}</b></div>`).join('')}</div><p class="tiny">${error?`Last refresh error: ${esc(error)}`:aiReady(p)?`AI ${esc(p.ai.model||'analyst')} is active and the response passed schema validation.`:'Deterministic picks are available from verified market data; AI context is still loading or unavailable.'} Props: ${esc(propStatus||'UNKNOWN')}${p.propWorkerHealth?.version?` · Worker ${esc(p.propWorkerHealth.version)}`:''}${fallbackConfigured?' · SGO key detected':' · SGO key not detected'}${p.propSource?` · ${esc(p.propSource)}`:''}.${p.propFeedErrorStage?` Primary failure: ${esc(p.propFeedErrorStage)}${p.propFeedProviderStatus?` / HTTP ${esc(String(p.propFeedProviderStatus))}`:''}.`:''}${fallback?.stage?` Fallback: ${esc(fallback.stage)}${fallback.configured===false?' (not configured)':''}.`:fallbackActive?' Fallback provider is active.':''}</p>`}
 function syncSportSummary(p){const ps=p?.sport;if(ps!==activeSport)return;if(aiReady(p)){const ds=deterministicSlate(p),gm=id=>p.games?.find(g=>String(g.id)===String(id)),fresh=Number.isFinite(new Date(p.updatedAt).getTime())&&Date.now()-new Date(p.updatedAt).getTime()<=Number(currentSettings.staleMinutes||30)*60000,future=b=>{const g=gm(b.gameId);return g&&new Date(g.kickoff).getTime()>Date.now()},takes=ds.filter(b=>b.classification==='TAKE'&&b.verifiedMarket&&fresh&&future(b)),leans=ds.filter(b=>b.classification==='LEAN'&&b.verifiedMarket&&future(b)),watches=ds.filter(b=>b.classification==='WATCH'&&b.verifiedMarket&&future(b)),passes=ds.filter(b=>!takes.includes(b)&&!leans.includes(b)&&!watches.includes(b));$('pullMessage').textContent=`${Number(p.ai?.fallbackCount||0)?'Analysis finalized':'AI context review complete'}: ${Number(p.ai?.parsedCount||0)}/${p.games?.length||0} AI rows parsed${Number(p.ai?.fallbackCount||0)?` · ${Number(p.ai.fallbackCount)} deterministic-only`:''}. Current card: ${takes.length} PLAY · ${leans.length} LEAN · ${watches.length} WATCH · ${passes.length} STAY OFF.`;$('pullMessage').className='notice good'}else if(p.games?.length){$('pullMessage').textContent=`${ps.toUpperCase()} deterministic card ready · AI context ${p.ai?'incomplete':'loading'}.`;$('pullMessage').className='notice'}else{$('pullMessage').textContent=`Loading ${ps.toUpperCase()} market snapshot…`;$('pullMessage').className='notice'}}
 function renderAll(p,mode,note,error=null){const ps=p?.sport;if(!ps||ps!==uiState.sport||ps!==activeSport)return false;sportState[ps]=p;current=p;renderStatus(p,mode,note);renderSignals(p);renderAI(p);renderGames(p);if(activePage==='more'){renderLedger();renderModelHealth();renderDiagnostics(p,mode,error);$('promptPreview').value=buildPrompt(p)}if(activePage==='betslip'){renderGeneratedBetslip();renderPinWatch()}syncSportSummary(p);return true}
 async function saveWithHistory(payload,mode,pulledAt){const payloadSport=payload?.sport||activeSport;let previous=null;try{previous=await latestSnapshot(payloadSport)}catch{};if(previous?.payload?.games){const byId=new Map(previous.payload.games.map(g=>[String(g.id),g]));payload.games=payload.games.map(g=>{const old=byId.get(String(g.id));const prior=old?{pulledAt:previous.pulledAt,market:old.market,opening:old.opening}:null;return {...g,snapshots:prior?[...(g.snapshots||[]),prior]:g.snapshots||[]}})}const id=`${pulledAt}-${crypto.randomUUID?.()||Math.random().toString(36).slice(2)}`;payload.__snapshotId=id;payload.__pulledAt=pulledAt;await putSnapshot(payload,{id,pulledAt,mode});return id}
@@ -620,6 +654,7 @@ const NBA_CACHE_KEY='dildo.nba.shadow.daily.v852';
 const NBA_ARCHIVE_KEY='dildo.nba.shadow.completed.archive.v852';
 const NBA_LEDGER_KEY='dildo.nba.shadow.forecasts.v848';
 const NBA_BACKFILL_KEY='dildo.nba.shadow.backfill.v854';
+const NBA_PRIOR_BACKFILL_KEY='dildo.nba.shadow.prior.backfill.v861';
 const NBA_QUOTA_KEY='dildo.nbaQuotaCooldownUntil.v853'; // Retain existing cooldown across upgrade
 let nbaRefreshBusy=false;
 function nbaSafe(x){return String(x??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
@@ -688,10 +723,37 @@ function nbaProject(g,history){
  const round=n=>Math.round(n*10)/10;
  return {away:round(away),home:round(home),total:round(away+home),margin:round(home-away),awaySamples:a.n,homeSamples:h.n,season,quality:Math.min(a.n,h.n)>=10&&model.games>=60?'DEVELOPING':'LIMITED',method:'season-isolated opponent-adjusted scoring'};
 }
+// A prior-season regular-season baseline is research only; never pool it with current-season games.
+// Only verified ESPN completed games already stored in the archive are eligible.
+function nbaPriorSeasonProjection(g,archive,year){
+ if(g.season!=='REGULAR')return null;
+ const previous=nbaHistoryModel(archive,year-1),pr=nbaProject(g,previous);
+ if(!pr)return null;
+ return {...pr,season:'REGULAR',quality:'PRIOR-SEASON ONLY',method:'prior-season regular-season scoring; no current-season injury or roster adjustment',priorSeasonYear:year-1,priorSeasonGames:previous.counts.REGULAR||0};
+}
+// v8.62: conservative regular-season research transition. Do not use preseason or
+// postgame data; historical baselines are never labeled current-season evidence.
+function nbaBlendedProjection(g,archive,year,history){
+ const current=nbaProject(g,history);
+ const prior=nbaPriorSeasonProjection(g,archive,year);
+ if(!current)return prior;
+ if(g.season!=='REGULAR'||!prior)return current;
+ const minSample=Math.min(current.awaySamples,current.homeSamples);
+ // Prior season supplies at most 35% and fades out by ten games per team.
+ const priorWeight=Math.max(0,Math.min(0.35,(10-minSample)/20));
+ if(priorWeight<=0)return current;
+ const round=n=>Math.round(n*10)/10;
+ const away=round(current.away*(1-priorWeight)+prior.away*priorWeight);
+ const home=round(current.home*(1-priorWeight)+prior.home*priorWeight);
+ return {...current,away,home,total:round(away+home),margin:round(home-away),
+  quality:'BLENDED · EXPERIMENTAL',method:'current-season opponent-adjusted scoring blended with prior-season scoring baseline',
+  priorSeasonYear:year-1,priorSeasonGames:prior.priorSeasonGames,priorSeasonWeight:round(priorWeight*100),
+  currentSeasonWeight:round((1-priorWeight)*100)};
+}
 function nbaLoadLedger(){try{const v=JSON.parse(localStorage.getItem(NBA_LEDGER_KEY)||'[]');return Array.isArray(v)?v:[]}catch{return []}}
 function nbaUpdateLedger(games,finals){
  const ledger=nbaLoadLedger(),byId=new Map(ledger.map(x=>[x.id,x]));let changed=false;
- for(const g of games){if(!g.projection||g.marketRecovered||byId.has(g.id))continue;const tipoffMs=Date.parse(g.tipoff);if(!Number.isFinite(tipoffMs)||tipoffMs<=Date.now())continue;const row={id:g.id,away:g.away,home:g.home,tipoff:g.tipoff,createdAt:new Date().toISOString(),projection:g.projection,actual:null};ledger.push(row);byId.set(g.id,row);changed=true}
+ for(const g of games){if(!g.projection||g.marketRecovered||byId.has(g.id))continue;const tipoffMs=Date.parse(g.tipoff);if(!Number.isFinite(tipoffMs)||tipoffMs<=Date.now())continue;const row={id:g.id,away:g.away,home:g.home,tipoff:g.tipoff,createdAt:new Date().toISOString(),projection:g.projection,marketAtForecast:(!g.marketRecovered&&g.dk)?{total:g.dk.total!=null&&Number.isFinite(Number(g.dk.total))?Number(g.dk.total):null,homeSpread:g.dk.spread!=null&&Number.isFinite(Number(g.dk.spread))?Number(g.dk.spread):null,source:'DraftKings ESPN snapshot; timestamp is forecast creation'}:null,actual:null};ledger.push(row);byId.set(g.id,row);changed=true}
  for(const e of finals){const row=byId.get(String(e.id));if(!row||row.actual)continue;const c=e.competitions?.[0];if(!e.status?.type?.completed)continue;const h=c?.competitors?.find(x=>x.homeAway==='home'),a=c?.competitors?.find(x=>x.homeAway==='away');const hs=Number(h?.score),as=Number(a?.score);if(!Number.isFinite(hs)||!Number.isFinite(as)||hs<50||as<50||!Number.isFinite(Date.parse(row.tipoff))||Date.parse(row.createdAt)>=Date.parse(row.tipoff)||String(h?.team?.abbreviation||'')!==String(row.home)||String(a?.team?.abbreviation||'')!==String(row.away)||nbaSeasonType(e)!==row.projection?.season)continue;row.actual={home:hs,away:as,total:hs+as,margin:hs-as,gradedAt:new Date().toISOString()};changed=true}
  if(changed){try{localStorage.setItem(NBA_LEDGER_KEY,JSON.stringify(ledger.slice(-800)))}catch(error){console.warn('NBA shadow ledger could not be persisted',error)}}
  return ledger;
@@ -701,6 +763,8 @@ function nbaResearchConfidence(g,data,stale){
  const pr=g?.marketRecovered?null:g?.projection;
  if(!pr)return null; // No forecast => no numerical confidence claim.
  const n=Math.min(Number(pr.awaySamples||0),Number(pr.homeSamples||0));
+ if(pr.priorSeasonYear&&!pr.priorSeasonWeight)return Math.min(48,35+Math.min(10,n)+(!stale?3:0)-(data?.partial?6:0));
+ if(pr.priorSeasonWeight)return Math.min(65,38+Math.min(20,n*2)+(!stale?3:0)-(data?.partial?6:0));
  const counts=data?.seasonCounts||{};
  const seasonN=Number(counts[g.season]||0);
  const hasDK=!!(!g.marketRecovered&&g.dk&&(g.dk.spread!=null||g.dk.total!=null));
@@ -711,7 +775,188 @@ function nbaResearchConfidence(g,data,stale){
  if(g.season==='PRESEASON')score-=10;
  return Math.max(30,Math.min(75,Math.round(score)));
 }
+// v8.63: descriptive validation only; no model parameters or eligibility changed.
+// Error is forecast minus final. Positive total bias means overshooting actual scoring.
+function nbaForecastValidation(rows){
+ const types=['REGULAR','PRESEASON','PLAYOFFS'];
+ const valid=rows.filter(x=>x&&x.projection&&x.actual&&Number.isFinite(Number(x.projection.total))&&Number.isFinite(Number(x.projection.margin))&&Number.isFinite(Number(x.actual.total))&&Number.isFinite(Number(x.actual.margin))&&Number.isFinite(Date.parse(x.createdAt))&&Number.isFinite(Date.parse(x.tipoff))&&Date.parse(x.createdAt)<Date.parse(x.tipoff));
+ const mean=(a)=>a.length?Math.round(a.reduce((v,n)=>v+n,0)/a.length*10)/10:null;
+ const stats=(arr)=>({count:arr.length,totalMAE:mean(arr.map(x=>Math.abs(Number(x.projection.total)-Number(x.actual.total)))),marginMAE:mean(arr.map(x=>Math.abs(Number(x.projection.margin)-Number(x.actual.margin)))),totalBias:mean(arr.map(x=>Number(x.projection.total)-Number(x.actual.total))),marginBias:mean(arr.map(x=>Number(x.projection.margin)-Number(x.actual.margin)))});
+ return {bySeason:Object.fromEntries(types.map(type=>[type,stats(valid.filter(x=>x.projection.season===type))])),all:stats(valid),excludedPostTipoffOrInvalid:rows.filter(x=>x?.actual&&x?.projection).length-valid.length,pending:rows.filter(x=>x?.projection&&!x?.actual).length};
+}
+// v8.64: independent pregame-market benchmark. Uses ONLY DraftKings values
+// captured alongside the forecast; never substitute today's/postgame odds.
+// ESPN scoreboard does not provide verified possessions, so do not label
+// score-based estimates as pace-adjusted efficiency.
+// v8.65: conservative evidence gates for historical NBA shadow audits.
+// Existing legacy forecasts are retained but never treated as validated if
+// provenance, pre-tipoff creation or score integrity cannot be established.
+function nbaAuditEligible(r){
+ if(!r||!r.projection||!r.actual)return false;
+ const created=Date.parse(r.createdAt),tipoff=Date.parse(r.tipoff);
+ if(!Number.isFinite(created)||!Number.isFinite(tipoff)||created>=tipoff)return false;
+ if(!['REGULAR','PRESEASON','PLAYOFFS'].includes(r.projection.season))return false;
+ if(!r.id||!r.home||!r.away||r.home===r.away)return false;
+ const nums=[r.projection.total,r.projection.margin,r.actual.total,r.actual.margin,r.actual.home,r.actual.away];
+ if(nums.some(x=>x===null||x===undefined||!Number.isFinite(Number(x))))return false;
+ const home=Number(r.actual.home),away=Number(r.actual.away);
+ if(home<50||away<50||home>250||away>250)return false;
+ return Math.abs(home+away-Number(r.actual.total))<0.01&&Math.abs(home-away-Number(r.actual.margin))<0.01;
+}
+function nbaAuditIntegrity(rows){
+ const completed=rows.filter(r=>r?.actual&&r?.projection);
+ const eligible=completed.filter(nbaAuditEligible);
+ const validMarket=eligible.filter(r=>r.marketAtForecast?.source==='DraftKings ESPN snapshot; timestamp is forecast creation');
+ const regular=eligible.filter(r=>r.projection.season==='REGULAR');
+ const regularPaired=validMarket.filter(r=>r.projection.season==='REGULAR'&&(
+  (Number.isFinite(r.marketAtForecast?.total)&&r.marketAtForecast.total>=100&&r.marketAtForecast.total<=300)||
+  (Number.isFinite(r.marketAtForecast?.homeSpread)&&Math.abs(r.marketAtForecast.homeSpread)<=35)));
+ return {recorded:rows.length,settled:completed.length,validPregame:eligible.length,excluded:completed.length-eligible.length,regularPregame:regular.length,regularWithDK:regularPaired.length,
+  productionBettingReady:false,reason:'No independently validated regular-season predictive edge or verified possession/injury inputs. NBA remains SHADOW.'};
+}
+// v8.66: paired out-of-sample observational benchmark with uncertainty.
+// Positive model-minus-market absolute error means market was closer.
+// 95% intervals are descriptive normal approximations, not proof of an edge.
+function nbaPairedEvidence(rows,field){
+ const differences=rows.map(r=>field==='total'
+  ? Math.abs(Number(r.projection.total)-Number(r.actual.total))-Math.abs(Number(r.marketAtForecast.total)-Number(r.actual.total))
+  : Math.abs(Number(r.projection.margin)-Number(r.actual.margin))-Math.abs(-Number(r.marketAtForecast.homeSpread)-Number(r.actual.margin)));
+ const n=differences.length,round=x=>Math.round(x*100)/100;
+ if(!n)return {count:0,meanDifference:null,ci95:null,modelCloser:0,marketCloser:0,ties:0,sampleSufficient:false};
+ const mean=differences.reduce((a,b)=>a+b,0)/n;
+ const variance=n>1?differences.reduce((a,b)=>a+(b-mean)**2,0)/(n-1):null;
+ const half=variance===null?null:1.96*Math.sqrt(variance/n);
+ return {count:n,meanDifference:round(mean),ci95:half===null?null:[round(mean-half),round(mean+half)],modelCloser:differences.filter(x=>x<0).length,marketCloser:differences.filter(x=>x>0).length,ties:differences.filter(x=>x===0).length,sampleSufficient:n>=100,intervalExcludesZero:half!==null&&(mean+half<0||mean-half>0)};
+}
+function nbaMarketBenchmark(rows){
+ const types=['REGULAR','PRESEASON','PLAYOFFS'];
+ const mean=a=>a.length?Math.round(a.reduce((s,v)=>s+v,0)/a.length*10)/10:null;
+ const valid=rows.filter(nbaAuditEligible);
+ const metrics=type=>{
+  const sample=valid.filter(r=>r.projection.season===type);
+  const totals=sample.filter(r=>r.marketAtForecast?.source==='DraftKings ESPN snapshot; timestamp is forecast creation'&&Number.isFinite(r.marketAtForecast.total)&&r.marketAtForecast.total>=100&&r.marketAtForecast.total<=300);
+  const margins=sample.filter(r=>r.marketAtForecast?.source==='DraftKings ESPN snapshot; timestamp is forecast creation'&&Number.isFinite(r.marketAtForecast.homeSpread)&&Math.abs(r.marketAtForecast.homeSpread)<=35);
+  const totalModel=mean(totals.map(r=>Math.abs(r.projection.total-r.actual.total)));
+  const totalMarket=mean(totals.map(r=>Math.abs(r.marketAtForecast.total-r.actual.total)));
+  const marginModel=mean(margins.map(r=>Math.abs(r.projection.margin-r.actual.margin)));
+  const marginMarket=mean(margins.map(r=>Math.abs(-r.marketAtForecast.homeSpread-r.actual.margin)));
+  return {graded:sample.length,pairedTotals:totals.length,pairedMargins:margins.length,totalModelMAE:totalModel,totalMarketMAE:totalMarket,marginModelMAE:marginModel,marginMarketMAE:marginMarket,totalPairedEvidence:nbaPairedEvidence(totals,'total'),marginPairedEvidence:nbaPairedEvidence(margins,'margin'),totalModelMinusMarketMAE:totalModel===null?null:Math.round((totalModel-totalMarket)*10)/10,marginModelMinusMarketMAE:marginModel===null?null:Math.round((marginModel-marginMarket)*10)/10};
+ };
+ return {bySeason:Object.fromEntries(types.map(type=>[type,metrics(type)])),minimumReviewSample:100,explanation:'Paired pregame observational error differences. Negative favors the model. 95% intervals are normal approximations and do not account for game dependence, selection bias, odds vig or calibration. Minimum 100 regular-season pairs per market for initial review, not automatic betting approval.'};
+}
+
+// v8.67: ESPN box-score research ingestion. Only completed regular-season games;
+// estimated possessions are NOT official pace and never drive a betting recommendation.
+const NBA_BOX_KEY='dildo.nba.boxscore.research.v1',NBA_BOX_ATTEMPT_KEY='dildo.nba.boxscore.attempt.v1';
+function nbaBoxArchive(){try{const x=JSON.parse(localStorage.getItem(NBA_BOX_KEY)||'[]');return Array.isArray(x)?x:[]}catch{return []}}
+function nbaBoxStat(stats,names){
+ // ESPN may use either a machine name or an abbreviation; a missing statistic is not zero.
+ const wanted=new Set(names.map(n=>String(n).toLowerCase().replace(/[^a-z0-9]/g,'')));
+ const item=(stats||[]).find(x=>[x.name,x.label,x.abbreviation].some(v=>v!=null&&wanted.has(String(v).toLowerCase().replace(/[^a-z0-9]/g,''))));
+ if(!item)return null;
+ const raw=item.displayValue??item.value;
+ if(raw===null||raw===undefined||String(raw).trim()==='')return null;
+ const paired=String(raw).match(/^\s*(\d+)\s*-\s*(\d+)\s*$/);
+ const isAttempts=names.includes('fga')||names.includes('fta');
+ const num=paired&&isAttempts?Number(paired[2]):Number(raw);
+ return Number.isFinite(num)&&num>=0&&num<250?num:null;
+}
+function nbaParseBoxscore(payload,event){
+ const teams=payload?.boxscore?.teams;
+ if(!Array.isArray(teams)||teams.length!==2)return null;
+ const parsed=teams.map(t=>{
+  const stats=t.statistics||[];
+  const fga=nbaBoxStat(stats,['fieldgoalsattempted','fieldgoalsmade-fieldgoalsattempted','fieldgoals','fg','fga']);
+  const fta=nbaBoxStat(stats,['freethrowsattempted','freethrowsmade-freethrowsattempted','freethrows','ft','fta']);
+  const orb=nbaBoxStat(stats,['offensiverebounds','offreb','oreb','offensiverebound']);
+  const tov=nbaBoxStat(stats,['turnovers','to','turnover']);
+  const abbreviation=t.team?.abbreviation;
+  if(!abbreviation||[fga,fta,orb,tov].some(v=>v===null)||fga<40||fta>80||orb>40||tov>50)return null;
+  const possessions=fga+0.44*fta-orb+tov;
+  if(possessions<60||possessions>140)return null;
+  return {team:abbreviation,fga,fta,offensiveRebounds:orb,turnovers:tov,estimatedPossessions:Math.round(possessions*10)/10};
+ });
+ if(parsed.some(x=>!x)||parsed[0].team===parsed[1].team)return null;
+ return {id:String(event.id),date:event.date,seasonYear:nbaSeasonYear(event),seasonType:'REGULAR',source:'ESPN NBA game summary boxscore',method:'estimated possessions = FGA + 0.44 × FTA − offensive rebounds + turnovers',teams:parsed};
+}
+async function nbaCollectBoxscores(events){
+ const completed=events.filter(e=>e?.status?.type?.completed===true&&nbaSeasonType(e)==='REGULAR'&&e.id);
+ const saved=nbaBoxArchive(),seen=new Set(saved.map(x=>String(x.id)));
+ // Newest completed games first; do not repeatedly prioritize older unparseable summaries.
+ completed.sort((a,b)=>new Date(b.date)-new Date(a.date));
+ let attempted={};try{attempted=JSON.parse(localStorage.getItem(NBA_BOX_ATTEMPT_KEY)||'{}')||{}}catch{}
+ const day=nbaLocalDay(),ids=completed.filter(e=>!seen.has(String(e.id))&&attempted[String(e.id)]!==day).slice(0,2);
+ let added=0,failed=0;
+ for(const event of ids){
+  attempted[String(event.id)]=day;
+  try{
+   const url=`https://site.api.espn.com/apis/site/v2/sports/basketball/nba/summary?event=${encodeURIComponent(event.id)}`;
+   const response=await fetch(url,{cache:'no-store',signal:AbortSignal.timeout(10000)});
+   if(!response.ok)throw Error('ESPN summary HTTP '+response.status);
+   const record=nbaParseBoxscore(await response.json(),event);
+   if(!record)throw Error('Boxscore missing required verified inputs');
+   saved.push(record);seen.add(record.id);added++;
+  }catch(err){failed++;console.warn('NBA boxscore research not available for',event.id,String(err))}
+ }
+ try{localStorage.setItem(NBA_BOX_KEY,JSON.stringify(saved.slice(-1000)));localStorage.setItem(NBA_BOX_ATTEMPT_KEY,JSON.stringify(Object.fromEntries(Object.entries(attempted).slice(-100))))}catch(err){console.warn('NBA boxscore archive storage unavailable',err)}
+ return {stored:saved.length,added,failed,attempted:ids.length,eligible:completed.length,unarchived:completed.filter(e=>!seen.has(String(e.id))).length};
+}
+function nbaBoxSummary(){
+ const rows=nbaBoxArchive().filter(r=>r?.source==='ESPN NBA game summary boxscore'&&r.seasonType==='REGULAR'&&Array.isArray(r.teams)&&r.teams.length===2);
+ const bySeason={};for(const row of rows){const y=String(row.seasonYear);bySeason[y]=(bySeason[y]||0)+1}
+ const teams=rows.flatMap(r=>r.teams);const meanPossessions=teams.length?Math.round(teams.reduce((sum,t)=>sum+t.estimatedPossessions,0)/teams.length*10)/10:null;
+ return {games:rows.length,bySeason,meanEstimatedTeamPossessions:meanPossessions,method:'Box-score-derived estimated possessions; not official possession tracking',modelEnabled:false,readiness:'DATA COLLECTION ONLY; no predictive substitution'};
+}
+// v8.69: parallel NBA possession-estimate research only. Uses ONLY completed
+// regular-season boxscores with matching ESPN finals dated before tipoff.
+// Not an official pace metric, calibrated win probability, or wagering signal.
+function nbaPossessionResearch(g,boxRows,finals){
+ if(!g||g.season!=='REGULAR'||!Number.isFinite(Date.parse(g.tipoff)))return null;
+ const tip=Date.parse(g.tipoff),byId=new Map(finals.filter(e=>e?.id).map(e=>[String(e.id),e]));
+ const season=nbaSeasonYear({date:g.tipoff}),teams={},games=[];
+ for(const r of boxRows){
+  if(r?.source!=='ESPN NBA game summary boxscore'||r.seasonType!=='REGULAR'||r.seasonYear!==season||!Array.isArray(r.teams)||r.teams.length!==2)continue;
+  const e=byId.get(String(r.id)),date=Date.parse(e?.date);
+  if(!Number.isFinite(date)||date>=tip||!e?.status?.type?.completed)continue;
+  const c=e.competitions?.[0],h=c?.competitors?.find(x=>x.homeAway==='home'),a=c?.competitors?.find(x=>x.homeAway==='away');
+  const hs=Number(h?.score),as=Number(a?.score),home=h?.team?.abbreviation,away=a?.team?.abbreviation;
+  if(!home||!away||home===away||![hs,as].every(x=>Number.isFinite(x)&&x>=50&&x<=250))continue;
+  const bh=r.teams.find(t=>t.team===home),ba=r.teams.find(t=>t.team===away);
+  if(!bh||!ba||![bh.estimatedPossessions,ba.estimatedPossessions].every(x=>Number.isFinite(x)&&x>=60&&x<=140))continue;
+  const pace=(bh.estimatedPossessions+ba.estimatedPossessions)/2;
+  if(pace<60||pace>140)continue;
+  games.push({home,away,hs,as,pace});
+  for(const [id,scored,allowed] of [[home,hs,as],[away,as,hs]]){
+   const t=teams[id]||(teams[id]={n:0,points:0,allowed:0,possessions:0});
+   t.n++;t.points+=scored;t.allowed+=allowed;t.possessions+=pace;
+  }
+ }
+ const h=teams[g.home],a=teams[g.away];
+ if(games.length<12||!h||!a||h.n<3||a.n<3)return null;
+ const leaguePoss=games.reduce((sum,x)=>sum+x.pace,0)*2;
+ const leaguePoints=games.reduce((sum,x)=>sum+x.hs+x.as,0);
+ const leagueRate=100*leaguePoints/leaguePoss,leaguePace=leaguePoss/(2*games.length);
+ const shrink=6;
+ const attack=t=>(100*t.points+shrink*leagueRate*leaguePace)/(t.possessions+shrink*leaguePace);
+ const defense=t=>(100*t.allowed+shrink*leagueRate*leaguePace)/(t.possessions+shrink*leaguePace);
+ const pace=Math.max(75,Math.min(115,(a.possessions/a.n+h.possessions/h.n+leaguePace)/3));
+ const away=pace*(attack(a)+defense(h))/200,home=pace*(attack(h)+defense(a))/200;
+ const round=x=>Math.round(x*10)/10;
+ return {away:round(away),home:round(home),total:round(away+home),margin:round(home-away),estimatedPace:round(pace),awaySamples:a.n,homeSamples:h.n,leagueGames:games.length,seasonYear:season,method:'boxscore-derived estimated possessions and shrunk points per 100 estimated possessions',quality:'PARALLEL SHADOW ONLY'};
+}
+function nbaPossessionCoverage(boxRows,finals){
+ const ids=new Set(finals.filter(e=>e?.status?.type?.completed&&nbaSeasonType(e)==='REGULAR').map(e=>String(e.id)));
+ const usable=boxRows.filter(r=>r?.source==='ESPN NBA game summary boxscore'&&r.seasonType==='REGULAR'&&ids.has(String(r.id))&&Array.isArray(r.teams)&&r.teams.length===2);
+ const seasons={};for(const r of usable){const k=String(r.seasonYear);seasons[k]=(seasons[k]||0)+1}
+ return {boxscoreRecords:boxRows.length,matchedFinals:usable.length,matchedBySeason:seasons,minimumLeagueGames:12,minimumGamesPerTeam:3,forecastUse:'PARALLEL SHADOW RESEARCH ONLY',liveValidated:false,bettingApproved:false};
+}
+function nbaExportResearchAudit(){
+ const ledger=nbaLoadLedger(),archive=nbaReadArchive(),summary=nbaForecastValidation(ledger);
+ const payload={version:'0.8.70',exportedAt:new Date().toISOString(),researchOnly:true,notBettingValidated:true,summary,auditIntegrity:nbaAuditIntegrity(ledger),marketBenchmark:nbaMarketBenchmark(ledger),boxscoreResearch:{summary:nbaBoxSummary(),coverage:nbaPossessionCoverage(nbaBoxArchive(),archive),records:nbaBoxArchive()},archiveCounts:{all:archive.length,regular:archive.filter(x=>nbaSeasonType(x)==='REGULAR').length,preseason:archive.filter(x=>nbaSeasonType(x)==='PRESEASON').length,playoffs:archive.filter(x=>nbaSeasonType(x)==='PLAYOFFS').length},forecasts:ledger};
+ const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='dildo-nba-research-audit-v0.8.69.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);
+}
 function nbaRender(data,stale=false){
+ const exportButton=$('nbaExportAudit');if(exportButton)exportButton.onclick=nbaExportResearchAudit;
  const items=Array.isArray(data?.games)?data.games:[];
  $('nbaStamp').textContent=(stale?'Saved · ':'Checked · ')+new Date(data?.fetchedAt||Date.now()).toLocaleString();
  const priced=items.filter(g=>!g.marketRecovered&&g.dk&&(g.dk.spread!=null||g.dk.total!=null)).length;
@@ -720,6 +965,13 @@ function nbaRender(data,stale=false){
  $('nbaHealth').className='notice '+(stale?'warn':'');
  $('nbaHealth').textContent=`${items.length} upcoming games · ${priced} ${stale?'saved (not current-verified)':'snapshot'} DraftKings markets · ${projected} research projections · ${items.length-priced} without current-snapshot DK lines${recovered?' · '+recovered+' schedule-only recovered games (prices withheld)':''}. ${stale?'Saved research; market lines may be stale.':'Research only; no NBA official bets.'}`;
  const ledger=nbaLoadLedger(),graded=ledger.filter(x=>x.actual&&x.projection);
+ const validation=nbaForecastValidation(ledger);
+ const marketBenchmark=nbaMarketBenchmark(ledger);
+ const integrity=nbaAuditIntegrity(ledger);
+ const regEvidence=marketBenchmark.bySeason.REGULAR;const evidenceLabel=`EVIDENCE GATE · regular-season paired totals ${regEvidence.pairedTotals}/100, spreads ${regEvidence.pairedMargins}/100. Mean paired absolute-error difference (model − DK): totals ${regEvidence.totalPairedEvidence.meanDifference??'n/a'} pts, margins ${regEvidence.marginPairedEvidence.meanDifference??'n/a'} pts; descriptive 95% intervals totals ${regEvidence.totalPairedEvidence.ci95?.join(' to ')||'unavailable'}, margins ${regEvidence.marginPairedEvidence.ci95?.join(' to ')||'unavailable'}. No wagering approval. `;
+ const paired=marketBenchmark.bySeason.REGULAR;
+ const benchmarkText=paired.pairedTotals||paired.pairedMargins?`Regular-season pregame DK comparison: ${paired.pairedTotals} paired totals (model MAE ${paired.totalModelMAE??'—'} vs market ${paired.totalMarketMAE??'—'}), ${paired.pairedMargins} paired margins (model MAE ${paired.marginModelMAE??'—'} vs market ${paired.marginMarketMAE??'—'}).`:'No paired regular-season DraftKings benchmark yet; historical forecasts without a captured pregame quote cannot be compared honestly.';
+ const biasText=['REGULAR','PRESEASON','PLAYOFFS'].map(type=>{const m=validation.bySeason[type];return `${type.toLowerCase()} ${m.count} valid: total bias ${m.totalBias==null?'—':(m.totalBias>0?'+':'')+m.totalBias} pts, margin bias ${m.marginBias==null?'—':(m.marginBias>0?'+':'')+m.marginBias} pts`}).join(' | ');
  const seasonGroups=['REGULAR','PRESEASON','PLAYOFFS'].map(type=>{
   const rows=graded.filter(x=>x.projection?.season===type);
   const metric=key=>rows.length?(rows.reduce((sum,x)=>sum+Math.abs(Number(x.projection[key])-Number(x.actual[key])),0)/rows.length).toFixed(1):'—';
@@ -730,7 +982,7 @@ function nbaRender(data,stale=false){
  const seasonNote=regularGraded===0?'NO REGULAR-SEASON VALIDATION YET. Preseason grading cannot validate regular-season accuracy. ':'Regular-season research is still experimental and not betting-validated. ';
  const mae=key=>graded.length?(graded.reduce((sum,x)=>sum+Math.abs(x.projection[key]-x.actual[key]),0)/graded.length).toFixed(1):'—';
  const counts=data?.seasonCounts||{};
- $('nbaValidation').textContent=`MODEL HEALTH · Rolling archive: ${Number(data?.archiveCount||0)} completed games retained on this device, ${Number(data?.historyGames||0)} usable in the active NBA season (${nbaSafe(data?.seasonYear||"unknown")}). Schedule scans 2 days back / 2 days forward, with up to 2 older history dates per day while rebuilding coverage. Archive retains earlier results. Historical sample: ${counts.REGULAR||0} regular-season, ${counts.PRESEASON||0} preseason, ${counts.PLAYOFFS||0} playoff games. ${seasonNote}Forecast accuracy by competition: ${seasonGroups.join(' | ')}${unknownGraded?' | '+unknownGraded+' unclassified legacy forecasts excluded from season-specific MAE':''}. ${graded.length} total graded forecasts across all types; combined total MAE ${mae('total')} pts, margin MAE ${mae('margin')} pts (NOT a regular-season performance estimate). Season types are never mixed for projections. ${data?.partial?'Some schedule days failed; coverage incomplete. ':''}Archive is stored only on this device and may be cleared by browser storage cleanup. NBA remains SHADOW regardless of sample size.`;
+ $('nbaValidation').textContent=`READINESS: RESEARCH ONLY · ${integrity.validPregame}/${integrity.settled} settled forecasts pass strict pregame audit; ${integrity.excluded} excluded; ${integrity.regularPregame} valid regular-season forecasts; ${integrity.regularWithDK} with captured DK comparisons. No proven betting edge. MODEL HEALTH · Rolling archive: ${Number(data?.archiveCount||0)} completed games retained on this device, ${Number(data?.historyGames||0)} usable in the active NBA season (${nbaSafe(data?.seasonYear||"unknown")}). Schedule scans 2 days back / 2 days forward, with up to 2 older history dates per day while rebuilding coverage. Archive retains earlier results. Prior-season regular-season research backfill: ${Number(data?.priorBackfillDays||0)} dates this refresh, ${Number(data?.priorArchiveGames||0)} prior-season regular-season games archived; prior-year projections are capped at 48 evidence points and remain SHADOW. Historical sample: ${counts.REGULAR||0} regular-season, ${counts.PRESEASON||0} preseason, ${counts.PLAYOFFS||0} playoff games. ${seasonNote}Forecast accuracy by competition: ${seasonGroups.join(' | ')}${unknownGraded?' | '+unknownGraded+' unclassified legacy forecasts excluded from season-specific MAE':''}. ${graded.length} total graded forecasts across all types; combined total MAE ${mae('total')} pts, margin MAE ${mae('margin')} pts (NOT a regular-season performance estimate). Signed forecast error (projection minus final; positive means overprojection): ${biasText}. ${benchmarkText} ${evidenceLabel} These are paired observational errors, not a calibrated betting edge. True possession-adjusted efficiency is NOT available from the scoreboard feed; no synthetic pace ratings are used. ${validation.excludedPostTipoffOrInvalid} graded records excluded from pregame-valid bias analysis; ${validation.pending} pending forecasts. Bias from small samples is descriptive, not proof of predictive edge. Season types are never mixed for projections. ${data?.partial?'Some schedule days failed; coverage incomplete. ':''}Archive is stored only on this device and may be cleared by browser storage cleanup. NBA boxscore integration: ${nbaBoxSummary().games} completed regular-season games with FGA/FTA/offensive rebounds/turnovers stored; latest scan attempted ${Number(data?.boxscoreCollection?.attempted||0)}, added ${Number(data?.boxscoreCollection?.added||0)}, failed ${Number(data?.boxscoreCollection?.failed||0)}; possessions are ESTIMATED and not used for picks. Parallel possession-estimate research is available in Research details when sample thresholds pass; it does NOT change the primary forecast. NBA remains SHADOW until independent validation and data quality requirements are met.`;
  $('nbaGames').innerHTML=items.length?items.map(g=>{
   const dt=new Date(g.tipoff),date=Number.isFinite(dt.getTime())?dt.toLocaleString(undefined,{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}):'Time unavailable';
   const dk=g.marketRecovered?null:g.dk,pr=g.marketRecovered?null:g.projection,spread=dk?.spread!=null?`${dk.spread>0?'+':''}${dk.spread} ${nbaSafe(g.home)} (home)`:'Unavailable';
@@ -749,9 +1001,11 @@ function nbaRender(data,stale=false){
   const headline=hasResearch?'RESEARCH PROJECTION':'NO MODEL PICK';
   const researchNumber=hasResearch?`Our number: ${nbaSafe(pr.total)} projected total · ${pr.margin>0?'+':''}${nbaSafe(pr.margin)} home margin`:'Our number: Awaiting sufficient team history';
   const explanation=hasResearch
-    ? `Projected score: ${safeAway} ${nbaSafe(pr.away)} · ${safeHome} ${nbaSafe(pr.home)}. Opponent-adjusted scoring research; ${nbaSafe(pr.quality)} evidence.`
+    ? `Projected score: ${safeAway} ${nbaSafe(pr.away)} · ${safeHome} ${nbaSafe(pr.home)}. Opponent-adjusted scoring research; ${nbaSafe(pr.quality)} evidence.${pr.priorSeasonWeight?` Experimental blend: ${pr.currentSeasonWeight}% current season / ${pr.priorSeasonWeight}% prior season; no possession or injury data.`:pr.priorSeasonYear?` Based on archived ${pr.priorSeasonYear-1}–${pr.priorSeasonYear} regular-season results, NOT current-season form.`:''}`
     : `${safeAway} has ${awayN} of 3 required games; ${safeHome} has ${homeN} of 3. ${seasonN} of 12 league games available for this season type.${g.season==='REGULAR'&&seasonN===0?' Preseason results are intentionally excluded; regular-season projections will begin only after enough completed regular-season games are archived.':''}`;
-  const risk=hasResearch?'Limited same-season sample; injuries, pace and lineups are not modeled.':'Insufficient comparable team history; no reliable research projection.';
+  const risk=hasResearch?(pr.priorSeasonWeight?'Experimental season blend; roster turnover, injuries and pace are not modeled.':pr.priorSeasonYear?'Prior-season-only baseline; roster changes, injuries and current form are not modeled.':'Limited same-season sample; injuries, pace and lineups are not modeled.'):'Insufficient comparable team history; no reliable research projection.';
+  const possession=g.marketRecovered?null:g.possessionResearch;
+  const possessionLine=possession?`Parallel possession-estimate research: ${nbaSafe(possession.away)}–${nbaSafe(possession.home)} · total ${nbaSafe(possession.total)} · estimated pace ${nbaSafe(possession.estimatedPace)} · ${possession.leagueGames} matched completed games. NOT the official model.`:'Parallel possession research: awaiting matched completed box scores (minimum 12 league games and 3 per team).';
   const marketLine=dk?`DK: ${safeHome} ${spread} · Total ${totalMarket}`:'DraftKings line unavailable · No verified current market';
   const marketCaveat=g.marketRecovered?'Recovered schedule only; prior market prices withheld':stale?'Saved snapshot; DraftKings prices may be stale':dk?'Provider identified as DraftKings in ESPN odds':'No DraftKings market returned';
   return `<article class="card game nbaTicket">
@@ -764,7 +1018,8 @@ function nbaRender(data,stale=false){
     <div class="playable">${marketLine}</div>
     <div class="nbaTicketGuard">SHADOW / NO BET · Experimental research only. Not eligible for the official Betslip.</div>
     <details class="collapsedTools nbaTicketDetails"><summary>▸ Research details</summary>
-      <div class="tiny" style="margin-top:8px">Same-season samples: ${safeAway} ${awayN}/3 · ${safeHome} ${homeN}/3 · League ${seasonN}/12. Preseason and regular season are never mixed.</div>
+      <div class="tiny" style="margin-top:8px">${possessionLine}</div>
+      <div class="tiny" style="margin-top:8px">Current-season samples: ${safeAway} ${awayN}/3 · ${safeHome} ${homeN}/3 · League ${seasonN}/12. ${pr?.priorSeasonYear?`Research baseline uses prior season ${pr.priorSeasonYear} (${pr.priorSeasonGames} archived regular-season games); does not imply current-season sample sufficiency.`:''} Preseason and regular season are never mixed.</div>
       <div class="tiny" style="margin-top:8px">${hasResearch?`Projected scores: ${safeAway} ${nbaSafe(pr.away)} · ${safeHome} ${nbaSafe(pr.home)} · Research quality: ${nbaSafe(pr.quality)}`:'No numerical confidence is assigned without a valid projection.'}</div>
       <div class="footnote" style="margin-top:8px">${marketCaveat}. Confidence reflects evidence completeness, not win probability. No NBA wagers are generated.</div>
     </details>
@@ -796,6 +1051,15 @@ async function nbaRefresh(force=false){
   const extra=canBackfill?[backfillStart,backfillStart-1].filter(x=>x>=-31):[];
   const offsets=[-2,-1,0,1,2,...extra];
   const days=offsets.map(offset=>{const day=new Date(start);day.setDate(start.getDate()+offset);return fmt(day)});
+  // Two additional historical requests per day maximum. Prior-season scores are never
+  // substituted for live markets; this fills a research-only regular-season archive.
+  const priorYear=start.getMonth()>=6?start.getFullYear():start.getFullYear()-1;
+  let priorBackfill={};try{priorBackfill=JSON.parse(localStorage.getItem(NBA_PRIOR_BACKFILL_KEY)||'{}')||{}}catch{}
+  const priorOffset=Number.isInteger(priorBackfill.offset)&&priorBackfill.offset>=0&&priorBackfill.offset<=26?priorBackfill.offset:0;
+  const priorDays=priorBackfill.lastAttemptDay!==nbaLocalDay()&&priorOffset<26?[priorOffset,priorOffset+1].map(k=>{
+   const day=new Date(priorYear,2,31,12);day.setDate(day.getDate()-k*6);return fmt(day);
+  }):[];
+  days.push(...priorDays);
   const events=new Map();const failures=[];
   for(let i=0;i<days.length;i+=2){
    const batch=await Promise.all(days.slice(i,i+2).map(async day=>{
@@ -812,26 +1076,31 @@ async function nbaRefresh(force=false){
   if(failures.length===days.length)throw Error(`NBA schedule unavailable (${failures[0]}). Check provider access.`);
   // Advance only after both historical dates succeeded; retry incomplete backfill next day.
   // Persist the attempt day to avoid repeated scans when the user switches sports.
-  if(extra.length){const extraDays=days.slice(5);const backfillFailed=extraDays.some(day=>failures.some(f=>f.startsWith(day+':')));
+  if(extra.length){const extraDays=days.slice(5,5+extra.length);const backfillFailed=extraDays.some(day=>failures.some(f=>f.startsWith(day+':')));
    try{localStorage.setItem(NBA_BACKFILL_KEY,JSON.stringify({lastAttemptDay:backfillDay,nextOffset:backfillFailed?backfillStart:backfillStart-extra.length,successfulThrough:backfillFailed?(backfill.successfulThrough||null):backfillStart-extra.length+1}))}catch{}
+  }
+  if(priorDays.length){const failed=priorDays.some(day=>failures.some(f=>f.startsWith(day+':')));
+   try{localStorage.setItem(NBA_PRIOR_BACKFILL_KEY,JSON.stringify({lastAttemptDay:nbaLocalDay(),offset:failed?priorOffset:priorOffset+priorDays.length}))}catch{}
   }
   const allEvents=[...events.values()];
   // Detect explicit rate limits even when some dates succeeded; avoid further scans for six hours.
   if(failures.some(f=>/HTTP 429|quota|rate.limit|too many requests/i.test(f))){try{localStorage.setItem(NBA_QUOTA_KEY,String(Date.now()+6*3600000))}catch{}}
   const archive=nbaMergeArchive(allEvents);
+  const boxscoreCollection=await nbaCollectBoxscores(allEvents);
   // A partial response must not erase previously saved upcoming games.
   const previousGames=Array.isArray(cached?.games)?cached.games:[];
   const upcomingYear=allEvents.map(e=>({e,year:nbaSeasonYear(e)})).filter(x=>x.year&&new Date(x.e.date)>new Date()).sort((a,b)=>new Date(a.e.date)-new Date(b.e.date));
   const targetYear=upcomingYear[0]?.year||nbaSeasonYear(allEvents[0])||new Date().getFullYear();
   const history=nbaHistoryModel(archive,targetYear);
-  const games=allEvents.filter(e=>new Date(e.date)>=new Date(start.getTime()-2*86400000)).map(e=>{const c=e.competitions?.[0],parts=c?.competitors||[],h=parts.find(x=>x.homeAway==='home'),a=parts.find(x=>x.homeAway==='away');if(!h||!a)return null;const odds=(c?.odds||[]).find(o=>/draft\s*kings/i.test(String(o.provider?.name||'')));let dk=null;if(odds){const total=Number(odds.overUnder);const details=String(odds.details||'').trim();const match=details.match(/^([A-Z]{2,4})\s+([+-]?[0-9]+(?:\.[0-9]+)?)$/);const line=match?Number(match[2]):null;const spread=match&&Number.isFinite(line)&&Math.abs(line)<=35?(match[1]===(h.team?.abbreviation||'')?line:match[1]===(a.team?.abbreviation||'')?-line:null):null;dk={spread,total:Number.isFinite(total)&&total>=100&&total<=300?total:null}}return{id:String(e.id),home:h.team?.abbreviation||'HOME',away:a.team?.abbreviation||'AWAY',tipoff:e.date,season:nbaSeasonType(e),dk}}).filter(Boolean).filter(g=>new Date(g.tipoff)>new Date()).map(g=>({...g,projection:nbaSeasonYear(allEvents.find(e=>String(e.id)===g.id))===targetYear?nbaProject(g,history):null}));
+  const boxResearch=nbaBoxArchive();
+  const games=allEvents.filter(e=>new Date(e.date)>=new Date(start.getTime()-2*86400000)).map(e=>{const c=e.competitions?.[0],parts=c?.competitors||[],h=parts.find(x=>x.homeAway==='home'),a=parts.find(x=>x.homeAway==='away');if(!h||!a)return null;const odds=(c?.odds||[]).find(o=>/draft\s*kings/i.test(String(o.provider?.name||'')));let dk=null;if(odds){const total=Number(odds.overUnder);const details=String(odds.details||'').trim();const match=details.match(/^([A-Z]{2,4})\s+([+-]?[0-9]+(?:\.[0-9]+)?)$/);const line=match?Number(match[2]):null;const spread=match&&Number.isFinite(line)&&Math.abs(line)<=35?(match[1]===(h.team?.abbreviation||'')?line:match[1]===(a.team?.abbreviation||'')?-line:null):null;dk={spread,total:Number.isFinite(total)&&total>=100&&total<=300?total:null}}return{id:String(e.id),home:h.team?.abbreviation||'HOME',away:a.team?.abbreviation||'AWAY',tipoff:e.date,season:nbaSeasonType(e),dk}}).filter(Boolean).filter(g=>new Date(g.tipoff)>new Date()).map(g=>({...g,projection:nbaSeasonYear(allEvents.find(e=>String(e.id)===g.id))===targetYear?nbaBlendedProjection(g,archive,targetYear,history):null,possessionResearch:nbaPossessionResearch(g,boxResearch,archive)}));
   for(const old of previousGames){if(!games.some(g=>g.id===old.id)&&new Date(old.tipoff)>new Date()){
    // Preserve schedule visibility, never imply an old DraftKings quote is newly verified.
    games.push({...old,dk:null,projection:null,marketRecovered:true});
   }}
   games.sort((a,b)=>new Date(a.tipoff)-new Date(b.tipoff));
   nbaUpdateLedger(games,allEvents);
-  const result={backfillDays:extra.length,backfillOffset:backfillStart,day:nbaLocalDay(),fetchedAt:new Date().toISOString(),games,historyGames:history.games,archiveCount:archive.length,seasonYear:targetYear,seasonCounts:history.counts,teamSamples:history.teamSamples,partial:failures.length>0,failedDays:failures.length};try{localStorage.setItem(NBA_CACHE_KEY,JSON.stringify(result))}catch(storageError){console.warn('NBA snapshot storage full; showing current data without persistence',storageError)}if(activeSport==='nba'){nbaRender(result);if(failures.length){$('nbaHealth').className='notice warn';$('nbaHealth').textContent+=` · Partial schedule: ${failures.length} of ${days.length} dates unavailable.`}}
+  const result={boxscoreCollection,possessionCoverage:nbaPossessionCoverage(boxResearch,archive),backfillDays:extra.length,backfillOffset:backfillStart,priorBackfillDays:priorDays.length,priorArchiveGames:nbaHistoryModel(archive,targetYear-1).counts.REGULAR||0,day:nbaLocalDay(),fetchedAt:new Date().toISOString(),games,historyGames:history.games,archiveCount:archive.length,seasonYear:targetYear,seasonCounts:history.counts,teamSamples:history.teamSamples,partial:failures.length>0,failedDays:failures.length};try{localStorage.setItem(NBA_CACHE_KEY,JSON.stringify(result))}catch(storageError){console.warn('NBA snapshot storage full; showing current data without persistence',storageError)}if(activeSport==='nba'){nbaRender(result);if(failures.length){$('nbaHealth').className='notice warn';$('nbaHealth').textContent+=` · Partial schedule: ${failures.length} of ${days.length} dates unavailable.`}}
  }catch(e){const msg=String(e.message||e);if(/quota|429|rate.limit|too many requests/i.test(msg)){try{localStorage.setItem(NBA_QUOTA_KEY,String(Date.now()+6*3600000))}catch{}}if(cached){nbaRender(cached,true);$('nbaHealth').textContent+=' · Live refresh failed: '+msg+'; saved research retained.'}else{$('nbaHealth').className='notice warn';$('nbaHealth').textContent='NBA feed unavailable: '+msg+'. No markets or bets inferred.';$('nbaGames').innerHTML=''}}
  finally{nbaRefreshBusy=false;$('nbaRefresh').disabled=false}
 }
@@ -880,7 +1149,7 @@ $('saveSettings').onclick=()=>{currentSettings=saveSettings();refresh()};$('test
 document.querySelectorAll('.propFilter').forEach(b=>b.onclick=()=>{propFilter=b.dataset.propfilter;document.querySelectorAll('.propFilter').forEach(x=>x.classList.toggle('active',x===b));const p=sportState[propSport];if(p)renderNFLPropPipeline(p)});
 document.querySelectorAll('.propSport').forEach(b=>b.onclick=async()=>{propSport=b.dataset.propsport;document.querySelectorAll('.propSport').forEach(x=>x.classList.toggle('active',x===b));if(activeSport!==propSport)await switchSport(propSport);const p=sportState[propSport];if(p)renderNFLPropPipeline(p);else{$('propSportTitle').textContent=propSport==='cfb'?'🏟️ CFB Props · SHADOW':'🏈 NFL Props · SHADOW';$('propShadowStatus').textContent=`No ${propSport.toUpperCase()} prop snapshot yet · pulling current data…`;$('propShadowCards').innerHTML='';refreshOnce(propSport).catch(()=>{})}});
 
-$('refreshValidation').onclick=renderFootballValidation;$('exportValidation').onclick=exportFootballValidation;$('exportCoverage').onclick=exportFootballCoverage;$('generateBetslip').onclick=renderGeneratedBetslip;document.getElementById('checkLinesBtn').onclick=checkLines;document.getElementById('forceAnalysisBtn').onclick=forceDailyAnalysis;
+$('refreshValidation').onclick=renderFootballValidation;$('exportValidation').onclick=exportFootballValidation;$('exportCoverage').onclick=exportFootballCoverage;$('exportNflShadow').onclick=exportNflShadow;$('generateBetslip').onclick=renderGeneratedBetslip;document.getElementById('checkLinesBtn').onclick=checkLines;document.getElementById('forceAnalysisBtn').onclick=forceDailyAnalysis;
 function applyPageVisibility(page){activePage=page;uiState.page=page;uiState.generation++;document.querySelectorAll('.appSection').forEach(x=>{const visible=x.dataset.page===page;x.classList.toggle('hiddenPage',!visible);if(visible)x.classList.remove('hidden')});document.querySelectorAll('.tabbar button').forEach(x=>x.classList.toggle('active',x.dataset.page===page))}
 function showPage(page){applyPageVisibility(page);nbaPanelMode();if(page==='more'){renderFootballValidation();renderLedger();renderModelHealth();renderDiagnostics(current,'VIEW',null);$('promptPreview').value=buildPrompt(current)}if(page==='props'){propSport=['nfl','cfb'].includes(activeSport)?activeSport:propSport;document.querySelectorAll('.propSport').forEach(x=>x.classList.toggle('active',x.dataset.propsport===propSport));const pp=sportState[propSport];$('propSportTitle').textContent=propSport==='cfb'?'🏟️ CFB Props · SHADOW':'🏈 NFL Props · SHADOW';if(pp){renderNFLPropPipeline(pp);if(!pp.nflProps?.length)attachNFLPropFeed(pp).then(()=>{if(activePage==='props')renderNFLPropPipeline(pp)}).catch(()=>{})}else{$('propShadowStatus').textContent=`No ${propSport.toUpperCase()} prop snapshot yet · pulling current data…`;$('propShadowCards').innerHTML='';refreshOnce(propSport).catch(()=>{})}}if(page==='betslip'){renderGeneratedBetslip();renderPinWatch();hydrateUnifiedTicket().catch(()=>{});}window.scrollTo({top:0,behavior:'auto'})}document.querySelectorAll('.tabbar button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$('developerMode').onchange=()=>{localStorage.setItem('nflmd.developerMode',$('developerMode').checked?'1':'0');document.body.classList.toggle('developerMode',$('developerMode').checked);showPage('more')};showPage('bets');window.addEventListener('online',()=>$('offlineBanner').classList.add('hidden'));window.addEventListener('offline',()=>$('offlineBanner').classList.remove('hidden'));if(!navigator.onLine)$('offlineBanner').classList.remove('hidden');
 if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js?v='+encodeURIComponent(VERSION)).then(reg=>{if(reg.waiting){$('updateBanner').classList.remove('hidden');$('updateBtn').onclick=()=>reg.waiting.postMessage({type:'SKIP_WAITING'})}reg.addEventListener('updatefound',()=>{const w=reg.installing;if(w)w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)$('updateBanner').classList.remove('hidden')})})}).catch(()=>{});
