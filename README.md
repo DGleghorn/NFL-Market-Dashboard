@@ -1,3 +1,5 @@
+v0.8.72 NFL historical coverage verification + NBA audit version fix. NFL now fetches all preceding regular-season weeks, deduplicates by ESPN event ID, and includes coverage diagnostics in shadow export. NFL and NBA remain SHADOW and not approved for real-money wagering.
+
 # D.I.L.D.O. v0.8.71 — Selective NFL research data repair
 
 - NFL team context now requests every preceding regular-season week, not only the last three. This increases historical coverage and requests; availability remains provider-dependent.
