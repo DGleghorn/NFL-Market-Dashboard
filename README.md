@@ -1,11 +1,5 @@
-v0.8.72 NFL historical coverage verification + NBA audit version fix. NFL now fetches all preceding regular-season weeks, deduplicates by ESPN event ID, and includes coverage diagnostics in shadow export. NFL and NBA remain SHADOW and not approved for real-money wagering.
+# D.I.L.D.O. v0.8.73 — Three-sport calibration evidence audit
 
-# D.I.L.D.O. v0.8.71 — Selective NFL research data repair
+Adds More > Three-Sport Calibration with on-device NFL, CFB, NBA research-readiness summaries and a consolidated JSON export. Football records use pregame coverage journal matched against settled local records; missing outcomes remain missing. NBA includes existing forecast validation and paired market benchmark. Football 80/65/55 and NBA evidence quality are explicitly NOT calibrated winning probabilities. All sports remain unapproved for real-money recommendations. No historical CLV, odds or performance is fabricated. Public publishing is NOT included: static GitHub Pages cannot securely write browser-local reports. The eight protected football/PGA model functions remain unchanged.
 
-- NFL team context now requests every preceding regular-season week, not only the last three. This increases historical coverage and requests; availability remains provider-dependent.
-- Duplicate event IDs are excluded and only completed games with a valid, nonfuture kickoff are used.
-- NFL shadow comparison matchup labels now support normalized string team abbreviations; per-team sample counts exported.
-- No approved Best Bets: official ticket stays disabled, challenger remains SHADOW, thresholds remain provisional.
-- All eight protected model functions and CFB/NBA/PGA algorithms remain unchanged.
-- This is not proof of predictive performance, odds validity, profitability or production betting readiness.
-- To test: refresh NFL data, export NFL Shadow Comparison under More > Football Model Audit, inspect sample sizes, matchups, candidate quality, and any missing provider weeks.
+Validation: JavaScript syntax, ZIP integrity, protected-function identity, version/cache checks, and synthetic math checks. Live ESPN/DraftKings end-to-end connectivity and browser-specific behavior must be verified after deployment.
