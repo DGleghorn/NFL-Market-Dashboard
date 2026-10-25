@@ -1,5 +1,7 @@
-# D.I.L.D.O. v0.8.73 — Three-sport calibration evidence audit
+D.I.L.D.O. v0.8.73.1 — Release integrity and validation hold hotfix
 
-Adds More > Three-Sport Calibration with on-device NFL, CFB, NBA research-readiness summaries and a consolidated JSON export. Football records use pregame coverage journal matched against settled local records; missing outcomes remain missing. NBA includes existing forecast validation and paired market benchmark. Football 80/65/55 and NBA evidence quality are explicitly NOT calibrated winning probabilities. All sports remain unapproved for real-money recommendations. No historical CLV, odds or performance is fabricated. Public publishing is NOT included: static GitHub Pages cannot securely write browser-local reports. The eight protected football/PGA model functions remain unchanged.
+Upload the seven files from this ZIP directly into the repository root, replacing existing files. Do not upload the ZIP itself. Verify the visible header reads V0.8.73.1. Open a private browser tab or clear the website data if an older installed PWA remains cached.
 
-Validation: JavaScript syntax, ZIP integrity, protected-function identity, version/cache checks, and synthetic math checks. Live ESPN/DraftKings end-to-end connectivity and browser-specific behavior must be verified after deployment.
+Fixes: visible header, favicon/manifest cache references, service-worker version, and stops unvalidated TAKE research candidates from being written as new official wager records. Research coverage journaling remains active. Existing local records are preserved.
+
+Validation scope: static checks and JavaScript syntax. Live DraftKings/ESPN, GitHub Pages propagation, iPhone Orion and predictive calibration are NOT verified. No real-money recommendation approval.
