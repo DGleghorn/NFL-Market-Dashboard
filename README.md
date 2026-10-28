@@ -1,7 +1,13 @@
-D.I.L.D.O. v0.8.73.1 — Release integrity and validation hold hotfix
+D.I.L.D.O. v0.8.79 — Parallel Audit Reliability
+RESEARCH ONLY — no real-money recommendation approval.
 
-Upload the seven files from this ZIP directly into the repository root, replacing existing files. Do not upload the ZIP itself. Verify the visible header reads V0.8.73.1. Open a private browser tab or clear the website data if an older installed PWA remains cached.
+Upload all seven root files to GitHub Pages; confirm V0.8.79.
+More > Unified Production Audit > Run All Audits:
+- NFL and CFB independently retrieved ESPN score reconciliation
+- NBA research ledger and market benchmark
+- Three-sport confidence/calibration diagnostics
+- Historical record integrity
+- Production acceptance gates
+Each task now returns COMPLETED or FAILED independently. A failed task does not discard other results. The combined JSON includes missing score weeks, graded vs eligible coverage, exclusion counts, and explicit unverified historical DK pricing.
 
-Fixes: visible header, favicon/manifest cache references, service-worker version, and stops unvalidated TAKE research candidates from being written as new official wager records. Research coverage journaling remains active. Existing local records are preserved.
-
-Validation scope: static checks and JavaScript syntax. Live DraftKings/ESPN, GitHub Pages propagation, iPhone Orion and predictive calibration are NOT verified. No real-money recommendation approval.
+Known blockers: No independent historical DK odds archive, no leakage-free calibrated probability validation, and no physical iPhone/Orion integration acceptance. Prediction and settlement functions remain unchanged. Existing device-local data is preserved. No credentials or history automatically published.
