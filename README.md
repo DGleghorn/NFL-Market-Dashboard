@@ -1,13 +1,9 @@
-D.I.L.D.O. v0.8.84 — Evidence Pipeline / Model Health
-Research-only; NOT approved for real-money wagering recommendations.
+D.I.L.D.O. v0.8.85 — Storage Reliability & Recovery
 
-Deploy the seven files at the root of the GitHub Pages repository. Confirm v0.8.84.
+RESEARCH ONLY. Real-money recommendations remain disabled.
 
-New:
-- Future NBA research ledger rows require a valid season classification from the game, stored in the projection snapshot at capture time. Missing or contradictory season classification prevents new capture. Existing rows are not rewritten.
-- NFL/CFB coverage capture reports last attempt in session storage: SAVED, SAVE_FAILED, or NO_NEW_ELIGIBLE_PREGAME_ROWS. The capture report is diagnostic and not an independently verified pregame audit.
-- More > Evidence Pipeline shows collection health and JSON export; legacy integrity report remains, with long record IDs moved to its export.
-- Known older panels grouped under Advanced audits and exports where IDs match. All existing controls remain in DOM.
-- Model and settlement functions unchanged. No historical version, season, or sportsbook prices fabricated.
-
-Known limitations: 14 old NBA scored records still lack season metadata; 12 old legacy records still lack model version; football qualifying journal may be empty; independent DraftKings prices, holdout, and live iPhone tests remain unverified.
+Deploy the seven files to GitHub Pages root.
+More > Storage Reliability & Recovery shows approximate per-key localStorage sizes and origin usage estimates. Export Full Backup first and verify download in Files. Clean Temporary Caches requires backup export and explicit confirmation; only prop feed cache and prop circuit keys are eligible. All other records remain untouched.
+Football coverage journal entries no longer duplicate the full optional marketSnapshot (price/line, selection, kickoff, capture time, game ID, model version and source identifiers remain). Journal writes are read back and checked before reporting SAVED.
+No automatic deletion, no restoration/import action, no claim of durable storage under quota pressure. A browser can still refuse a journal write until space is freed.
+Limitations: Browser quota and iPhone acceptance must be verified on-device. Historical DraftKings prices, calibrated models and profitability not independently validated.
