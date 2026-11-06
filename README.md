@@ -1,9 +1,5 @@
-D.I.L.D.O. v0.8.86 — Storage Reliability & Recovery
+D.I.L.D.O. v0.8.90 — NFL Current-Season Intelligence
 
-RESEARCH ONLY. Real-money recommendations remain disabled.
+Upload all seven files to GitHub Pages. Open NFL, refresh, then More > NFL Current-Season Intelligence > Analyze NFL Trends. Export NFL Intelligence JSON for review.
 
-Deploy the seven files to GitHub Pages root.
-More > Storage Reliability & Recovery shows approximate per-key localStorage sizes and origin usage estimates. Export Full Backup first and verify download in Files. Clean Temporary Caches requires backup export and explicit confirmation; only prop feed cache and prop circuit keys are eligible. All other records remain untouched.
-Football coverage journal entries no longer duplicate the full optional marketSnapshot (price/line, selection, kickoff, capture time, game ID, model version and source identifiers remain). Journal writes are read back and checked before reporting SAVED.
-No automatic deletion, no restoration/import action, no claim of durable storage under quota pressure. A browser can still refuse a journal write until space is freed.
-Limitations: Browser quota and iPhone acceptance must be verified on-device. Historical DraftKings prices, calibrated models and profitability not independently validated.
+NFL context now derives opponent-adjusted ratings and last-three-game form from ESPN completed current-season regular-season games. Missing history fails closed. CFB model and eight protected prediction/settlement functions are unchanged. NFL season intelligence is research-only, does not alter official NFL classifications, and has no verified betting edge. Do not tail with real money based on these results.
